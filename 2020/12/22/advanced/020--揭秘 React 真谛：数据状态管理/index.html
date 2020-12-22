@@ -1,0 +1,449 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶20 | 揭秘 React 真谛：数据状态管理 | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="如果说组件是 React 应用的骨骼，那么数据就是 React应用的血液。单向数据流就像血液在应用体中穿梭。处理数据向来不是一件简单的事情，良好的数据状态管理不仅需要经验的积累，更是设计能力的反应。目前来看 Redux无疑能够将数据状态理清，与此同时 Vue 阵营模仿 Redux 的 Vuex 也起到了相同的效果。这一讲我们就来谈谈数据状态管理，了解 Redux的真谛，并分析其利弊和上层解决方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶20 | 揭秘 React 真谛：数据状态管理">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/020--%E6%8F%AD%E7%A7%98%20React%20%E7%9C%9F%E8%B0%9B%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="如果说组件是 React 应用的骨骼，那么数据就是 React应用的血液。单向数据流就像血液在应用体中穿梭。处理数据向来不是一件简单的事情，良好的数据状态管理不仅需要经验的积累，更是设计能力的反应。目前来看 Redux无疑能够将数据状态理清，与此同时 Vue 阵营模仿 Redux 的 Vuex 也起到了相同的效果。这一讲我们就来谈谈数据状态管理，了解 Redux的真谛，并分析其利弊和上层解决方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:modified_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/020--%E6%8F%AD%E7%A7%98%20React%20%E7%9C%9F%E8%B0%9B%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-22 20:51:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶20 | 揭秘 React 真谛：数据状态管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-22T12:51:17.440Z" title="更新于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>如果说组件是 React 应用的骨骼，那么数据就是 React<br>应用的血液。单向数据流就像血液在应用体中穿梭。处理数据向来不是一件简单的事情，良好的数据状态管理不仅需要经验的积累，更是设计能力的反应。目前来看 Redux<br>无疑能够将数据状态理清，与此同时 Vue 阵营模仿 Redux 的 Vuex 也起到了相同的效果。这一讲我们就来谈谈数据状态管理，了解 Redux<br>的真谛，并分析其利弊和上层解决方案。</p>
+<p>相关知识点如下：</p>
+<p><img src="https://images.gitbook.cn/9e6ec5b0-9b41-11e9-a438-01dafdf3f255"></p>
+<h3 id="数据状态管理之痛"><a href="#数据状态管理之痛" class="headerlink" title="数据状态管理之痛"></a>数据状态管理之痛</h3><p>我们先思考一个问题，为什么需要数据状态管理，数据状态管理到底在解决什么样的问题。这其实是框架、组件化带来的概念，让我们回到最初的起点，还是那个简单的案例：</p>
+<p><img src="https://images.gitbook.cn/c3fabdc0-9b41-11e9-9fc2-2d8a42344276"></p>
+<p>点击页面中一处“收藏”之后，页面里其他“收藏”按钮也需要切换为“已收藏”状态：</p>
+<p><img src="https://images.gitbook.cn/3e2c7ac0-9b42-11e9-a438-01dafdf3f255"></p>
+<p>如果没有数据状态，也许我们需要：</p>
+<pre><code>const btnEle1 = $(&#39;#btn1&#39;)
+const btnEle2 = $(&#39;#btn2&#39;)
+
+btnEle1.on(&#39;click&#39;, () =&gt; &#123;
+    if (btnEle.textContent === &#39;已收藏&#39;) &#123;
+        return
+    &#125;
+    btnEle1.textContent = &#39;已收藏&#39;
+    btnEle2.textContent = &#39;已收藏&#39;
+&#125;)
+
+btnEle2.on(&#39;click&#39;, () =&gt; &#123;
+    if (btnEle2.textContent === &#39;已收藏&#39;) &#123;
+        return
+    &#125;
+    btnEle1.textContent = &#39;已收藏&#39;
+    btnEle2.textContent = &#39;已收藏&#39;
+&#125;)</code></pre>
+<p>这只是两个按钮的情况，处理起来就非常混乱难以维护了，这种情况非常容易滋生 bugs。</p>
+<p>现代化的框架解决这个问题的思路是组件化，组件依赖数据，对应这个场景数据状态就是简单的：</p>
+<pre><code>hasMarked: false / true</code></pre>
+<p>根据这个数据，所有的收藏组件都可以响应正确的视图操作。我们把面条式的代码转换成可维护的代码，重中之重就成了数据的管理，这就是数据状态的雏形。但是数据一旦庞大起来，如何和组件形成良好的交互就是一门学问了。比如我们要思考：</p>
+<ul>
+<li>一个组件需要和另一个组件共享状态</li>
+<li>一个组件需要改变另一个组件的状态</li>
+</ul>
+<p>以 React 为例，其他框架类似，如果 React 或者 Vue 自己来维护这些数据，数据状态就是一个对象，并且这个对象在组件之间要互相修改，及其混乱。</p>
+<p>接着我们衍生出这样的问题：hasMarked 这类数据到底是应该放在 state 中维护，还是借助数据状态管理类库，比如在 Redux<br>中维护呢？至少这样一来，数据源是单一的，数据状态和组件是解耦的，也更加方便开发者进行调试和扩展数据。</p>
+<h4 id="数据谁来维护？"><a href="#数据谁来维护？" class="headerlink" title="数据谁来维护？"></a>数据谁来维护？</h4><p>我们以 React state 和 Redux 为例，继续分析上面抛出的“数据谁来维护？”问题：</p>
+<ul>
+<li><p>React 中 state 维护数据在组件内部，这样当某项 state 需要与其他组件共享时，我们可以通过 props 来完成组件间通讯。实践上来看，这就需要相对顶层的组件维护共享的 state 并提供修改此项 state 的方法，state 本身和修改方法都需要通过 props 传递给子孙组件。</p>
+</li>
+<li><p>使用 Redux 的时候，state 维护在 Redux store 当中。任何需要访问并更新 state 的组件都需要感知或订阅 Redux store，这通常借助容器组件来完成。Redux 对于数据采用集中管理的方式。</p>
+</li>
+</ul>
+<p>我尝试从数据持久度、数据消费范围上来回答这个问题。</p>
+<p>首先，数据持久度上，不同状态数据在持久度上大体可以分为三类：</p>
+<ul>
+<li>快速变更型</li>
+<li>中等持续型</li>
+<li>长远稳定型</li>
+</ul>
+<p><strong>快速变更型，</strong><br>这类数据在应用中代表了某些原子级别的信息，且显著特点是变更频率最快。比如一个文本输入框数据值，可能随着用户输入在短时间内持续发生变化。这类数据显然更适合维护在<br>React 组件之内。</p>
+<p><strong>中等持续型数据，</strong> 在用户浏览或使用应用时，这类数据往往会在页面刷新前保持稳定。比如从异步请求接口通过 Ajax<br>方式得来的数据；又或者用户在个人中心页，编辑信息提交的数据。这类数据较为通用，也许会被不同组件所需求。在 Redux store 中维护，并通过<br>connect 方法进行连接，是不错的选择。</p>
+<p><strong>长远稳定型数据，</strong> 指在页面多次刷新或者多次访问期间都保持不变的数据。因为 Redux store<br>会在每次页面挂载后都重新生成一份，因此这种类型的数据显然应该存储在 Redux 以外其他地方，比如服务端数据库或者 local storage。</p>
+<p>下面，我们从另一维度：数据消费范围来分析。数据特性体现在消费层面，即有多少组件需要使用。我们以此来区分 React 和 Redux 的不同分工。<br><strong>广义上，越多组件需要消费同一种数据，那么这种数据维护在 Redux store<br>当中就越合理；反之，如果某种数据隔离于其他数据，只服务于应用中某单一部分，那么由 React 维护更加合理。</strong></p>
+<p>具体来看，共享的数据在 React 当中，应该存在于高层组件，由此组件进行一层层传递。如果在 props<br>传递深度上，只需要一两个层级就能满足消费数据的组件需求，这样的跨度是可以接受的；反之，如果跨越层级很多，那么关联到的所有中间层级组件都需要进行接力赛式的传递，这样显然会增加很多乏味的传递代码，也破坏了中间组件的复用性。这个时候，使用<br>Redux 维护共享状态，合理设置容器组件，通过 connect 来打通数据，就是一种更好的方式。</p>
+<p>一些完全不存在父子关系的组件，如果需要共享数据，比如前面提到过的一个页面需要多处展示用户头像。这往往会造成数据辐射分散的问题，对于 React<br>模式的状态管理十分不利。在这种场景下，使用 Redux 同样是更好的选择。</p>
+<p>最后一点，如果你的应用有跟踪状态的功能，比如需要完成“重放”，“返回”或者“Redo/Undo”类似需求，那么 Redux 无疑是最佳选择。因为 Redux<br>天生擅长于此：每一个 action 都描述了数据状态的改变和更新，数据的集中管理非常方便进行记录。</p>
+<p>最后，什么情况下该使用哪种数据管理方式，是 React 维护 state 还是 Redux 集中管理，这个讨论不会有唯一定论。这需要开发者对于<br>React、Redux 有深入理解，并结合场景需求完成选择。</p>
+<p>上面的 Redux 可以被任何一个数据管理类库所取代，也就是说，适合放在 Redux 中的数据，如果开发者没有使用 Redux，而使用了<br>Mobx，那么也应该放在 Mobx store 中。</p>
+<h4 id="数据管理场景"><a href="#数据管理场景" class="headerlink" title="数据管理场景"></a>数据管理场景</h4><p>我们来看一个场景来加深理解。</p>
+<h3 id="Redux-到底怎么用"><a href="#Redux-到底怎么用" class="headerlink" title="Redux 到底怎么用"></a>Redux 到底怎么用</h3><p>某电商网站，应用页面骨架如下：</p>
+<p><img src="https://images.gitbook.cn/2bbef600-9b43-11e9-9465-a7e3d006cf60"></p>
+<p>对应代码：</p>
+<pre><code>&lt;ShoppingApp&gt;
+   &lt;Header /&gt;
+   &lt;SideMenu /&gt;
+   &lt;ProductsContainer&gt;
+       // 遍历渲染每一个商品
+   &lt;/ProductsContainer&gt;
+&lt;/ShoppingApp&gt;</code></pre>
+<p>其中，ProductsContainer 组件负责渲染每一个商品条目：</p>
+<pre><code>import Product from &#39;./Product&#39;
+
+export default class ProductsContainer extends Component &#123;
+  constructor(props) &#123;
+    super(props);
+    this.state = &#123;
+      products: [
+        &#39;商品1&#39;,
+        &#39;商品2&#39;,
+        &#39;商品3&#39;
+      ]
+    &#125;
+  &#125;
+  renderProducts() &#123;
+    return this.state.products.map((product) =&gt; &#123;
+      return &lt;Product name=&#123;product&#125; /&gt;
+    &#125;)
+  &#125;
+  render() &#123;
+    return (
+      &lt;div className=&#39;products-container&#39;&gt;
+        &#123;this.renderProducts()&#125;
+      &lt;/div&gt;
+    )
+  &#125;
+&#125;</code></pre>
+<p>Product 组件作为 UI 组件／展示组件，负责接受数据、展现数据，Product 即可以用函数式／无状态组件完成：</p>
+<pre><code>import React, &#123; Component &#125; from &#39;react&#39;
+
+export default class Product extends Component &#123;
+  render() &#123;
+    return (
+      &lt;div className=&#39;product&#39;&gt;
+        &#123;this.props.name&#125;
+      &lt;/div&gt;
+    )
+  &#125;
+&#125;</code></pre>
+<p>这样的设计，完全使用 React state 就可以完成，且合理高效。</p>
+<p>但是，如果商品有“立即购买”按钮，点击购买之后加入商品到购物车（对应上面 Cart Info<br>部分）。这时候需要注意，购物车的商品信息会在更多页面被消费。比如：</p>
+<ul>
+<li>当前页面右上角需要展示购物车里的商品数目</li>
+<li>购物车页面本身</li>
+<li>支付前 checkout 页面</li>
+<li>支付页面</li>
+</ul>
+<p>这就是单页面应用需要对数据状态进行管理的信号：我们维护一个 cartList 数组，供应用消费使用，这个数组放在 Redux 或者 Mobx，或者 Vuex<br>当中都是可行的。</p>
+<h4 id="合理-connect-场景"><a href="#合理-connect-场景" class="headerlink" title="合理 connect 场景"></a>合理 connect 场景</h4><p>在使用 Redux 时，我们搭配 React-redux 来对组件和数据进行联通（connect），一个常陷入的误区就是滥用<br>connect，而没有进行更合理的设计分析。也可能只在顶层进行了 connect 设计，然后再一层层进行数据传递。</p>
+<p>比如在一个页面中存在 Profile、Feeds（信息流）、Images（图片）区域，如图所示。</p>
+<p><img src="https://images.gitbook.cn/3fe04fd0-9b43-11e9-9fc2-2d8a42344276"></p>
+<p>这些区域构成了页面的主体，它们分别对应于 Profile、Feeds、Images 组件，共同作为 Page 组件的子组件而存在。</p>
+<pre><code>&lt;Page&gt;
+    &lt;Profile/&gt;
+    &lt;Feeds/&gt;
+    &lt;Images/&gt;
+&lt;/Page&gt;</code></pre>
+<p>如果只对 Page 这个顶层组件进行 connect 设计，其他组件的数据依靠 Page 组件进行分发，则设计如图所示：</p>
+<p><img src="https://images.gitbook.cn/693a18c0-9b43-11e9-a438-01dafdf3f255"></p>
+<p>这样做存在的问题如下：</p>
+<ul>
+<li>当改动 Profile 组件中的用户头像时，由于数据变动整个 Page 组件都会重新渲染；</li>
+<li>当删除 Feeds 组件中的一条信息时，整个 Page 组件也都会重新渲染；</li>
+<li>当在 Images 组件中添加一张图片时，整个 Page 组件同样都会重新渲染。</li>
+</ul>
+<p>因此，更好的做法是对 Profile、Feeds、Images 这三个组件分别进行 connect 设计，在 connect 方法中使用<br>mapStateToProps 筛选出不同组件关心的 state 部分，如图所示：</p>
+<p><img src="https://images.gitbook.cn/893fa890-9b45-11e9-9465-a7e3d006cf60"></p>
+<p>这样做的好处很明显：</p>
+<ul>
+<li>当改动 Profile 组件中的用户头像时，只有 Profile 组件重新渲染；</li>
+<li>当删除 Feeds 组件中的一条信息时，只有 Feed 组件重新渲染；</li>
+<li>当在 Images 组件中添加一张图片时，只有 Images 组件重新渲染。</li>
+</ul>
+<h4 id="扁平化数据状态"><a href="#扁平化数据状态" class="headerlink" title="扁平化数据状态"></a>扁平化数据状态</h4><p>扁平化的数据结构是一个很有意义的概念，它不仅能够合理引导开发逻辑，同时也是性能优化的一种体现。请看这样的数据结构：</p>
+<pre><code>&#123;
+  articles: [&#123;
+    comments: [&#123;
+      authors: [&#123;
+      &#125;]
+    &#125;]
+  &#125;],
+  ...
+&#125;</code></pre>
+<p>不难想象这是一个文章列表加文章评论互动的场景，其对应于三个组件：Article、Comment 和 Author。这样的页面设计比比皆是，如图所示：</p>
+<p><img src="https://images.gitbook.cn/b17c8fd0-9b45-11e9-9465-a7e3d006cf60"></p>
+<p>相关 reducer 的处理很棘手，如果 articles[2].comments[4].authors1<br>发生了变化，想要返回更新后的状态，并保证不可变性，操作起来不是那么简单的，我们需要对深层对象结构进行拷贝或递归。</p>
+<p>因此，更好的数据结构设计一定是扁平化的，我们对 articles、comments、authors 进行扁平化处理。例如 comments 数组不再存储<br>authors 数据，而是记录 userId，需要时在 users 数组中进行提取即可：</p>
+<pre><code>&#123;
+  articles: [&#123;
+    ...
+  &#125;],
+  comments: [&#123;
+    articleId: ..,
+    userId: ...,
+    ...
+  &#125;],
+  users: [&#123;
+    ...
+  &#125;]
+&#125;</code></pre>
+<p>不同组件只需要关心不同的数据片段，比如 Comment 组件只关心 comments 数组；Author 组件只关心 users<br>数组。这样不仅操作更合理，而且有效减少了渲染压力。</p>
+<h3 id="Redux-的罪与罚"><a href="#Redux-的罪与罚" class="headerlink" title="Redux 的罪与罚"></a>Redux 的罪与罚</h3><p>前文终点提到了 Redux，其实现原理较为简单，核心代码也不过几行，简要来说：Redux<br>是我们之前提到的发布订阅模式结合函数式编程的体现。这里不再过多赘述，我们主要来看看以 Redux 为首的数据状态管理类库的“缺陷”和发展点。</p>
+<p>其实，Dan Abramov 很早就提到过 “You might not need Redux”，文中提到了 Redux 的限制。他也说过 “Try<br>Mobx” 这种“打脸”行为。归纳一下，Redux 的限制主要体现在：</p>
+<ul>
+<li>Redux 带来了函数式编程、不可变性思想等，为了配合这些理念，开发者必须要写很多“模式代码（boilerplate）”，繁琐以及重复是开发者不愿意容忍的。当然也有很多 hack 旨在减少 boilerplate，但目前阶段，可以说 Redux 天生就附着繁琐。</li>
+<li>使用 Redux，那么你的应用就要用 objects 或者 arrays 描述状态。</li>
+<li>使用 Redux，那么你的应用就要使用 plain objects 即 actions 来描述变化。</li>
+<li>使用 Redux，那么你的应用就要使用纯函数去处理变化。</li>
+<li>应用中，状态很多都要抽象到 store，不能痛痛快快地写业务，一个变化就要对应编写 action（action creator）、reducer 等。</li>
+</ul>
+<p>这些“缺点”和响应式结合函数式的 Mobx 相比，编程体验被“打了折扣”。</p>
+<h4 id="Redux-上层解决方案"><a href="#Redux-上层解决方案" class="headerlink" title="Redux 上层解决方案"></a>Redux 上层解决方案</h4><p>为了弥补这些缺点，社区开启了一轮又一轮的尝试，其中一个努力方向是基于 Redux 封装一整套上层解决方案，这个方向以 Redux-<br>sage、dva、rematch 类库或框架为主。</p>
+<p>我总结一下这些解决方案的特点和思路：</p>
+<ul>
+<li>简化初始化过程</li>
+</ul>
+<p>传统的 Redux 初始化充满了 hack，过于函数式，且较为繁琐：</p>
+<pre><code>import &#123; createStore, applyMiddleware, compose &#125; from &#39;redux&#39;
+import thunk from &#39;redux-thunk&#39;
+import rootReducer from &#39;./reducers&#39;
+
+
+const initialState = &#123;
+    // ...
+&#125;
+
+const store = initialState =&gt; createStore(
+    rootReducer,
+    initialState,
+    compose(
+        applyMiddleware(thunk),
+        // ...
+    )
+)</code></pre>
+<p>这其中我们只应用了一个中间件，还没有涉及到 devtool 的配置。而不论是 Dva 还是其他方案，都采用面向对象式的配置化初始。</p>
+<ul>
+<li>简化 reducers</li>
+</ul>
+<p>传统的 reducers 可能需要写恼人的 switch…case 或很多样板代码，而更上层的解决方案进行封装后，类似：</p>
+<pre><code>const reducer = &#123;
+    ACTIONTYPE1: (state, action) =&gt; newState,
+    ACTIONTYPE2: (state, action) =&gt; newState,
+&#125;</code></pre>
+<p>更加清爽。</p>
+<ul>
+<li>带请求的副作用</li>
+</ul>
+<p>处理网络请求，Redux 一般需要 thunk 中间件，它的原理是：首先 dispatch 一个 action，但是这个 action 不是 plain<br>object 类型，而是一个函数；thunk 中间件发现 action type 为函数类型时，把 dispatch 和 getState<br>等方法作为参数，传递给函数进行副作用逻辑。</p>
+<p>如果读者不是 React、Redux 开发者，也许很难看懂上一段描述，这也是 Redux 处理异步副作用的晦涩体现。更上层的解决方案 Redux-saga<br>采用 generator 的思想，或 async/await 处理副作用，无疑更加友好合理。</p>
+<p>为了更好地配合生成器方案，上层方案将 action 分为普通 action 和副作用 action，开发者使用起来也更加清晰。</p>
+<ul>
+<li>reducer 和 action 合并</li>
+</ul>
+<p>为了进一步减少模版代码，一个通用的做法是在 Redux 之上，将 reducer 和 action 声明合并，类似：</p>
+<pre><code>const store = &#123;
+    state: &#123;
+        count: 0,
+        state1: &#123;&#125;
+    &#125;,
+    reduers: &#123;
+        action1: (state, action) =&gt; newState,
+        action2: (state, action) =&gt; newState,
+    &#125;
+&#125;</code></pre>
+<p>这样的声明一步到位，我们定义了两个 action：</p>
+<ul>
+<li>action1</li>
+<li>action2</li>
+</ul>
+<p>它们出自于 store.reducers 的键名，而对应键值即为 reducer 逻辑。</p>
+<p>这些都是基于 Redux 封装上层解决方案的基本思想，了解了这些，Dva、Redux-saga 原理已经对读者不再陌生！</p>
+<p>当然，理清了数据状态管理的意义，简化了数据管理的操作，我们还要分析到底应该如何组织数据。</p>
+<h3 id="我们到底需要怎样的数据状态管理"><a href="#我们到底需要怎样的数据状态管理" class="headerlink" title="我们到底需要怎样的数据状态管理"></a>我们到底需要怎样的数据状态管理</h3><p>关于 Redux，这里不再过多讨论。我们试图脱离开 Redux<br>本身，思考到底需要什么样的数据状态管理方案。整理我们的核心诉求就是：方便地修改数据，方便地获取数据。</p>
+<h4 id="新的发展趋势：Mobx"><a href="#新的发展趋势：Mobx" class="headerlink" title="新的发展趋势：Mobx"></a>新的发展趋势：Mobx</h4><p>从核心诉求出发，我们有两种做法：修改数据，Redux 提倡函数式、提倡不可变性、提倡数据扁平化，获取数据说到底是依赖发布订阅模式。相对地，Mobx<br>是面向对象和响应式的结合，它的数据源是可变的，对数据的观察是响应式的：</p>
+<pre><code>const foo = observable(&#123;
+    a: 1,
+    b: 2
+&#125;)
+
+autoRun(() =&gt; &#123;
+    console.log(foo.a)
+&#125;)
+
+foo.b = 3 // 没有任何输出
+foo.a = 2 // 输出：2</code></pre>
+<p>这像不像我们前面课程提到的数据拦截/代理？没错，它们的原理都是完全一致的。尝试对上面的代码改为：</p>
+<pre><code>const state = observable(&#123;
+    state1: &#123;&#125;
+&#125;)
+
+autoRun(() =&gt; &#123;
+    return (&lt;Component state1=&#123;state1&#125; /&gt;)
+&#125;)
+
+state.state1 = &#123;&#125; </code></pre>
+<p>当我们改动 state.state1 时，autoRun 的回调将会触发，引起了组件的重新渲染。不同于 Redux，这就是另一种流派 Mobx 的核心理念。</p>
+<p>不管是 Redux 还是 Mobx，它们都做到了：组件可以读取 state，修改 state；有新 state 时更新。这个 state<br>是单一数据源，只不过修改 state 方式不同。更近一步地说，Mobx 通过包装对象和数组为可观察对象，隐藏了大部分的样板代码，比 Redux<br>更加简洁，也更加“魔幻”，更像是“双向绑定”。</p>
+<p>对此我的建议是：在数据状态不太复杂的情况下，Mobx 也许更加简洁高效；如果数据状态非常复杂，或者你是函数式编程的粉丝，可以考虑 Redux，但是在<br>Redux 层上进行封装，使用类似 Dva 方案，是一个明智的选择。</p>
+<h4 id="如何做到-Redux-free（context-和-hooks）"><a href="#如何做到-Redux-free（context-和-hooks）" class="headerlink" title="如何做到 Redux free（context 和 hooks）"></a>如何做到 Redux free（context 和 hooks）</h4><p>做到 Redux free，有两种选择：一个是拥抱 Mobx 或者 GraphQL，但还是没有脱离框架或者类库；另一个选择就是选择原生 React<br>方案，其中之一就是 context API，React 16.3 介绍了稳定版的 context<br>特性，它从某种程度上可以更方便地实现组件间通信，尤其是对于跨越多层父子组件的情况，更加高效。我们知道 Redux-react 就是基于 context<br>实现的，那么在一些简单的情况下，完全可以使用稳定的 context，而抛弃 Redux。</p>
+<p>在 ReactConf 2018 会议中，React 团队发布了 React hooks。简单来看，hooks<br>给予了函数式组件像类组件工作的能力，函数式组件可以使用 state，并且在一些副作用后进行 update。useReducer hooks 搭配<br>context API 以及 useContext hook，完全可以模仿一个简单的 Redux。useReducer hooks 使我们可以像<br>reducer 的方式一样更新 state，useContext 可以隔层级传递数据，原生 React 似乎有了内置 Redux<br>的能力。当然这种能力是不全面的，比如对网络请求副作用的管理、时间旅行和调试等。</p>
+<p>这不是一篇讲解 React 的课程，具体代码细节我们不再展开，感兴趣的读者可以参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/reactjs/comments/bqf5ot/can_anyone_tell_me_why_hooks_have_exploded/eo6fe6e/?context=10000">react hooks VS redux</a></li>
+<li><a target="_blank" rel="noopener" href="https://staleclosures.dev/from-redux-to-hooks-case-study/">from-redux-to-hooks-case-study</a></li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实数据状态管理没有永恒的“最佳实践”。随着应用业务的发展，数据的复杂程度是不断扩张的，数据和组件是绑定在一起的概念，我们如何梳理好数据，如何对于特定的行为修改特定的数据，给予特定组件特定的数据，是一个非常有趣的话题，也是进阶路上的“必修课”。</p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>【支付宝红包口令：前端开发进阶】</p>
+<p>阅读文章过程中有任何疑问可随时跟其他小伙伴讨论，或者直接向作者 LucasHC 提问（作者看到后抽空回复）。 <strong>你的分享不仅帮助他人，更会提升自己。</strong></p>
+<p>你也可以说说自己最想了解的主题，课程内容会根据部分读者的意见和建议迭代和完善。</p>
+<blockquote>
+<p><strong>为了方便与作者交流与学习，GitChat 编辑团队组织了一个《前端开发核心知识进阶》读者交流群，添加小姐姐-<br>泰勒微信：「GitChatty5」，回复关键字「105」给小姐姐获取入群资格。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/020--%E6%8F%AD%E7%A7%98%20React%20%E7%9C%9F%E8%B0%9B%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/">https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/020--%E6%8F%AD%E7%A7%98%20React%20%E7%9C%9F%E8%B0%9B%EF%BC%9A%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/2020/12/22/advanced/019--%E6%8F%AD%E7%A7%98%20React%20%E7%9C%9F%E8%B0%9B%EF%BC%9A%E7%BB%84%E4%BB%B6%E8%AE%BE%E8%AE%A1/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶19 | 揭秘 React 真谛：组件设计</div></div></a></div><div class="next-post pull-right"><a href="/matrix/2020/12/22/advanced/021--React%20%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E6%9C%AA%E6%9D%A5/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶21 | React 的现状与未来</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86%E4%B9%8B%E7%97%9B"><span class="toc-number">1.</span> <span class="toc-text">数据状态管理之痛</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%B0%81%E6%9D%A5%E7%BB%B4%E6%8A%A4%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">数据谁来维护？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.</span> <span class="toc-text">数据管理场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redux-%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">Redux 到底怎么用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%88%E7%90%86-connect-%E5%9C%BA%E6%99%AF"><span class="toc-number">2.1.</span> <span class="toc-text">合理 connect 场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%81%E5%B9%B3%E5%8C%96%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81"><span class="toc-number">2.2.</span> <span class="toc-text">扁平化数据状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redux-%E7%9A%84%E7%BD%AA%E4%B8%8E%E7%BD%9A"><span class="toc-number">3.</span> <span class="toc-text">Redux 的罪与罚</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Redux-%E4%B8%8A%E5%B1%82%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">3.1.</span> <span class="toc-text">Redux 上层解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E5%88%B0%E5%BA%95%E9%9C%80%E8%A6%81%E6%80%8E%E6%A0%B7%E7%9A%84%E6%95%B0%E6%8D%AE%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">我们到底需要怎样的数据状态管理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E5%8F%91%E5%B1%95%E8%B6%8B%E5%8A%BF%EF%BC%9AMobx"><span class="toc-number">4.1.</span> <span class="toc-text">新的发展趋势：Mobx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0-Redux-free%EF%BC%88context-%E5%92%8C-hooks%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">如何做到 Redux free（context 和 hooks）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">6.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

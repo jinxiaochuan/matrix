@@ -1,0 +1,571 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶03 | 老司机也会在闭包相关知识点翻车（上） | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="闭包是 JavaScript 中最基本也是最重要的概念之一，很多开发者都对它“了如指掌”。可是闭包又绝对不是一个单一的概念：它涉及作用域、作用域链、执行上下文、内存管理等多重知识点。不管是新手还是“老司机”，经常会出现“我觉得我弄懂了闭包，但是还会在一些场景翻车”的情况。这一课我们就对这个话题进行梳理，并最后以“应试题”来强化理解闭包。 先看一下跟闭包相关的知识点：  接下来将通过两课的内容来学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶03 | 老司机也会在闭包相关知识点翻车（上）">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="闭包是 JavaScript 中最基本也是最重要的概念之一，很多开发者都对它“了如指掌”。可是闭包又绝对不是一个单一的概念：它涉及作用域、作用域链、执行上下文、内存管理等多重知识点。不管是新手还是“老司机”，经常会出现“我觉得我弄懂了闭包，但是还会在一些场景翻车”的情况。这一课我们就对这个话题进行梳理，并最后以“应试题”来强化理解闭包。 先看一下跟闭包相关的知识点：  接下来将通过两课的内容来学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:modified_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-22 20:51:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶03 | 老司机也会在闭包相关知识点翻车（上）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-22T12:51:17.440Z" title="更新于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>闭包是 JavaScript 中最基本也是最重要的概念之一，很多开发者都对它“了如指掌”。可是闭包又绝对不是一个单一的概念：<br><strong>它涉及作用域、作用域链、执行上下文、内存管理等多重知识点。</strong><br>不管是新手还是“老司机”，经常会出现“我觉得我弄懂了闭包，但是还会在一些场景翻车”的情况。这一课我们就对这个话题进行梳理，并最后以“应试题”来强化理解闭包。</p>
+<p>先看一下跟闭包相关的知识点：</p>
+<p><img src="https://images.gitbook.cn/9a14e8e0-4ecb-11e9-8044-3de24c2bc492"></p>
+<p>接下来将通过两课的内容来学习这个主题。</p>
+<h3 id="基本知识"><a href="#基本知识" class="headerlink" title="基本知识"></a>基本知识</h3><h4 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h4><p>作用域其实就是一套规则：这个规则 <strong>用于确定在特定场景下如何查找变量</strong><br>。任何语言都有作用域的概念，同一种语言在演进过程中也会不断完善其作用域规则。比如，在 JavaScript 中，ES6<br>出现之前只有函数作用域和全局作用域之分。</p>
+<h5 id="函数作用域和全局作用域"><a href="#函数作用域和全局作用域" class="headerlink" title="函数作用域和全局作用域"></a>函数作用域和全局作用域</h5><p>大家应该非常熟悉 <strong>函数作用域</strong> 了：</p>
+<pre><code>function foo() &#123;
+    var a = &#39;bar&#39;
+    console.log(a)
+&#125;
+foo()</code></pre>
+<p>执行 <code>foo</code> 函数时，变量 <code>a</code> 在函数 <code>foo</code> 作用域内，函数体内可以正常访问，并输出 <code>bar</code>。</p>
+<p>而当：</p>
+<pre><code>var b = &#39;bar&#39;
+function foo() &#123;
+    console.log(b)
+&#125;
+foo()</code></pre>
+<p>执行这段代码时，<code>foo</code> 函数在自身函数作用域内并未查找到 <code>b</code> 变量，但是它会继续向外扩大查找范围，因此可以在 <strong>全局作用域</strong> 中找到变量<br><code>b</code>，输出 <code>bar</code>。</p>
+<p>如果我们稍加改动：</p>
+<pre><code>function bar() &#123;
+    var b = &#39;bar&#39;
+&#125;
+function foo() &#123;
+    console.log(b)
+&#125;
+foo()</code></pre>
+<p>执行这段代码时，<code>foo</code> 和 <code>bar</code> <strong>分属于两个彼此独立的函数作用域</strong> ，<code>foo</code> 函数无法访问 <code>bar</code> 函数中定义的变量<br><code>b</code>，且其作用域链内（上层全局作用域中）也不存在相应的变量，因此报错：Uncaught ReferenceError: b is not defined。</p>
+<hr>
+<p><strong>总结一下</strong> ：在 JavaScript<br>执行一段函数时，遇见变量读取其值，这时候会“就近”先在函数内部找该变量的声明或者赋值情况。这里涉及“变量声明方式”以及“变量提升”的知识点，我们后面会涉及到。如果在函数内无法找到该变量，就要跳出函数作用域，到更上层作用域中查找。这里的“更上层作用域”可能也是一个函数作用域，例如：</p>
+<pre><code>function bar() &#123;
+    var b = &#39;bar&#39;
+    function foo() &#123;
+        console.log(b)
+    &#125;
+    foo()
+&#125;
+
+bar()</code></pre>
+<p>在 <code>foo</code> 函数执行时，对于变量 <code>b</code> 的声明或读值情况是在其上层函数 <code>bar</code> 作用域中获取的。</p>
+<p>同时“更上层作用域”也可以顺着作用域范围向外扩散，一直找到全局作用域：</p>
+<pre><code>var b = &#39;bar&#39;
+function bar() &#123;
+    function foo() &#123;
+        console.log(b)
+    &#125;
+    foo()
+&#125;
+
+bar()</code></pre>
+<p>我们看到，变量作用域的查找是一个扩散过程，就像各个环节相扣的链条，逐次递进，这就是 <strong>作用域链</strong> 说法的由来。</p>
+<hr>
+<h5 id="块级作用域和暂时性死区"><a href="#块级作用域和暂时性死区" class="headerlink" title="块级作用域和暂时性死区"></a><strong>块级作用域和暂时性死区</strong></h5><p>作用域概念不断演进，ES6 增加了 <code>let</code> 和 <code>const</code> 声明变量的块级作用域，使得 JavaScript<br>中作用域范围更加丰富。块级作用域，顾名思义，作用域范围限制在代码块中，这个概念在其他语言里也普遍存在。当然这些新特性的添加，也增加了一定的复杂度，带来了新的概念，比如<br><strong>暂时性死区</strong> 。这里有必要稍作展开：说到暂时性死区，还需要从“变量提升”说起，参看以下代码：</p>
+<pre><code>function foo() &#123;
+    console.log(bar)
+    var bar = 3
+&#125;
+foo()</code></pre>
+<p>会输出：<code>undefined</code>，原因是变量 <code>bar</code> 在函数内进行了提升。相当于：</p>
+<pre><code>function foo() &#123;
+    var bar 
+    console.log(bar)
+    bar = 3
+&#125;
+foo()</code></pre>
+<p>但在使用 <code>let</code> 声明时：</p>
+<pre><code>function foo() &#123;
+    console.log(bar)
+    let bar = 3
+&#125;
+foo()</code></pre>
+<p>会报错：Uncaught ReferenceError: bar is not defined。</p>
+<p>我们知道使用 <code>let</code> 或 <code>const</code> 声明变量，会针对这个变量形成一个封闭的块级作用域，<br><strong>在这个块级作用域当中，如果在声明变量前访问该变量，就会报<code>referenceError</code> 错误</strong>；如果在声明变量后访问，则可以正常获取变量值：</p>
+<pre><code>function foo() &#123;
+    let bar = 3
+    console.log(bar)
+&#125;
+foo()</code></pre>
+<p>正常输出 3。因此在相应花括号形成的作用域中，存在一个“死区”，起始于函数开头，终止于相关变量声明的一行。在这个范围内无法访问 <code>let</code> 或<br><code>const</code> 声明的变量。这个“死区”的专业名称为： TDZ（Temporal Dead Zone），相关语言规范的介绍读者可参考<br>[ECMAScript® 2015 Language Specification](<a target="_blank" rel="noopener" href="http://www.ecma-/">http://www.ecma-</a><br>international.org/ecma-262/6.0/#sec-let-and-const-declarations)<br>，喜欢刨根问底看规范的读者可以了解一下。</p>
+<p>参考下面图示，我们加深理解：</p>
+<p><img src="https://images.gitbook.cn/617c4d80-7058-11e9-b226-3db9572e587e"></p>
+<p>除了自身作用域内的 <code>foo3</code> 以外，<code>bar2</code> 函数可以访问 <code>foo2</code>、 <code>foo1</code>；但是 <code>bar1</code> 函数却无法访问 <code>bar2</code><br>函数内定义的 <code>foo3</code>。</p>
+<p><img src="https://images.gitbook.cn/7de2a870-7058-11e9-aa97-037c54aa61de"></p>
+<p>再啰嗦一遍，<code>bar1</code> 函数 <code>let foo3 = &#39;foo3&#39;</code> 代码执行前，为“死区”，访问变量 <code>foo3</code> 会报错；该行后即可正常访问。</p>
+<p>注意我在上图中勾出的暂时性死区区域，这里介绍一个比较“极端”的情况：函数的参数默认值设置也会受到 TDZ 的影响：</p>
+<pre><code>function foo(arg1 = arg2, arg2) &#123;
+    console.log(`$&#123;arg1&#125; $&#123;arg2&#125;`)
+&#125;</code></pre>
+<p>在上面 <code>foo</code> 函数中，如果第一个参数没有传，将会使用第二个参数作为第一个实参值。调用：</p>
+<pre><code>function foo(arg1 = arg2, arg2) &#123;
+    console.log(`$&#123;arg1&#125; $&#123;arg2&#125;`)
+&#125;
+
+foo(&#39;arg1&#39;, &#39;arg2&#39;)
+// 返回：arg1 arg2</code></pre>
+<p>返回内容正常，但是当第一个参数缺省时，执行 <code>arg1 = arg2</code> 会当作暂时性死区处理：</p>
+<pre><code>function foo(arg1 = arg2, arg2) &#123;
+    console.log(`$&#123;arg1&#125; $&#123;arg2&#125;`)
+&#125;
+
+foo(undefined, &#39;arg2&#39;)
+
+// Uncaught ReferenceError: arg2 is not defined</code></pre>
+<p>因为除了块级作用域以外，函数参数默认值也会受到 TDZ 影响。</p>
+<p>这里我再“抖个机灵”，看看下面的代码会输出什么？</p>
+<pre><code>function foo(arg1 = arg2, arg2) &#123;
+    console.log(`$&#123;arg1&#125; $&#123;arg2&#125;`)
+&#125;
+
+foo(null, &#39;arg2&#39;)</code></pre>
+<p>输出：<code>null arg2</code>，这就涉及到 <code>undefined</code> 和 <code>null</code> 的区别了。在执行 <code>foo(null, &#39;arg2&#39;)</code><br>时，不会认为“函数第一个参数缺省”，而会直接接受 <code>null</code> 作为第一个参数值。</p>
+<p>这个知识点已经不是本课的主题了，具体 <code>undefined</code> 和 <code>null</code> 的区别我们会在后续课程中提到。</p>
+<p>既然“已经偏题”，那我索性再分析一个场景，顺便引出下面的知识点：</p>
+<pre><code>function foo(arg1) &#123;
+    let arg1
+&#125;
+
+foo(&#39;arg1&#39;)</code></pre>
+<p>猜猜将会输出什么？</p>
+<p>实际上会报错：Uncaught SyntaxError: Identifier ‘arg1’ has already been declared。这同样跟<br>TDZ 没有关系，而是因为函数参数名会出现在其“执行上下文/作用域”当中。</p>
+<p>在函数的第一行，便已经声明了 <code>arg1</code> 这个变量，函数体再用 <code>let</code> 声明，会报错（这是 <code>let</code> 声明变量的特点，ES6<br>基础内容，不再展开），类似：</p>
+<pre><code>function foo(arg1) &#123;
+    var arg1
+    let arg1
+&#125;</code></pre>
+<p>请看示意图：</p>
+<p><img src="https://images.gitbook.cn/99914c20-7058-11e9-aa97-037c54aa61de"></p>
+<p>上面我提到了“执行上下文”，我们再看看它究竟是什么。</p>
+<h4 id="执行上下文和调用栈"><a href="#执行上下文和调用栈" class="headerlink" title="执行上下文和调用栈"></a>执行上下文和调用栈</h4><p>很多读者可能无法准确定义执行上下文和调用栈，其实，从我们接触 JavaScript<br>开始，这两个概念便常伴左右。我们写出的每一行代码，每一个函数都和它们息息相关，但它们却是“隐形”的，藏在代码背后，出现在 JavaScript<br>引擎里。这一小节，我们来剖析一下这两个熟悉但又经常被忽视的概念。</p>
+<p><strong>执行上下文</strong><br>就是当前代码的执行环境/作用域，和前文介绍的作用域链相辅相成，但又是完全不同的两个概念。直观上看，执行上下文包含了作用域链，同时它们又像是一条河的上下游：有了作用域链，才有了执行上下文的一部分。</p>
+<h5 id="代码执行的两个阶段"><a href="#代码执行的两个阶段" class="headerlink" title="代码执行的两个阶段"></a><strong>代码执行的两个阶段</strong></h5><p>理解这两个概念，要从 JavaScript 代码的执行过程说起，这在平时开发中并不会涉及，但对于我们理解 JavaScript<br>语言和运行机制非常重要，请各位细心阅读。 <strong>JavaScript 执行主要分为两个阶段：</strong></p>
+<ul>
+<li>代码预编译阶段</li>
+<li>代码执行阶段</li>
+</ul>
+<p><strong>预编译阶段是前置阶段，这个时候由编译器将 JavaScript 代码编译成可执行的代码。</strong><br>注意，这里的预编译和传统的编译并不一样，传统的编译非常复杂，涉及分词、解析、代码生成等过程 。这里的预编译是 JavaScript 中独特的概念，虽然<br>JavaScript 是解释型语言，编译一行，执行一行。但是在代码执行前，JavaScript 引擎确实会做一些“预先准备工作”。</p>
+<p><strong>执行阶段主要任务是执行代码，执行上下文在这个阶段全部创建完成。</strong></p>
+<p>在通过语法分析，确认语法无误之后，JavaScript 代码在预编译阶段对变量的内存空间进行分配，我们熟悉的变量提升过程便是在此阶段完成的。如下代码：</p>
+<p>经过预编译过程，我们应该注意三点：</p>
+<ul>
+<li>预编译阶段进行变量声明；</li>
+<li>预编译阶段变量声明进行提升，但是值为 undefined；</li>
+<li>预编译阶段所有非表达式的函数声明进行提升。</li>
+</ul>
+<p>请看下面这道题目：</p>
+<pre><code>function bar() &#123;
+    console.log(&#39;bar1&#39;)
+&#125;
+
+var bar = function () &#123;
+    console.log(&#39;bar2&#39;)
+&#125;
+
+bar()</code></pre>
+<p>输出：bar2，我们调换顺序：</p>
+<pre><code>var bar = function () &#123;
+    console.log(&#39;bar2&#39;)
+&#125;
+
+function bar() &#123;
+    console.log(&#39;bar1&#39;)
+&#125;
+
+bar()</code></pre>
+<p>仍然输出：<code>bar2</code>，因为在预编译阶段变量 <code>bar</code> 进行声明，但是不会赋值；函数 <code>bar</code> 则进行创建并提升。在代码执行时，变量 <code>bar</code><br>才进行（表达式）赋值，值内容是函数体为 <code>console.log(&#39;bar2&#39;)</code> 的函数，输出结果 <code>bar2</code>。</p>
+<p>请再思考这道题：</p>
+<pre><code>foo(10)
+function foo (num) &#123;
+    console.log(foo)
+    foo = num;       
+    console.log(foo)
+    var foo
+&#125; 
+console.log(foo)
+foo = 1
+console.log(foo)</code></pre>
+<p>输出：</p>
+<pre><code>undefined
+10
+ƒ foo (num) &#123;
+    console.log(foo)
+    foo = num     
+    console.log(foo)
+    var foo
+&#125;
+1</code></pre>
+<p>在 <code>foo(10)</code> 执行时，函数体内进行变量提升后，函数体内第一行输出 <code>undefined</code>，函数体内第三行输出 <code>foo</code>。接着运行代码，到了整体第<br>8 行，<code>console.log(foo)</code> 输出 foo 函数内容（因为 foo 函数内的 <code>foo = num</code>，将 num 赋值给的是函数作用域内的<br>foo 变量。）</p>
+<p><strong>结论</strong><br>作用域在预编译阶段确定，但是作用域链是在执行上下文的创建阶段完全生成的。因为函数在调用时，才会开始创建对应的执行上下文。执行上下文包括了：变量对象、作用域链以及<br><code>this</code> 的指向</p>
+<p>如图所示：</p>
+<p><img src="https://images.gitbook.cn/d60a9530-4eac-11e9-b1fa-0757868d211c"></p>
+<p>代码执行的整个过程说起来就像 <strong>一条生产流水线</strong> 。第一道工序是在预编译阶段创建 <strong>变量对象</strong> （Variable<br>Object），此时只是创建，而未赋值。到了下一道工序代码执行阶段，变量对象转为 <strong>激活对象</strong> （Active Object），即完成 VO →<br>AO。此时，作用域链也将被确定，它由当前执行环境的变量对象和所有外层已经完成的激活对象组成。这道工序保证了变量和函数的有序访问，即如果当前作用域中未找到变量，则继续向上查找直到全局作用域。</p>
+<p>这样的工序在流水线上串成一个整体，这便是 JavaScript 引擎执行机制的最基本道理。</p>
+<h5 id="调用栈"><a href="#调用栈" class="headerlink" title="调用栈"></a>调用栈</h5><p>了解了上面的内容，函数调用栈便很好理解了。我们在执行一个函数时，如果这个函数又调用了另外一个函数，而这个“另外一个函数”也调用了“另外一个函数”，便形成了一系列的调用栈。如下代码：</p>
+<pre><code>function foo1() &#123;
+  foo2()
+&#125;
+function foo2() &#123;
+  foo3()
+&#125;
+function foo3() &#123;
+  foo4()
+&#125;
+function foo4() &#123;
+  console.log(&#39;foo4&#39;)
+&#125;
+foo1()</code></pre>
+<p>调用关系：<code>foo1</code> → <code>foo2</code> → <code>foo3</code> → <code>foo4</code>。这个过程是 <code>foo1</code> 先入栈，紧接着 <code>foo1</code> 调用<br><code>foo2</code>，<code>foo2</code>入栈，以此类推，<code>foo3</code>、<code>foo4</code>，直到 <code>foo4</code> 执行完 —— <code>foo4</code> 先出栈，<code>foo3</code> 再出栈，接着是<br><code>foo2</code> 出栈，最后是 <code>foo1</code> 出栈。这个过程“先进后出”（“后进先出”），因此称为 <strong>调用栈</strong> 。</p>
+<p>我们故意将 <code>foo4</code> 中的代码写错：</p>
+<pre><code>function foo1() &#123;
+  foo2()
+&#125;
+function foo2() &#123;
+  foo3()
+&#125;
+function foo3() &#123;
+  foo4()
+&#125;
+function foo4() &#123;
+  console.lg(&#39;foo4&#39;)
+&#125;
+foo1()</code></pre>
+<p>得到错误提示如图：</p>
+<p><img src="https://images.gitbook.cn/bad699d0-7058-11e9-a7a7-7bb84010ce2f"></p>
+<p>或者在 Chrome 中执行代码，打断点得到：</p>
+<p><img src="https://images.gitbook.cn/d7aa0e70-7058-11e9-b07f-d933a796cd29"></p>
+<p>不管哪种方式，我们从中都可以借助 JavaScript 引擎，清晰地看到错误堆栈信息，也就是函数调用栈关系。</p>
+<p><strong>注意</strong><br>正常来讲，在函数执行完毕并出栈时，函数内局部变量在下一个垃圾回收节点会被回收，该函数对应的执行上下文将会被销毁，这也正是我们在外界无法访问函数内定义的变量的原因。也就是说，只有在函数执行时，相关函数可以访问该变量，该变量在预编译阶段进行创建，在执行阶段进行激活，在函数执行完毕后，相关上下文被销毁。</p>
+<h4 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h4><p>介绍了这么多前置概念，终于到了闭包环节。</p>
+<p>闭包并不是 JavaScript<br>特有的概念，社区上对于闭包的定义也并不完全相同。虽然本质上表达的意思相似，但是晦涩且多样的定义仍然给初学者带来了困惑。我自己认为比较容易理解的闭包定义为：</p>
+<blockquote>
+<p>函数嵌套函数时，内层函数引用了外层函数作用域下的变量，并且内层函数在全局环境下可访问，就形成了闭包。</p>
+</blockquote>
+<p>我们看一个简单的代码示例：</p>
+<pre><code>function numGenerator() &#123;
+    let num = 1
+    num++
+    return () =&gt; &#123;
+        console.log(num)
+    &#125; 
+&#125;
+
+var getNum = numGenerator()
+getNum()</code></pre>
+<p>这个简单的闭包例子中，<code>numGenerator</code> 创建了一个变量 <code>num</code>，返回打印 <code>num</code> 值的匿名函数，这个函数引用了变量<br><code>num</code>，使得外部可以通过调用 <code>getNum</code> 方法访问到变量 <code>num</code>，因此在 <code>numGenerator</code> 执行完毕后，即相关调用栈出栈后，变量<br><code>num</code> 不会消失，仍然有机会被外界访问。</p>
+<p>执行代码，能清晰地看到 JavaScript 引擎的分析：</p>
+<p><img src="https://images.gitbook.cn/f1381c10-7058-11e9-aa97-037c54aa61de"></p>
+<p><code>num</code> 值被标记为 Closure，即闭包变量。</p>
+<p>对比前述内容，我们知道正常情况下外界是无法访问函数内部变量的，函数执行完之后，上下文即被销毁。但是在（外层）函数中，如果我们返回了另一个函数，且这个返回的函数使用了（外层）函数内的变量，外界因而便能够通过这个返回的函数获取原（外层）函数内部的变量值。这就是闭包的<br><strong>基本原理</strong> 。</p>
+<p>因此，直观上来看，闭包这个概念为 JavaScript 中访问函数内变量提供了途径和便利。这样做的好处很多，比如我们可以利用闭包实现“模块化”；再比如，翻看<br>Redux<br>源码的中间件实现机制，也会发现（函数式理念）大量运用了闭包。这些更加深入的内容我们后续课程都将会涉及。闭包是前端进阶必备基础。后面我们还会通过做题的方式，帮助读者深化理解闭包。</p>
+<h4 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h4><p>内存管理是计算机科学中的概念。不论是什么程序语言，内存管理都是指对内存生命周期的管理，而内存的生命周期无外乎：</p>
+<ul>
+<li>分配内存空间</li>
+<li>读写内存</li>
+<li>释放内存空间</li>
+</ul>
+<p>我们用代码来举例：</p>
+<pre><code>var foo = &#39;bar&#39; // 在堆内存中给变量分配空间
+alert(foo)  // 使用内存
+foo = null // 释放内存空间</code></pre>
+<h5 id="内存管理基本概念"><a href="#内存管理基本概念" class="headerlink" title="内存管理基本概念"></a><strong>内存管理基本概念</strong></h5><p>我们知道内存空间可以分为栈空间和堆空间，其中</p>
+<ul>
+<li>栈空间：由操作系统自动分配释放，存放函数的参数值，局部变量的值等，其操作方式类似于数据结构中的栈。</li>
+<li>堆空间：一般由开发者分配释放，这部分空间就要考虑垃圾回收的问题。</li>
+</ul>
+<p>在 JavaScript 中，数据类型包括（未包含 ES Next 新数据类型）：</p>
+<ul>
+<li>基本数据类型，如 Undefined、Null、Number、Boolean、String 等</li>
+<li>引用类型，如 Object、Array、Function 等</li>
+</ul>
+<p>一般情况下，基本数据类型保存在栈内存当中，引用类型保存在堆内存当中。如下代码：</p>
+<pre><code>var a = 11
+var b = 10
+var c = [1, 2, 3]
+var d = &#123; e: 20 &#125;</code></pre>
+<p>对应内存分配图示：</p>
+<p><img src="https://images.gitbook.cn/f1e2f0e0-4ec0-11e9-97d1-9b2c5e38f63d"></p>
+<p><strong>对于分配内存和读写内存的行为所有语言都较为一致，但释放内存空间在不同语言之间有差异。</strong> 例如，JavaScript<br>依赖宿主浏览器的垃圾回收机制，一般情况下不用程序员操心。但这并不表示万事大吉，某些情况下依然会出现内存泄漏现象。</p>
+<p><strong>内存泄漏</strong><br>是指内存空间明明已经不再被使用，但由于某种原因并没有被释放的现象。这是一个非常“玄学”的概念，因为内存空间是否还在使用，某种程度上是不可判定问题，或者判定成本很高。内存泄漏危害却非常直观：它会直接导致程序运行缓慢，甚至崩溃。</p>
+<h5 id="内存泄漏场景举例"><a href="#内存泄漏场景举例" class="headerlink" title="内存泄漏场景举例"></a><strong>内存泄漏场景举例</strong></h5><p>我们来看几个典型引起内存泄漏的例子：</p>
+<pre><code>var element = document.getElementById(&quot;element&quot;)
+element.mark = &quot;marked&quot;
+
+// 移除 element 节点
+function remove() &#123;
+    element.parentNode.removeChild(element)
+&#125;</code></pre>
+<p>上面的代码，我们只是把 <code>id</code> 为 <code>element</code> 的节点移除，但是变量 <code>element</code> 依然存在，该节点占有的内存无法被释放。</p>
+<p>请仔细参考下图：</p>
+<p><img src="https://images.gitbook.cn/12161c70-7059-11e9-aa97-037c54aa61de"></p>
+<p>我们需要在 <code>remove</code> 方法中添加：<code>element = null</code>，这样更为稳妥。</p>
+<p>再来看个示例：</p>
+<pre><code>var element = document.getElementById(&#39;element&#39;)
+element.innerHTML = &#39;&lt;button id=&quot;button&quot;&gt;点击&lt;/button&gt;&#39;
+
+var button = document.getElementById(&#39;button&#39;)
+button.addEventListener(&#39;click&#39;, function() &#123;
+    // ...
+&#125;)
+
+element.innerHTML = &#39;&#39;</code></pre>
+<p>这段代码执行后，因为 element.innerHTML = ‘’，<code>button</code> 元素已经从 DOM<br>中移除了，但是由于其事件处理句柄还在，所以依然无法被垃圾回收。我们还需要增加 removeEventListener，防止内存泄漏。</p>
+<p>另一个示例：</p>
+<pre><code>function foo() &#123;
+  var name  = &#39;lucas&#39;
+  window.setInterval(function() &#123;
+    console.log(name)
+  &#125;, 1000)
+&#125;
+
+foo()</code></pre>
+<p>这段代码由于 window.setInterval 的存在，导致 <code>name</code> 内存空间始终无法被释放，如果不是业务要求的话，一定要记得在合适的时机使用<br><code>clearInterval</code> 进行清理。</p>
+<h5 id="浏览器垃圾回收"><a href="#浏览器垃圾回收" class="headerlink" title="浏览器垃圾回收"></a><strong>浏览器垃圾回收</strong></h5><p>当然，除了开发者主动保证以外，大部分的场景浏览器都会依靠：</p>
+<ul>
+<li>标记清除</li>
+<li>引用计数</li>
+</ul>
+<p>两种算法来进行主动垃圾回收。内容社区上有很多好文章介绍这方面的内容，我把自己收藏的几篇不错的跟大家分享一下，这些内容偏浏览器引擎实现，这里不再过多介绍，感兴趣的读者可以参考下面内容：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5c4409fbf265da616f703d5a">通过垃圾回收机制理解 JavaScript 内存管理</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzA5NzkwNDk3MQ==&mid=2650585408&idx=1&sn=4de7b5bbfa969d9587c163e98bc90684&source=41#wechat_redirect">如何处理 JavaScript 内存泄漏</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003641343">垃圾回收</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000007887891">编写内存友好的代码</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&mid=2651551451&idx=1&sn=b8447a12eceb467992d432b014d9c026&chksm=8025a11ab752280c7915db4ef726611f645d2fee590d6f0f3f9aeedd55c956454f66f786873a&scene=0#wechat_redirect">JavaScript 中 4 种常见的内存泄漏陷阱</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.im/post/5c3dce07e51d4551e960d840">记一次网页内存溢出分析及解决实践</a></li>
+</ul>
+<h5 id="内存泄漏和垃圾回收注意事项"><a href="#内存泄漏和垃圾回收注意事项" class="headerlink" title="内存泄漏和垃圾回收注意事项"></a><strong>内存泄漏和垃圾回收注意事项</strong></h5><p><strong>关于内存泄漏和垃圾回收，要在实战中分析，不能完全停留在理论层面，毕竟如今浏览器千变万化且一直在演进当中。</strong><br>从以上示例我们可以看出，借助闭包来绑定数据变量，可以保护这些数据变量的内存块在闭包存活时，始终不被垃圾回收机制回收。因此，闭包使用不当，极可能引发内存泄漏，需要格外注意。以下代码：</p>
+<pre><code>function foo() &#123;
+    let value = 123
+
+    function bar() &#123; alert(value) &#125;
+
+    return bar
+&#125;
+
+let bar = foo()</code></pre>
+<p>这种情况下，变量 value 将会保存在内存中，如果加上：</p>
+<pre><code>bar = null</code></pre>
+<p>这样的话，随着 bar 不再被引用，value 也会被清除。</p>
+<p>结合浏览器引擎的优化情况，我们对上述代码进行改动：</p>
+<pre><code>function foo() &#123;
+    let value = Math.random()
+
+    function bar() &#123;
+        debugger
+    &#125;
+
+    return bar
+&#125;
+
+let bar = foo()
+bar()</code></pre>
+<p>在 Chrome 浏览器 V8 最新引擎中，执行上述代码。我们在函数 <code>bar</code> 中打断点，会发现 <code>value</code> 没有被引用，如下图：</p>
+<p><img src="https://images.gitbook.cn/2f8fe330-7059-11e9-aa97-037c54aa61de"></p>
+<p>而我们在 <code>bar</code> 函数中加入对 <code>value</code> 的引用：</p>
+<pre><code>function foo() &#123;
+    let value = Math.random()
+
+    function bar() &#123;
+        console.log(value)
+        debugger
+    &#125;
+
+    return bar
+&#125;
+
+let bar = foo()
+bar()</code></pre>
+<p>会发现此时引擎中存在闭包变量 value 值。如下图：</p>
+<p><img src="https://images.gitbook.cn/49413040-7059-11e9-b07f-d933a796cd29"></p>
+<p>下面我们来看一个实战，借助 Chrome devtool，排查发现内存泄漏的场景。</p>
+<p>代码：</p>
+<pre><code>var array = []
+function createNodes() &#123;
+    let div
+    let i = 100
+    let frag = document.createDocumentFragment()
+    for (; i &gt; 0; i--) &#123;
+        div = document.createElement(&quot;div&quot;)
+        div.appendChild(document.createTextNode(i))
+        frag.appendChild(div)
+    &#125;
+    document.body.appendChild(frag)
+&#125;
+function badCode() &#123; 
+    array.push([...Array(100000).keys()])
+    createNodes()
+    setTimeout(badCode, 1000)
+&#125;
+
+badCode()</code></pre>
+<p>我们递归调用 <code>badCode</code>，这个函数每次向 <code>array</code> 数组中写入新的由 100000 项从 0 到 1 组成的新数组，在 <code>badCode</code><br>函数使用完全局变量 <code>array</code> 之后，并没有手动释放内存，垃圾回收不会处理 <code>array</code>，导致内存泄漏；同时，<code>badCode</code> 函数调用<br><code>createNodes</code> 函数，每 1s 创建 100 个 div 节点。</p>
+<p>这时候，打开 Chrome devtool，我们选中 performance 标签，拍下快照得到：</p>
+<p><img src="https://images.gitbook.cn/5f72f380-7059-11e9-a7a7-7bb84010ce2f"></p>
+<p>由此可以发现，JS heap（蓝线）和<br>Nodes（绿线）线，随着时间线一直在上升，并没有被垃圾回收。因此，可以判定存在较大的内存泄漏风险。如果我们不知道有问题的代码位置，具体如何找出风险点，那需要在<br>Chrome memory 标签中，对 JS heap 中每一项，尤其是 size 较大的前几项展开调查。如图：</p>
+<p><img src="https://images.gitbook.cn/7d4dc600-7059-11e9-aa97-037c54aa61de"></p>
+<p><img src="https://images.gitbook.cn/93dceb80-7059-11e9-aa97-037c54aa61de"></p>
+<p>明显就是我们定义的 <code>array</code> 不对劲了。</p>
+<p>这一节我们分析了涉及闭包知识的基础概念，介绍了内存管理和垃圾回收相关机制。下一节我们将集中学习代码示例，加强理解。</p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>请大家留言分享自己开发实践中遇到的 「闭包」相关 bug，也可以先学完下一课的示例再来分享。阅读文章过程中有任何疑问随时可以跟其他小伙伴讨论，或者直接向作者<br>LucasHC 提问。 <strong>你的分享不仅帮助他人，更会提升自己。</strong></p>
+<blockquote>
+<p>由于作者是兼职写作，平时也要上班，向作者问问题时，回复不及时，请谅解。建议大家在群里互相沟通、讨论~</p>
+</blockquote>
+<p>也欢迎大家说说自己最想了解的主题，专栏内容会根据部分读者的意见和建议迭代和完善。</p>
+<p>此外，我们为本课程 <strong>付费读者</strong> 创建了《前端开发核心知识进阶》微信交流群，以方便更有针对性地讨论课程相关问题。（入群请到第 4 篇末尾添加<br>GitChat 小助手伽利略的微信，注明「前端核心」。）</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/">https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/2020/12/22/advanced/002--%E4%B8%80%E7%BD%91%E6%89%93%E5%B0%BD%20this%EF%BC%8C%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E8%AF%B4%20Yes/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶02 | 一网打尽 this，对执行上下文说 Yes</div></div></a></div><div class="next-post pull-right"><a href="/matrix/2020/12/22/advanced/005--%E6%88%91%E4%BB%AC%E4%B8%8D%E8%83%8C%E8%AF%B5%20API%EF%BC%8C%E5%8F%AA%E5%AE%9E%E7%8E%B0%20API/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶05 | 我们不背诵 API，只实现 API</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">基本知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.1.</span> <span class="toc-text">作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E5%85%A8%E5%B1%80%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">函数作用域和全局作用域</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E6%9A%82%E6%97%B6%E6%80%A7%E6%AD%BB%E5%8C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text">块级作用域和暂时性死区</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E5%92%8C%E8%B0%83%E7%94%A8%E6%A0%88"><span class="toc-number">1.2.</span> <span class="toc-text">执行上下文和调用栈</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E7%9A%84%E4%B8%A4%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">1.2.1.</span> <span class="toc-text">代码执行的两个阶段</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E6%A0%88"><span class="toc-number">1.2.2.</span> <span class="toc-text">调用栈</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%97%AD%E5%8C%85"><span class="toc-number">1.3.</span> <span class="toc-text">闭包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">内存管理基本概念</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%9C%BA%E6%99%AF%E4%B8%BE%E4%BE%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">内存泄漏场景举例</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">1.4.3.</span> <span class="toc-text">浏览器垃圾回收</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%92%8C%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.4.4.</span> <span class="toc-text">内存泄漏和垃圾回收注意事项</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">2.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

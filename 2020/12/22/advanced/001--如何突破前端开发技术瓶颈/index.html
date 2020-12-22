@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶01 | 如何突破前端开发技术瓶颈 | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="日本后现代主义作家村上春树写过一本富有哲理的书——《当我谈跑步时我谈些什么》。 书中，他谈到，跑步跟写作一样：都需要坚毅隐忍，追逐超越；都需要心无杂念，持之以恒。全书落笔之处，没有浮华旖旎，而是娓娓道来迷惘、失败和挣扎。 这本书名义上是在谈跑步，却是在个人创作低潮时期对突破的不断思考。仔细想来，这样的思考对于一位工程师也至关重要。 前端领域，入门相对简单，可是想要“更上一层楼”却难上加难，也就是我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶01 | 如何突破前端开发技术瓶颈">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/001--%E5%A6%82%E4%BD%95%E7%AA%81%E7%A0%B4%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E7%93%B6%E9%A2%88/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="日本后现代主义作家村上春树写过一本富有哲理的书——《当我谈跑步时我谈些什么》。 书中，他谈到，跑步跟写作一样：都需要坚毅隐忍，追逐超越；都需要心无杂念，持之以恒。全书落笔之处，没有浮华旖旎，而是娓娓道来迷惘、失败和挣扎。 这本书名义上是在谈跑步，却是在个人创作低潮时期对突破的不断思考。仔细想来，这样的思考对于一位工程师也至关重要。 前端领域，入门相对简单，可是想要“更上一层楼”却难上加难，也就是我">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:modified_time" content="2020-12-22T12:51:17.440Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/001--%E5%A6%82%E4%BD%95%E7%AA%81%E7%A0%B4%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E7%93%B6%E9%A2%88/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-22 20:51:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶01 | 如何突破前端开发技术瓶颈</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-22T12:51:17.440Z" title="更新于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>日本后现代主义作家村上春树写过一本富有哲理的书——《当我谈跑步时我谈些什么》。</p>
+<p>书中，他谈到，跑步跟写作一样：都需要坚毅隐忍，追逐超越；都需要心无杂念，持之以恒。全书落笔之处，没有浮华旖旎，而是娓娓道来迷惘、失败和挣扎。</p>
+<p>这本书名义上是在谈跑步，却是在个人创作低潮时期对突破的不断思考。仔细想来，这样的思考对于一位工程师也至关重要。</p>
+<p>前端领域，入门相对简单，可是想要“更上一层楼”却难上加难，也就是我们常说的“职业天花板较低”，君不见——市场上高级/资深前端工程师凤毛麟角。这当然未必完全是坏事，一旦突破瓶颈，在技能上脱颖而出，便是更广阔的空间。那么，如何从夯实基础到突破瓶颈？</p>
+<p>接下来就让我们一起来讨论下：当前端工程师需要进阶时，我们学些什么。</p>
+<h3 id="直面自我——前端工程师的焦虑和迷茫"><a href="#直面自我——前端工程师的焦虑和迷茫" class="headerlink" title="直面自我——前端工程师的焦虑和迷茫"></a>直面自我——前端工程师的焦虑和迷茫</h3><p>说到进阶，我想先谈谈我们每个人内心的焦虑和迷茫，正视这种情绪是学习的第一步。对于每一个追求进步的人来说，瓶颈期总会在各个阶段“如约而至”。早在公元前某年，庄子就说过：</p>
+<blockquote>
+<p>吾生也有涯，而知也无涯。以有涯随无涯，殆已！已而为知者，殆而已矣！</p>
+</blockquote>
+<p>而现如今，信息爆炸时代，信息量呈几何级数增长，知识似乎唾手可得。那么“该学什么？”，“到底该怎么学？”，“学完之后又该做什么？”，大部分人都会在知识面前焦虑、迷茫。</p>
+<p>同样地，对于有一定工作经验的工程师来说：</p>
+<ul>
+<li>我该如何避免相似的工作做三年，而不是具备了三年的工作经验？</li>
+<li>我该如何从繁杂而千篇一律的业务需求中提炼技术点并总结提高？</li>
+<li>我该如何为团队带来更大的价值，体现经验能力？</li>
+</ul>
+<p>这些困扰对 <strong>前端工程师</strong><br>来说貌似来得更加猛烈：前端技术发展备受瞩目，前端工程师变得越发重要的背后是相关技术的不断扩张和更新换代。因此，我们比以往任何时候都更需要主动学习。但据我观察，目前网络上的学习资料往往存在以下两个问题：</p>
+<ul>
+<li>过于碎片化，这类知识某种程度上只能成为缓解焦虑的精神鸦片</li>
+<li>追求短平快，大牛经验、快速搞定“面经题目”，渐渐演变成为跳槽加薪的兴奋剂</li>
+</ul>
+<p>前端学习，尤其是进阶阶段的学习是一个 <strong>系统曲折</strong><br>的过程。每个学习者所接触的知识内容和其背后的原理构建成了他的思维方式。短期速成的内容或者大量碎片化的知识很难帮助我们深度思考。坦白来说，我也是这些“学习资料”的搜集者，如果没有系统针对性地学习和反复的刻意练习，那么结果就是<br><strong>以为收藏的是知识，其实收藏的是“知道”。以为掌握了知识，其实只是囤积了一堆“知道”。</strong></p>
+<p>当 GitChat 联系我想要打造一门系统而全面的前端进阶专栏时，我欣然接受。不光是因为想把自己在海外和 BAT<br>服务多年积累的经验分享给大家，也是想把长时间以来收藏的“干货”梳理一遍，系统性整理输出，和大家一起总结提高。最终，就是呈现在大家面前的这门《前端开发核心知识进阶》专栏。</p>
+<p>爱因斯坦说过：</p>
+<blockquote>
+<p>只是学习他人的智慧并不足够，你需要自己想明白才行。花时间记录、通盘考虑和深入思考你学到的东西。</p>
+</blockquote>
+<p>海伦·凯勒说过：</p>
+<blockquote>
+<p>知识使人进步，而智慧使人得道。</p>
+</blockquote>
+<p>希望这门专栏不仅详述“知识”，更能体现编程“智慧”，能让所有订阅的朋友们一起思考，一起进步。</p>
+<p><img src="https://images.gitbook.cn/6b7210a0-5103-11e9-94b7-c74b6c916ba4"></p>
+<p>配图来自：电影《银河系漫游指南》海报</p>
+<h3 id="专栏特色——基础和进阶，理论和实践"><a href="#专栏特色——基础和进阶，理论和实践" class="headerlink" title="专栏特色——基础和进阶，理论和实践"></a>专栏特色——基础和进阶，理论和实践</h3><p>说到专栏特色，我想一边聊聊前端开发的发展，一边说说我们专栏的聚焦点。</p>
+<h4 id="前端的大航海时代，有旧工具淘汰，更有新力量崛起"><a href="#前端的大航海时代，有旧工具淘汰，更有新力量崛起" class="headerlink" title="前端的大航海时代，有旧工具淘汰，更有新力量崛起"></a><strong>前端的大航海时代，有旧工具淘汰，更有新力量崛起</strong></h4><p>记得我刚接触前端编程时，jQuery 风靡一时，其清新优雅的 DOM 操作、稳如磐石的兼容性处理、灵活高效的封装和链式调用，让人如沐春风。</p>
+<p>彼时，我幼稚地以为“这就是颠覆”，事实却是“这只是开始”——随着三大框架的崛起，技术更迭就像“暴风雨前的宁静”，jQuery<br>突然就被其他“先进的生产力”抛在背后了。于是我们看见：2018 年 9 月，[Removing jQuery from GitHub.com<br>frontend](<a target="_blank" rel="noopener" href="https://github.blog/2018-09-06-removing-jquery-from-github-">https://github.blog/2018-09-06-removing-jquery-from-github-</a><br>frontend/)，各大平台技术进行“改朝换代”，引领开发潮流。</p>
+<p>这还只是一个类库在前端浪潮中的兴衰。再想想 ES 语言规范的演进速度，HTML5 的扩张幅度，跨端从 Ionic 到 React Native 再到<br>Flutter，CSS 从基本布局模型到弹性盒模型再到原生 Grid 方案，构建工具从 Grunt 到 Gulp 再到 webpack/Rollup……</p>
+<p>这门专栏，我们在重视“亘古不变”的语言基础上，力求为大家介绍更先进的开发技术。比如服务端渲染，比如 HTTP 3.0，比如使用 Lerna、yarn<br>workspaces 构建 monorepo 项目，比如框架演进和虚拟 DOM，等等。</p>
+<p><img src="https://images.gitbook.cn/18aca040-510a-11e9-adfc-e397a85e435c"></p>
+<p>配图来自：《海贼王》</p>
+<h4 id="前端开发有着与生俱来的混乱，需要我们披荆斩棘，在实践中勇往直前"><a href="#前端开发有着与生俱来的混乱，需要我们披荆斩棘，在实践中勇往直前" class="headerlink" title="前端开发有着与生俱来的混乱，需要我们披荆斩棘，在实践中勇往直前"></a><strong>前端开发有着与生俱来的混乱，需要我们披荆斩棘，在实践中勇往直前</strong></h4><p>前端三大方向 JavaScript、CSS、 HTML<br>的背后是无尽的碎片化场景。前端是最贴近用户的“战线”，它基因里就需要处理“大象万千”。同时，不管是跨平台还是语言特性，它都会让开发者感到迷茫：</p>
+<ul>
+<li>“我们该使用哪些 HTML 标签以达到最佳的语义化？”</li>
+<li>“我们该如何面对不同终端的诡异问题，并保证体验一致性？”</li>
+<li>“我们如何写 JavaScript 做到 bug free？”</li>
+<li>“this 乱七八糟，它到底指向谁？”</li>
+<li>……</li>
+</ul>
+<p>这门专栏，我们除了剖析理论，更加注重经验指导和最佳实践。</p>
+<p>比如：</p>
+<ul>
+<li>《性能监控和错误收集与上报》是分析多种场景和业界解决方案的产出；</li>
+<li>《深入浅出模块化（含 tree shaking）》中，实战观摩 webpack 打包结果，对比 Rollup 解决方案，同时分析 tree shaking 的实施细节；</li>
+<li>《前端工程化背后的项目组织设计》探索究竟该如何组织架构代码，解放开发效率；</li>
+<li>《不可忽视的网络安全：单页应用鉴权设计》不去讲解 CSRF、XSS 等“死概念”，而是从鉴权角度出发，让读者对安全有一个立体认知。</li>
+</ul>
+<p><img src="https://images.gitbook.cn/891513d0-510f-11e9-adfc-e397a85e435c"></p>
+<p>配图来自：《七龙珠》</p>
+<h4 id="前端开发工程师有广阔的未来，但“打铁还需自身硬”"><a href="#前端开发工程师有广阔的未来，但“打铁还需自身硬”" class="headerlink" title="前端开发工程师有广阔的未来，但“打铁还需自身硬”"></a><strong>前端开发工程师有广阔的未来，但“打铁还需自身硬”</strong></h4><p>目前我们正在经历所谓的“资本寒冬”，不管是大厂、二线公司还是创业团队，“优化人员结构（裁员）”的新闻层出不穷。但是据我观察，“高级前端工程师”的招聘需求却“逆流而上”，具备高水平和经验的开发者无论在任何时候都备受追捧。因此，磨练技能、积累项目经验将是所有前端工程师的核心诉求。</p>
+<p>作为内容贡献者，我也在思考如何让这门专栏更有价值，真正帮助大家突破瓶颈，让读者感到“物有所值”，进而实现进阶。</p>
+<p>这门专栏中，我将穿插大量经典面试例题，其中既包括我作为 BAT<br>面试官的“私房题”，又涵盖我作为面试者遇见的“经典题”，以及和业界前辈讨论过的“开放题”。在平时开发和学习中，我也收藏积累了大量精品文章，会一并分享给大家。</p>
+<p>从开发菜鸟到资深工程师，除了主观能动性以外，我个人认为成长过程中的一大瓶颈在于“不是每个人都能有机会接触到好项目”。这里的“好项目”是指类似“项目重构”、“类库迁移”、“复杂应用设计”、“疑难<br>bug 定位”等对开发者基础和设计能力有高要求的项目。</p>
+<p>在这门专栏中，我会插入大量代码设计模式、函数式、源码分析、组件设计和封装、开源库解读、项目代码组织等内容，也会手把手带领大家查阅<br>issue、changelog，从社区中汲取精华。构建更为真实的开发场景，直击实践中的高频痛点。</p>
+<p>最后，也希望和每一位读者保持长线联系，一起讨论问题，共同进步。</p>
+<p><img src="https://images.gitbook.cn/e0049a50-5112-11e9-94b7-c74b6c916ba4"></p>
+<p>配图来自：《蜘蛛侠：平行宇宙》</p>
+<h3 id="专栏简介——8-部分-36-个主题-50-课"><a href="#专栏简介——8-部分-36-个主题-50-课" class="headerlink" title="专栏简介——8 部分 36 个主题 50 课"></a>专栏简介——8 部分 36 个主题 50 课</h3><ul>
+<li><strong>第一部分：JavaScript 基础强化（第 2~7 篇）</strong></li>
+</ul>
+<p><strong>第二部分 JavaScript 语言进阶（第 8~13 篇）</strong></p>
+<p><strong>第三部分 不可忽视的 HTML 和 CSS（第 14~16 篇）</strong></p>
+<p>其中前三部分介绍 JavaScript、 HTML、CSS ，对于一些热点、重点话题，比如“this<br>指向”、“闭包、作用域、执行上下文”，以及一些高频考察点进行了深入分析；对面向对象、原型与原型链、异步这些内容进行强化，从实现的角度，结合具体实例分析<br>Promise；结合 ES Next，从 ES 的发展来看语言的演进。</p>
+<ul>
+<li><strong>第四部分 前端框架（第 17~23 篇）</strong></li>
+</ul>
+<p>接下来进入了 <strong>前端框架</strong> 部分，我们以 React 为主，分析框架对前端到底意味着什么，以及我们应该如何学习 React。事实上，对 React<br>的学习，不能只停留在“会用”的层面，其设计原理和思想演进，对于培养编程思维非常有益，也有利于学习者能从更高的角度看待问题。</p>
+<ul>
+<li><strong>第五部分 前端工程化（第 24~31 篇）</strong></li>
+</ul>
+<p>资深程序员永远逃不开的工作之一就是“基础构建”、“项目架构”。前端工程化部分我们从代码组织谈起，从规范实施谈起，结合 webpack、Lerna<br>等工具，为大家还原一个真实的“基建”场景，共同探索学习。</p>
+<ul>
+<li><strong>第六部分 性能优化（第 32~37 篇）</strong></li>
+</ul>
+<p>性能优化是理论和实践相结合的重要话题。</p>
+<p>我们需要大量理论知识：明白缓存策略，了解浏览器渲染特点，清楚 JavaScript<br>异步单线程对性能意味着什么，还要了解网络传输知识，等等。我们也需要大量实践经验：用得了 Chrome Devtool 分析火焰图，跑得出准确的<br>benchmark，知道防抖和节流的区别，懂得资源合并、拆分的利弊，了解业界最新性能优化方案，等等。</p>
+<p>这一部分，我们除了介绍重要大量知识点外，也会结合代码/项目实例来展开。</p>
+<ul>
+<li><strong>第七部分 编程思维和算法（第 38~45 篇）</strong></li>
+</ul>
+<p>前端开发离不开编程基础，培养良好的编程思维，了解基本的算法知识，是每一个工程师所必须具备的。在这一部分，我们用 JavaScript<br>来描述多种设计模式，设计模式并不是纸上谈兵，实实在在地存在于我们的业务代码当中；手把手带大家用 JavaScript<br>处理各种数据，说到底前端还是处理数据，展示 UI；当然更少不了对一些常见算法的强化。</p>
+<ul>
+<li><strong>第八部分 网络知识（第 46~50 篇）</strong></li>
+</ul>
+<p>作为一名前端开发者，不了解互联网传输的奥秘，不清楚网络细节是难以进阶的。网络知识关联着性能优化、前后端协作等核心环节，因此这一部分我们将重点强化网络基础。</p>
+<ul>
+<li><strong>结束语：软技巧</strong></li>
+</ul>
+<p>学习进步离不开社区的力量，“授人予鱼不如授人予渔”。在专栏的最后，我会讲述我的学习方法：如何投身到社区当中，与广大开发者一起讨论；如何阅读前人的经典思想，站在巨人的肩上看得更远；如何解读开源库，从中汲取养分；如何在面试和述职当中，正确地表达汇报……</p>
+<p><img src="https://images.gitbook.cn/FgIBo4ircxuXMlHQDLi_zsoN8HwW" alt="avatar"></p>
+<h3 id="学习建议"><a href="#学习建议" class="headerlink" title="学习建议"></a>学习建议</h3><p>建议大家在阅读专栏过程中，手动执行文内代码，同时养成打断点或 console.log<br>调试的好习惯。此专栏对应的代码仓库：<a target="_blank" rel="noopener" href="https://github.com/HOUCe/lucas-gitchat-courses">https://github.com/HOUCe/lucas-gitchat-courses</a></p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>我们为本专栏 <strong>付费读者</strong> 创建了《前端开发核心知识进阶》微信交流群，以方便更有针对性地讨论专栏相关问题。（入群请到第 4 篇末尾添加 GitChat<br>小助手的微信，注明「前端核心」。）</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/001--%E5%A6%82%E4%BD%95%E7%AA%81%E7%A0%B4%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E7%93%B6%E9%A2%88/">https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/001--%E5%A6%82%E4%BD%95%E7%AA%81%E7%A0%B4%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E7%93%B6%E9%A2%88/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/2020/12/22/advanced/040--%E5%89%96%E6%9E%90%E6%97%A0%E5%A4%84%E4%B8%8D%E5%9C%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶40 | 剖析无处不在的数据结构</div></div></a></div><div class="next-post pull-right"><a href="/matrix/2020/12/22/advanced/004--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8B%EF%BC%89/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶04 | 老司机也会在闭包相关知识点翻车（下）</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E9%9D%A2%E8%87%AA%E6%88%91%E2%80%94%E2%80%94%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E7%84%A6%E8%99%91%E5%92%8C%E8%BF%B7%E8%8C%AB"><span class="toc-number">1.</span> <span class="toc-text">直面自我——前端工程师的焦虑和迷茫</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%93%E6%A0%8F%E7%89%B9%E8%89%B2%E2%80%94%E2%80%94%E5%9F%BA%E7%A1%80%E5%92%8C%E8%BF%9B%E9%98%B6%EF%BC%8C%E7%90%86%E8%AE%BA%E5%92%8C%E5%AE%9E%E8%B7%B5"><span class="toc-number">2.</span> <span class="toc-text">专栏特色——基础和进阶，理论和实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E7%9A%84%E5%A4%A7%E8%88%AA%E6%B5%B7%E6%97%B6%E4%BB%A3%EF%BC%8C%E6%9C%89%E6%97%A7%E5%B7%A5%E5%85%B7%E6%B7%98%E6%B1%B0%EF%BC%8C%E6%9B%B4%E6%9C%89%E6%96%B0%E5%8A%9B%E9%87%8F%E5%B4%9B%E8%B5%B7"><span class="toc-number">2.1.</span> <span class="toc-text">前端的大航海时代，有旧工具淘汰，更有新力量崛起</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%9C%89%E7%9D%80%E4%B8%8E%E7%94%9F%E4%BF%B1%E6%9D%A5%E7%9A%84%E6%B7%B7%E4%B9%B1%EF%BC%8C%E9%9C%80%E8%A6%81%E6%88%91%E4%BB%AC%E6%8A%AB%E8%8D%86%E6%96%A9%E6%A3%98%EF%BC%8C%E5%9C%A8%E5%AE%9E%E8%B7%B5%E4%B8%AD%E5%8B%87%E5%BE%80%E7%9B%B4%E5%89%8D"><span class="toc-number">2.2.</span> <span class="toc-text">前端开发有着与生俱来的混乱，需要我们披荆斩棘，在实践中勇往直前</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E7%A8%8B%E5%B8%88%E6%9C%89%E5%B9%BF%E9%98%94%E7%9A%84%E6%9C%AA%E6%9D%A5%EF%BC%8C%E4%BD%86%E2%80%9C%E6%89%93%E9%93%81%E8%BF%98%E9%9C%80%E8%87%AA%E8%BA%AB%E7%A1%AC%E2%80%9D"><span class="toc-number">2.3.</span> <span class="toc-text">前端开发工程师有广阔的未来，但“打铁还需自身硬”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%93%E6%A0%8F%E7%AE%80%E4%BB%8B%E2%80%94%E2%80%948-%E9%83%A8%E5%88%86-36-%E4%B8%AA%E4%B8%BB%E9%A2%98-50-%E8%AF%BE"><span class="toc-number">3.</span> <span class="toc-text">专栏简介——8 部分 36 个主题 50 课</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%A6%E4%B9%A0%E5%BB%BA%E8%AE%AE"><span class="toc-number">4.</span> <span class="toc-text">学习建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">5.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matrix - Blog</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前端攻城狮">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Matrix">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/page/2/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="前端攻城狮">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jinxiaochuan.github.io/matrix/null">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jinxiaochuan.github.io/matrix/null"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/page/2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2020-12-22 20:51:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">Matrix</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/026--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶26 | webpack 工程师和前端工程师（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶26 | webpack 工程师和前端工程师（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/026--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶26 | webpack 工程师和前端工程师（上）">核心进阶26 | webpack 工程师和前端工程师（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">说起前端工程化， webpack 必然在前端工具链中占有最重要的地位；说起前端工程师进阶，webpack 更是一个绕不开的话题。
+从原始的刀耕火种时代，到 Gulp、Grunt 等早期方案的横空出世，再到 webpack通过其丰富的功能和开放的设计一举奠定“江湖地位”，我想每个前端工程师都需要熟悉各个时代的“打包神器”。
+作为团队中不可或缺的高级工程师，能否玩转webpack，能否通过工具搭建令人舒适的工作流和构建基础，能否不断适应技术发展打磨编译体系，将直接决定你的工作价值。
+在这一系列课程里，赘述社区上大量存在的“webpack 配置 demo”，或者讲解一些现成的插件应用意义不大，这些知识都可以免费找到。
+分析 webpack 工作原理，探究 webpack 能力边界，结合实践并加以应用 将会是本讲的重点。
+webpack 主题的知识点如下所示：
+
+接下来，我们通过 2 节内容来学习这个主题。
+webpack 到底将代码编译成了什么项目中经过 webpack 打包后的代码究竟被编译成了什么？ 也许你认为并不重要。业务中的代码往往非常复杂，经过 webpack编译后的代码可读性非常 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/028--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶28 | 前端工程化背后的项目组织设计（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶28 | 前端工程化背后的项目组织设计（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/028--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶28 | 前端工程化背后的项目组织设计（上）">核心进阶28 | 前端工程化背后的项目组织设计（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">通过上一节的学习，我们看到了前端构建工具及其背后蕴含的技术设计。前端工程化包罗万象，本节课，我们将分析项目组织设计的相关话题，包括：
+
+接下来，我们通过 2 节内容来学习这个主题。希望结束这个主题后大家可以从更高的视角看待项目管理和代码组织设计。
+大型前端项目的组织设计随着业务复杂度的直线上升，前端项目不管是从代码量上，还是从依赖关系上都爆炸式增长。同时，团队中一般不止有一个业务项目，多个项目之间如何配合，如何维护相互关系？公司自己的公共库版本如何管理？这些话题随着业务扩展，纷纷浮出水面。一名合格的高级前端工程师，在宏观上必需能妥善处理这些问题。
+当然，不是每个开发者都有机会接触项目设计。如果读者没有面对过上述难题，也许并不容易理解这些问题究竟意味着什么。举个例子，团队主业务项目名为：App-project，这个仓库依赖了组件库：Component-lib，因此 App-project 项目的 package.json 会有类似的代码：
+&#123;
+    &quot;name&quot;: &quot;App-project&quot;,
+    &quot;version&quo ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/031--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶31 | 代码规范工具及背后技术设计（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶31 | 代码规范工具及背后技术设计（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/031--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶31 | 代码规范工具及背后技术设计（下）">核心进阶31 | 代码规范工具及背后技术设计（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">上一节课，我们主要介绍了代码规范工具，了解了它们的配置、使用方式。这一节，我们将深入原理，并根据其实现和扩展能力，开发更加灵活的工具集。
+在此之前，我们先回顾一下「代码规范」主题的知识点：
+
+工具背后的技术原理和设计这一小节，我们挑选实现更为复杂精妙的 ESLint 来分析。大家都清楚 ESLint 是基于静态语法分析（AST）进行工作的，AST已经不是一个新鲜话题，我们在 webpack 章节就有介绍。ESLint 使用 Espree 来解析 JavaScript 语句，生成AST。有了完整的解析树，我们就可以基于解析树对代码进行检测和修改。
+ESLint 的灵魂是每一条 rule，每条规则都是独立且插件化的，我们挑一个比较简单的“禁止块级注释规则”源码来分析：
+module.exports = &#123;
+  meta: &#123;
+    docs: &#123;
+      description: &#39;禁止块级注释&#39;,
+      category: &#39;Stylistic Issues&#39;,
+      recommended: true    ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/032--%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%92%8C%E9%94%99%E8%AF%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E4%B8%8A%E6%8A%A5%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶32 | 性能监控和错误收集与上报（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶32 | 性能监控和错误收集与上报（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/032--%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%92%8C%E9%94%99%E8%AF%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E4%B8%8A%E6%8A%A5%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶32 | 性能监控和错误收集与上报（上）">核心进阶32 | 性能监控和错误收集与上报（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">性能始终是前端领域非常重要的话题，它直接决定了产品体验的优劣，重要性无需赘言。我们在体验一个产品时，能够直观感受到其性能，可是如何量化衡量性能的好坏呢？
+同时，我们无法保证程序永远不出问题，如何在程序出现问题时及时获得现场数据、还原现场，以做出准确地响应呢？
+离开了实际场景谈这些话题都是“耍流氓”，性能数据的监控、错误信息的收集和上报应该都要基于线上真实环境。这对于我们随时掌控线上产品，优化应用体验具有重大意义。
+本节课程，我们就聚焦在性能监控和错误收集与上报系统上。希望通过学习，每个人都心中有数，做到不仅能够分析性能数据、处理错误，还能建设一个成熟的配套系统。
+本节课主要知识点：
+
+接下来，我们通过 2 节内容来学习这个主题。
+性能监控指标既然是性能监控，那我们首先需要明确衡量指标。一般来说，业界认可的常用指标有：
+
+首次绘制（FP）和首次有内容绘制（FCP）时间
+首次有意义绘制（FMP）时间
+首屏时间
+用户可交互（TTI）时间
+总下载时间
+自定义指标
+
+接下来分别看看每个指标的含义。
+
+首次绘制（FP）时间 ：对于应用页面，用户在视觉上首次出现不同于跳转之前的内容时间点，或者说是页 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/033--%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%92%8C%E9%94%99%E8%AF%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E4%B8%8A%E6%8A%A5%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶33 | 性能监控和错误收集与上报（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶33 | 性能监控和错误收集与上报（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/033--%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%92%8C%E9%94%99%E8%AF%AF%E6%94%B6%E9%9B%86%E4%B8%8E%E4%B8%8A%E6%8A%A5%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶33 | 性能监控和错误收集与上报（下）">核心进阶33 | 性能监控和错误收集与上报（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">上一节课我们学习了性能监控方面的知识。这一节来深入了解关于错误和异常的收集，并学习如何统一将这些信息进行上报。
+在此之前，我们先回顾一下这个主题的知识点：
+
+错误信息收集提到错误收集方案，大家应该会首先想到两种：try catch 捕获错误和 window.onerror 监听。
+认识 try catch 方案我们先看一下 try catch 方案：
+try &#123;
+    // 代码块
+&#125; catch(e) &#123;
+    // 错误处理
+    // 在这里，我们可以将错误信息发送给服务端
+&#125;
+这种方式需要开发者对预估有错误风险的代码进行包裹，这个包裹过程可以手动添加，也可以通过自动化工具或类库完成。自动化方案的基本原理是 AST 技术：比如UglifyJS 就提供操作 AST 的 API，我们可以对每个函数添加 try catch，社区上[foio](https://github.com/foio/try-catch-global.js/blob/master/try-catch-global.js) 的实现，就是一个很好的例子：
+const fs ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/035--%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%EF%BC%8C%E8%80%81%E5%8F%B8%E6%9C%BA%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶35 | 性能优化问题，老司机如何解决（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶35 | 性能优化问题，老司机如何解决（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/035--%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%EF%BC%8C%E8%80%81%E5%8F%B8%E6%9C%BA%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶35 | 性能优化问题，老司机如何解决（下）">核心进阶35 | 性能优化问题，老司机如何解决（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">上一节课，我们从宏观上讲述了性能优化的概念。这一节，我们直接来“手写代码”。
+在此之前，我们先回顾一下「性能优化」主题的知识点：
+
+代码例题实战“白板写代码”是考察候选人基础能力、思维能力的有效手段。这一部分，我们列举几个性能相关的代码片段，供读者体会。
+实战 1：初步解决布局抖动问题请候选人对以下代码进行优化：
+var h1 = element1.clientHeight
+element1.style.height = (h1 * 2) + &#39;px&#39;
+
+var h2 = element2.clientHeight
+element2.style.height = (h2 * 2) + &#39;px&#39;
+
+var h3 = element3.clientHeight
+element3.style.height = (h3 * 2) + &#39;px&#39;
+这是一道较为基础的题目，上面的代码，会造成典型的布局抖动问题。
+布局抖动 是指 DOM 元素被 JavaScript多次反复读写，导致文档多次无意义重排。我们知道浏览器很“懒”，它会收集（batch）当前操 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/036--%E4%BB%A5%20React%20%E4%B8%BA%E4%BE%8B%EF%BC%8C%E8%AF%B4%E8%AF%B4%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%A7%E8%83%BD%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶36 | 以 React 为例，说说框架和性能（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶36 | 以 React 为例，说说框架和性能（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/036--%E4%BB%A5%20React%20%E4%B8%BA%E4%BE%8B%EF%BC%8C%E8%AF%B4%E8%AF%B4%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%A7%E8%83%BD%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶36 | 以 React 为例，说说框架和性能（上）">核心进阶36 | 以 React 为例，说说框架和性能（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">在上一节课中，我们提到了性能优化。在这个话题上，除了工程化层面的优化和语言层面的优化以外，框架性能也备受瞩目。这一节课，我们就来聊聊框架的性能话题，并以React 为例进行分析。
+主要知识点如下：
+
+框架性能到底指什么说起框架的性能话题，很多读者可能会想到“不要过早地做优化”这条原则。实际上，大部分应用的复杂度并不会对性能和产品体验构成挑战。毕竟在之前课程中我们学习到，现代化的框架凭借高效的虚拟DOM diff 算法和（或）响应式理念，以及框架内部引擎，已经做得较为完美了，一般项目需求对性能的压力并不大。
+但是对于一些极其复杂的需求，性能优化是无法回避的。如果你开发的是图形处理应用、DNA检测实验应用、富文本编辑器或者功能丰富的表单型应用，则很容易触碰到性能瓶颈。同样，作为框架的使用者，也需要对性能优化有所了解，这对于理解框架本身也是有很大帮助的。
+前端开发自然离不开浏览器，而性能优化大都在和浏览器打交道。我们知道，页面每一帧的变化都是由浏览器绘制出来的，并且这个绘制频率受限于显示器的刷新频率，因此一个重要的性能数据指标是每秒60 帧的绘制频率。这样进行简单的换算之后，每一帧只有 16 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/037--%E4%BB%A5%20React%20%E4%B8%BA%E4%BE%8B%EF%BC%8C%E8%AF%B4%E8%AF%B4%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%A7%E8%83%BD%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶37 | 以 React 为例，说说框架和性能（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶37 | 以 React 为例，说说框架和性能（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/037--%E4%BB%A5%20React%20%E4%B8%BA%E4%BE%8B%EF%BC%8C%E8%AF%B4%E8%AF%B4%E6%A1%86%E6%9E%B6%E5%92%8C%E6%80%A7%E8%83%BD%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶37 | 以 React 为例，说说框架和性能（下）">核心进阶37 | 以 React 为例，说说框架和性能（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">在上一讲中，我们提到了框架性能优化的一些基本概念，并分析了以 React框架为代表的常用优化手段。但是这些内容还不够，需要了解更多框架设计底层的性能相关话题。这一讲，我将会以 Vue（未来新版本 3.0）和 React为主，分析这两个框架在设计层面，而非使用层面的性能考量。
+相关知识点如下图所示：
+
+React 性能设计亮点React 设计上的性能亮点非常多，除了“老生常谈”的虚拟 DOM 之外，还有很多不为人知的细节，比如事件机制（合成和池化）、React fiber 设计。
+React 性能设计亮点之事件React 事件机制我们前面已经有所介绍，总结一下性能亮点的体现有：
+
+将所有事件挂载到 document 节点上，利用事件代理实现优化；
+采用合成事件，在原生事件的基础上包装合成事件，并结合池化思路实现内存保护。
+
+前面课程《第 4-2 课：你真的懂 React 吗？》已经介绍过相关内容，这里不再展开。
+React 性能设计亮点之 setStatesetState 这个谜之 API 我们也有所介绍，其异步（或者叫做 batch 合并）设计也是出于性能的考虑。这种优化思路已经被很多 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/041--%E5%8F%A4%E8%80%81%E5%8F%88%E6%96%B0%E6%BD%AE%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F/" title="核心进阶41 | 古老又新潮的函数式">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶41 | 古老又新潮的函数式"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/041--%E5%8F%A4%E8%80%81%E5%8F%88%E6%96%B0%E6%BD%AE%E7%9A%84%E5%87%BD%E6%95%B0%E5%BC%8F/" title="核心进阶41 | 古老又新潮的函数式">核心进阶41 | 古老又新潮的函数式</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">函数式这个概念我们在以往的课程中其实已经有所涉及了，比如第 1-2、1-3 课介绍的闭包知识；比如 1-4 课《我们不背诵 API，只实现 API》中剖析的5 种 compose 方法，以及 reduce 实现 pipe、runPromiseInSequence 等都是典型的函数式概念。
+函数式其实很早就出现在了编程领域当中，近些年由于 React 的带动，在前端开发中重新“焕发活力”。
+很多读者可能一听到函数式就眉头一皱，毕竟相比于面向对象等其他编程概念，它更加晦涩难懂。对于函数式的学习，也一定不是使用或者模仿 compose那么简单。这一节课，我们就来梳理几个函数式概念。但是我认为单纯的概念介绍并没有意义，因此也准备了大量实战例题以及库的设计方案，与大家一起分享。
+
+函数式和高质量函数函数式通常意味着高质量的代码，本小节的主标题之所以是“函数式和高质量函数”，而不是“函数式和高质量代码”，因为在函数式看来，一切都是函数，“函数是第一等公民”。围绕着函数，取代面向过程式的代码，往往能够有以下收益：
+
+表达力更加清晰 ，因为“一切都是函数”，通过函数的合理命名，函数原子的拆分，我们能够 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/042--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶42 | 那些年常考的前端算法（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶42 | 那些年常考的前端算法（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/042--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶42 | 那些年常考的前端算法（上）">核心进阶42 | 那些年常考的前端算法（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">在上一讲中，我们全面梳理了重要的数据结构，并用 JavaScript对各种数据结构进行了实现和方法模拟。数据结构常与算法一起出现，两者相互依存密不可分。这一讲，我们来研究一下“那些年常考的前端算法”。
+主要内容如下：
+
+我们将通过三讲的内容来剖析算法问题。本讲先“轻松”一下，主要介绍前端和算法的关系，以及算法中的一些基本概念。
+前端和算法前端和算法有什么关系呢？我想先纠正两个常见的错误认知。
+关于算法的误解
+前端没有算法？
+
+“前端没有算法”这种说法往往出自算法岗甚至后端读者，这种认知是错误的。前端不仅有算法，而且算法在前端开发中占据的地位也越来越重要。我们常提到的Virtual dom diff、webpack 实现、React fiber、Reacthooks、响应式编程、浏览器引擎工作方式等都有算法的影子。在业务代码中，哪怕写一个抽奖游戏，写一个混淆函数都离不开算法。
+
+算法重要不重要？
+
+有读者认为，前端中算法只是提供了一些偏底层的能力和实现支持，我在业务开发中真正使用到算法的场景也很有限。事实上，不仅单纯的前端业务，哪怕对于后端业务来说，真正让你“徒手”实现一段算法的场景也不 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/matrix/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/matrix/">1</a><span class="page-number current">2</span><a class="page-number" href="/matrix/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/matrix/page/6/">6</a><a class="extend next" rel="next" href="/matrix/page/3/"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div><div class="card-widget card-archives"><div class="card-content"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/matrix/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">53</span></a></li></ul></div></div><div class="card-widget card-webinfo"><div class="card-content"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">53</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2020-12-22T12:51:32.990Z"></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

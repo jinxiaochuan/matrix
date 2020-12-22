@@ -1,0 +1,824 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶27 | webpack 工程师和前端工程师（下） | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="上一节中，我们了解了 webpack 对于不同模块化标准的打包结果，分析了其自身的模块化解决方案。但是 webpack绝不仅仅是一个打包器，它是一个完整的构建工具链。 那么它到底是如何工作的，原理是什么？了解了这些原理，我们又能如何扩展，以解决工作中的实际问题？这一节，我们来一探究竟。 我们再次列出 webpack 主题的知识点：  webpack 工作基本原理通过前文学习，我们知道了 webpa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶27 | webpack 工程师和前端工程师（下）">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/027--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="上一节中，我们了解了 webpack 对于不同模块化标准的打包结果，分析了其自身的模块化解决方案。但是 webpack绝不仅仅是一个打包器，它是一个完整的构建工具链。 那么它到底是如何工作的，原理是什么？了解了这些原理，我们又能如何扩展，以解决工作中的实际问题？这一节，我们来一探究竟。 我们再次列出 webpack 主题的知识点：  webpack 工作基本原理通过前文学习，我们知道了 webpa">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-22T12:51:17.444Z">
+<meta property="article:modified_time" content="2020-12-22T12:51:17.444Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/027--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8B%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-22 20:51:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶27 | webpack 工程师和前端工程师（下）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-22T12:51:17.444Z" title="更新于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>上一节中，我们了解了 webpack 对于不同模块化标准的打包结果，分析了其自身的模块化解决方案。但是 webpack<br>绝不仅仅是一个打包器，它是一个完整的构建工具链。 <strong>那么它到底是如何工作的，原理是什么？了解了这些原理，我们又能如何扩展，以解决工作中的实际问题？</strong><br>这一节，我们来一探究竟。</p>
+<p>我们再次列出 webpack 主题的知识点：</p>
+<p><img src="https://images.gitbook.cn/e13b8fb0-4ecd-11e9-97d1-9b2c5e38f63d"></p>
+<h3 id="webpack-工作基本原理"><a href="#webpack-工作基本原理" class="headerlink" title="webpack 工作基本原理"></a>webpack 工作基本原理</h3><p>通过前文学习，我们知道了 webpack 编译产出，对结果进行分析。“知其然，知其所以然”，在知晓打包结果的基础上，接下来我们尝试分析产出过程，了解<br>webpack 工作的基本原理。</p>
+<p>webpack 工作流程可以简单总结为下图：</p>
+<p><img src="https://images.gitbook.cn/800e19e0-4eac-11e9-9566-89cb1d9578c6"></p>
+<ul>
+<li>首先，webpack 会读取项目中由开发者定义的 webpack.config.js 配置文件，或者从 shell 语句中获得必要的参数。这是 webpack 内部接收业务配置信息的方式。这就完成了配置读取的初步工作。</li>
+<li>接着，实例化所需 webpack 插件，在 webpack 事件流上挂载插件钩子，这样在合适的构建过程中，插件具备了改动产出结果的能力。</li>
+<li>同时，根据配置所定义的入口文件，以入口文件（可以不止有一个）为起始，进行依赖收集：对所有依赖的文件进行编译，这个编译过程依赖 loaders，不同类型文件根据开发者定义的不同 loader 进行解析。编译好的内容使用 acorn 或其它抽象语法树能力，解析生成 AST 静态语法树，分析文件依赖关系，将不同模块化语法（如 require）等替换为 <code>__webpack_require__</code>，即使用 webpack 自己的加载器进行模块化实现。</li>
+<li>上述过程进行完毕后，产出结果，根据开发者配置，将结果打包到相应目录。</li>
+</ul>
+<p>值得一提的是，在这整个打包过程中， <strong>webpack 和插件采用基于事件流的发布订阅模式，监听某些关键过程，在这些环节中执行插件任务</strong><br>。到最后，所有文件的编译和转化都已经完成，输出最终资源。</p>
+<p>如果深入源码，上述过程用更加专业的术语总结为——模块会经历 <strong>加载</strong> （loaded）、 <strong>封存</strong> （sealed）、 <strong>优化</strong><br>（optimized）、 <strong>分块</strong> （chunked）、 <strong>哈希</strong> （hashed）和 <strong>重新创建</strong><br>（restored）这几个经典步骤。在这里，我们了解大体流程即可。</p>
+<p>梳理完 webpack 工作“流水账”，我们还需要在理论上熟悉以下概念。</p>
+<h4 id="抽象语法树-AST"><a href="#抽象语法树-AST" class="headerlink" title="抽象语法树 AST"></a>抽象语法树 AST</h4><p>即便大家没有接触过 AST，也应该不是第一次听说这个概念。</p>
+<p>在计算机科学中，抽象语法树（Abstract Syntax Tree，简称<br>AST），是源代码语法结构的一种抽象表示。它以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构和表达。</p>
+<p>之所以说语法是“抽象”的，是因为这里的语法并不会表示出真实语法中出现的每个细节。比如类似于 if-condition-then<br>这样的条件跳转语句，可以使用带有两个分支的节点来表示。</p>
+<p>AST 并不会被计算机所识别，更不会被运行，它是对编程语言的一种表达，为代码分析提供了基础。</p>
+<p><strong>webpack 将文件转换成 AST 的目的就是方便开发者提取模块文件中的关键信息。</strong><br>这样一来，我们就可以“知晓开发者到底写了什么东西”，也就可以根据这些“写出的东西”，实现分析和扩展。在代码层面，我们可以把 AST 理解为一个<br>object：</p>
+<pre><code>var ast = &#39;AST demo&#39;</code></pre>
+<p>这样的语句转换为 AST 就是：</p>
+<pre><code>&#123;
+  &quot;type&quot;: &quot;Program&quot;,
+  &quot;start&quot;: 0,
+  &quot;end&quot;: 20,
+  &quot;body&quot;: [
+    &#123;
+      &quot;type&quot;: &quot;VariableDeclaration&quot;,
+      &quot;start&quot;: 0,
+      &quot;end&quot;: 20,
+      &quot;declarations&quot;: [
+        &#123;
+          &quot;type&quot;: &quot;VariableDeclarator&quot;,
+          &quot;start&quot;: 4,
+          &quot;end&quot;: 20,
+          &quot;id&quot;: &#123;
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;start&quot;: 4,
+            &quot;end&quot;: 7,
+            &quot;name&quot;: &quot;ast&quot;
+          &#125;,
+          &quot;init&quot;: &#123;
+            &quot;type&quot;: &quot;Literal&quot;,
+            &quot;start&quot;: 10,
+            &quot;end&quot;: 20,
+            &quot;value&quot;: &quot;AST demo&quot;,
+            &quot;raw&quot;: &quot;&#39;AST demo&#39;&quot;
+          &#125;
+        &#125;
+      ],
+      &quot;kind&quot;: &quot;var&quot;
+    &#125;
+  ],
+  &quot;sourceType&quot;: &quot;module&quot;
+&#125;</code></pre>
+<p>从中我们可以看出，AST 结果精确地表明了这是一条变量声明语句，语句起始于哪里，赋值结果是什么等信息都被表达出来。</p>
+<p>一个更复杂的例子：</p>
+<pre><code>let tips = [1, 2]
+
+function printTips() &#123;
+  tips.forEach((tip, i) =&gt; console.log(`Tip $&#123;i&#125;:` + tip))
+&#125;</code></pre>
+<p>会转化为：</p>
+<pre><code>&#123;
+  &quot;type&quot;: &quot;Program&quot;,
+  &quot;start&quot;: 0,
+  &quot;end&quot;: 285,
+  &quot;body&quot;: [
+    &#123;
+      &quot;type&quot;: &quot;VariableDeclaration&quot;,
+      &quot;start&quot;: 179,
+      &quot;end&quot;: 197,
+      &quot;declarations&quot;: [
+        &#123;
+          &quot;type&quot;: &quot;VariableDeclarator&quot;,
+          &quot;start&quot;: 183,
+          &quot;end&quot;: 196,
+          &quot;id&quot;: &#123;
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;start&quot;: 183,
+            &quot;end&quot;: 187,
+            &quot;name&quot;: &quot;tips&quot;
+          &#125;,
+          &quot;init&quot;: &#123;
+            &quot;type&quot;: &quot;ArrayExpression&quot;,
+            &quot;start&quot;: 190,
+            &quot;end&quot;: 196,
+            &quot;elements&quot;: [
+              &#123;
+                &quot;type&quot;: &quot;Literal&quot;,
+                &quot;start&quot;: 191,
+                &quot;end&quot;: 192,
+                &quot;value&quot;: 1,
+                &quot;raw&quot;: &quot;1&quot;
+              &#125;,
+              &#123;
+                &quot;type&quot;: &quot;Literal&quot;,
+                &quot;start&quot;: 194,
+                &quot;end&quot;: 195,
+                &quot;value&quot;: 2,
+                &quot;raw&quot;: &quot;2&quot;
+              &#125;
+            ]
+          &#125;
+        &#125;
+      ],
+      &quot;kind&quot;: &quot;let&quot;
+    &#125;,
+    &#123;
+      &quot;type&quot;: &quot;FunctionDeclaration&quot;,
+      &quot;start&quot;: 199,
+      &quot;end&quot;: 283,
+      &quot;id&quot;: &#123;
+        &quot;type&quot;: &quot;Identifier&quot;,
+        &quot;start&quot;: 208,
+        &quot;end&quot;: 217,
+        &quot;name&quot;: &quot;printTips&quot;
+      &#125;,
+      &quot;expression&quot;: false,
+      &quot;generator&quot;: false,
+      &quot;params&quot;: [],
+      &quot;body&quot;: &#123;
+        &quot;type&quot;: &quot;BlockStatement&quot;,
+        &quot;start&quot;: 220,
+        &quot;end&quot;: 283,
+        &quot;body&quot;: [
+          &#123;
+            &quot;type&quot;: &quot;ExpressionStatement&quot;,
+            &quot;start&quot;: 224,
+            &quot;end&quot;: 281,
+            &quot;expression&quot;: &#123;
+              &quot;type&quot;: &quot;CallExpression&quot;,
+              &quot;start&quot;: 224,
+              &quot;end&quot;: 280,
+              &quot;callee&quot;: &#123;
+                &quot;type&quot;: &quot;MemberExpression&quot;,
+                &quot;start&quot;: 224,
+                &quot;end&quot;: 236,
+                &quot;object&quot;: &#123;
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;start&quot;: 224,
+                  &quot;end&quot;: 228,
+                  &quot;name&quot;: &quot;tips&quot;
+                &#125;,
+                &quot;property&quot;: &#123;
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;start&quot;: 229,
+                  &quot;end&quot;: 236,
+                  &quot;name&quot;: &quot;forEach&quot;
+                &#125;,
+                &quot;computed&quot;: false
+              &#125;,
+              &quot;arguments&quot;: [
+                &#123;
+                  &quot;type&quot;: &quot;ArrowFunctionExpression&quot;,
+                  &quot;start&quot;: 237,
+                  &quot;end&quot;: 279,
+                  &quot;id&quot;: null,
+                  &quot;expression&quot;: true,
+                  &quot;generator&quot;: false,
+                  &quot;params&quot;: [
+                    &#123;
+                      &quot;type&quot;: &quot;Identifier&quot;,
+                      &quot;start&quot;: 238,
+                      &quot;end&quot;: 241,
+                      &quot;name&quot;: &quot;tip&quot;
+                    &#125;,
+                    &#123;
+                      &quot;type&quot;: &quot;Identifier&quot;,
+                      &quot;start&quot;: 243,
+                      &quot;end&quot;: 244,
+                      &quot;name&quot;: &quot;i&quot;
+                    &#125;
+                  ],
+                  &quot;body&quot;: &#123;
+                    &quot;type&quot;: &quot;CallExpression&quot;,
+                    &quot;start&quot;: 249,
+                    &quot;end&quot;: 279,
+                    &quot;callee&quot;: &#123;
+                      &quot;type&quot;: &quot;MemberExpression&quot;,
+                      &quot;start&quot;: 249,
+                      &quot;end&quot;: 260,
+                      &quot;object&quot;: &#123;
+                        &quot;type&quot;: &quot;Identifier&quot;,
+                        &quot;start&quot;: 249,
+                        &quot;end&quot;: 256,
+                        &quot;name&quot;: &quot;console&quot;
+                      &#125;,
+                      &quot;property&quot;: &#123;
+                        &quot;type&quot;: &quot;Identifier&quot;,
+                        &quot;start&quot;: 257,
+                        &quot;end&quot;: 260,
+                        &quot;name&quot;: &quot;log&quot;
+                      &#125;,
+                      &quot;computed&quot;: false
+                    &#125;,
+                    &quot;arguments&quot;: [
+                      &#123;
+                        &quot;type&quot;: &quot;BinaryExpression&quot;,
+                        &quot;start&quot;: 261,
+                        &quot;end&quot;: 278,
+                        &quot;left&quot;: &#123;
+                          &quot;type&quot;: &quot;TemplateLiteral&quot;,
+                          &quot;start&quot;: 261,
+                          &quot;end&quot;: 272,
+                          &quot;expressions&quot;: [
+                            &#123;
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;start&quot;: 268,
+                              &quot;end&quot;: 269,
+                              &quot;name&quot;: &quot;i&quot;
+                            &#125;
+                          ],
+                          &quot;quasis&quot;: [
+                            &#123;
+                              &quot;type&quot;: &quot;TemplateElement&quot;,
+                              &quot;start&quot;: 262,
+                              &quot;end&quot;: 266,
+                              &quot;value&quot;: &#123;
+                                &quot;raw&quot;: &quot;Tip &quot;,
+                                &quot;cooked&quot;: &quot;Tip &quot;
+                              &#125;,
+                              &quot;tail&quot;: false
+                            &#125;,
+                            &#123;
+                              &quot;type&quot;: &quot;TemplateElement&quot;,
+                              &quot;start&quot;: 270,
+                              &quot;end&quot;: 271,
+                              &quot;value&quot;: &#123;
+                                &quot;raw&quot;: &quot;:&quot;,
+                                &quot;cooked&quot;: &quot;:&quot;
+                              &#125;,
+                              &quot;tail&quot;: true
+                            &#125;
+                          ]
+                        &#125;,
+                        &quot;operator&quot;: &quot;+&quot;,
+                        &quot;right&quot;: &#123;
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;start&quot;: 275,
+                          &quot;end&quot;: 278,
+                          &quot;name&quot;: &quot;tip&quot;
+                        &#125;
+                      &#125;
+                    ]
+                  &#125;
+                &#125;
+              ]
+            &#125;
+          &#125;
+        ]
+      &#125;
+    &#125;
+  ],
+  &quot;sourceType&quot;: &quot;module&quot;
+&#125;</code></pre>
+<p>我们看到，AST 结果除了表达出变量赋值 VariableDeclaration 信息以外，对函数声明 FunctionDeclaration<br>也做了精确的“解剖”，哪里出现了一个花括号，哪里实现了 API 调用，通过 AST 全部一览无余。</p>
+<p>设想一下，有了这样的语法树，开发者便可以针对源文件进行一些“分析、加工或转换”操作。</p>
+<h4 id="compiler-和-compilation"><a href="#compiler-和-compilation" class="headerlink" title="compiler 和 compilation"></a>compiler 和 compilation</h4><p>compiler 和 compilation 这两个对象是 webpack 核心原理中最重要的概念。它们是理解 webpack 工作原理、loader<br>和插件工作的基础。</p>
+<ul>
+<li>compiler 对象：它的实例包含了完整的 webpack 配置，全局只有一个 compiler 实例，因此它就像 webpack 的骨架或神经中枢。当插件被实例化的时候，会收到一个 compiler 对象，通过这个对象可以访问 webpack 的内部环境。</li>
+<li>compilation 对象：当 webpack 以开发模式运行时，每当检测到文件变化，一个新的 compilation 对象将被创建。这个对象包含了当前的模块资源、编译生成资源、变化的文件等信息。也就是说，所有构建过程中产生的构建数据都存储在该对象上，它也掌控着构建过程中的每一个环节。该对象也提供了很多事件回调供插件做扩展。</li>
+</ul>
+<p>两者的关系可以通过以下图示说明：</p>
+<p><img src="https://images.gitbook.cn/97a316a0-4eac-11e9-9566-89cb1d9578c6"></p>
+<p>webpack 的构建过程是通过 compiler 控制流程，compilation 进行解析。 <strong>在开发插件时，我们可以从 compiler<br>对象中拿到所有和 webpack 主环境相关的内容，包括事件钩子。</strong> 更多信息我们将在下文介绍。</p>
+<p>compiler 对象和 compilation 对象都继承自 tapable，tapable.js 这个库暴露了所有和事件相关的 pub/sub<br>的方法。webpack 基于事件流的 tapable 库，不仅能保证插件的有序性，还使得整个系统扩展性更好。</p>
+<p>关于 tapable 库的解读我们到这里不再深入，感兴趣的读者可以参加后续讨论和学习后续文章内容。</p>
+<h3 id="探秘并编写-webpack-loader"><a href="#探秘并编写-webpack-loader" class="headerlink" title="探秘并编写 webpack loader"></a>探秘并编写 webpack loader</h3><p>熟悉了概念，我们就来进行实战：了解如何编写一个 webpack loader。事实上，在 webpack 中，loader<br>是魔法真正发生的阶段之一：Babel 将 ES Next 编译成 ES5，sass-loader 将 SCSS/Sass 编译成 CSS 等，都是由相关<br>loader 或者 plugin 完成的。因此，直观上理解， <strong>loader 就是接受源文件，对源文件进行处理，返回编译后文件</strong> 。如图：</p>
+<p><img src="https://images.gitbook.cn/9e70e110-4eac-11e9-9566-89cb1d9578c6"></p>
+<p>我们看到一个 loader 秉承单一职责，完成最小单元的文件转换。当然， <strong>一个源文件可能需要经历多步转换才能正常使用</strong> ，比如 Sass 文件先通过<br>sass-loader 输出 CSS，之后将内容交给 css-loader 处理，甚至 css-loader 输出的内容还需要交给 style-loader<br>处理，转换成通过脚本加载的 JavaScript 代码。如下使用方式：</p>
+<pre><code>module.exports = &#123;
+  ...
+  module: &#123;
+    rules: [&#123;
+      test: /\.less$/,
+      use: [&#123;
+        loader: &#39;style-loader&#39; // 通过 JS 字符串，创建 style node
+      &#125;, &#123;
+        loader: &#39;css-loader&#39; // 编译 css 使其符合 CommonJS 规范
+      &#125;, &#123;
+        loader: &#39;less-loader&#39; // 编译 less 为 css
+      &#125;]
+    &#125;]
+  &#125;
+&#125;</code></pre>
+<p>当我们调用多个 loader 串联去转换一个文件时，每个 loader 会链式地顺序执行。webpack 中，在同一文件存在多个匹配 loader<br>的情况下，遵循以下原则：</p>
+<ul>
+<li>loader 的执行顺序是和配置顺序相反的，即配置的最后一个 loader 最先执行，第一个 loader 最后执行。</li>
+<li>第一个执行的 loader 接收源文件内容作为参数，其他 loader 接收前一个执行的 loader 的返回值作为参数。最后执行的 loader 会返回最终结果。</li>
+</ul>
+<p>如图，对应上面代码：</p>
+<p><img src="https://images.gitbook.cn/a3934570-4eac-11e9-b0b9-2fcbe141d641"></p>
+<p>因此，在你开发一个 loader 时，请保持其职责的单一性，只需关心输入和输出。</p>
+<p>不难理解：loader 本质就是函数，其最简单的结构为：</p>
+<pre><code>module.exports = function(source)&#123;
+     // some magic...
+     return content
+&#125;</code></pre>
+<p>loader 就是一个基于 CommonJS 规范的函数模块，它接受内容（这个内容可能是源文件也可能是经过其他 loader<br>处理后的结果），并返回新的内容。</p>
+<p>更进一步，我们知道在配置 webpack 时，对于 loader 可以增加一些配置，比如著名的 babel-loader 的简单配置：</p>
+<pre><code>module:&#123;
+    rules:[
+        &#123;
+            test: /\.js$/,
+            exclude: /node_modules/, 
+            loader: &quot;babel-loader&quot;,
+            options: &#123;
+                &quot;plugins&quot;: [
+                    &quot;dynamic-import-webpack&quot;
+                ]
+            &#125;
+        &#125;
+    ]
+&#125;</code></pre>
+<p>这样一来，上文简单的 loader 写法便不能满足需求了，因为我们除了 source 以外，还需要根据开发者配置的 options<br>信息进行处理，以输出最后结果。那么如何获取 options 呢？这时候就需要 loader-utils 模块了：</p>
+<pre><code>const loaderUtils = require(&quot;loader-utils&quot;)
+module.exports = function(source) &#123;
+    // 获取开发者配置的 options
+    const options = loaderUtils.getOptions(this)
+    // some magic...
+    return content
+&#125;</code></pre>
+<p>另外，对于 loader 返回的内容，在实际开发中，单纯对 content 进行改写并返回也许是不够的。</p>
+<p>比如，我们想对 loader 处理过程中的错误进行捕获，或者又想导出 sourceMap 等信息，该如何做呢？</p>
+<p>这种情况需要用到 loader 中的 this.callback 进行内容的返回。this.callback 可以传入四个参数，分别是：</p>
+<ul>
+<li>error：Error | null，当 loader 出错时向外抛出一个 error</li>
+<li>content：String | Buffer，经过 loader 编译后需要导出的内容</li>
+<li>sourceMap：为方便调试生成的编译后内容的 source map</li>
+<li>ast：本次编译生成的 AST 静态语法树，之后执行的 loader 可以直接使用这个 AST，进而省去重复生成 AST 的过程</li>
+</ul>
+<p>这样，我们的 loader 代码变得更加复杂，同时也能够处理更多样的需求：</p>
+<pre><code>module.exports = function(source) &#123;
+    // 获取开发者配置的 options
+    const options = loaderUtils.getOptions(this)
+    // some magic...
+    // return content
+    this.callback(null, content)
+&#125;</code></pre>
+<p><strong>注意</strong> 当我们使用 <code>this.callback</code> 返回内容时，该 loader 必须返回 <code>undefined</code>，这样 webpack 就知道该<br>loader 返回的结果在 <code>this.callback</code> 中，而不是 return 中。</p>
+<p><strong>细心的读者会问，这里的 this 指向谁？</strong> 事实上，这个 this 是一个叫 loaderContext 的 loader-runner<br>特有对象。如果刨根问底，就要细读 webpack loader 部分相关源码了，这并不是我们的主题，感兴趣的读者可以针对 webpack 源码再进行分析。</p>
+<p>默认情况下，webpack 传给 loader 的内容源都是 UTF-8 格式编码的字符串。但请思考 file-loader 这个常用的<br>loader，它不是处理文本文件，而是处理二进制文件的，这种情况下，我们可以通过：source instanceof Buffer === true<br>来判断内容源类型：</p>
+<pre><code>module.exports = function(source) &#123;
+    source instanceof Buffer === true
+    return source
+&#125;</code></pre>
+<p>如果自定义的 loader 也会返回二进制文件，需要在文件中显式注明：</p>
+<pre><code>module.exports.raw = true</code></pre>
+<p>当然，还存在异步 loader 的情况，即对 source 的处理并不能同步完成，这时候使用简单的 async-await 即可：</p>
+<pre><code>module.exports = async function(source) &#123;
+    function timeout(delay) &#123;
+        return new Promise((resolve, reject) =&gt; &#123;
+            setTimeout(() =&gt; &#123;
+                resolve(source)
+            &#125;, delay)
+        &#125;)
+    &#125;
+    const content = await timeout(1000)
+    this.callback(null, content)
+&#125;</code></pre>
+<p>另一种异步 loader 解决方案是使用 webpack 提供的 this.async，调用 this.async 会返回一个 callback<br>Function，在异步完成之后，我们进行调用。上面的示例代码可以改写为：</p>
+<pre><code>module.exports = async function(source) &#123;
+    function timeout(delay) &#123;
+        return new Promise((resolve, reject) =&gt; &#123;
+            setTimeout(() =&gt; &#123;
+                resolve(source)
+            &#125;, delay)
+        &#125;)
+    &#125;
+    const callback = this.async()
+    timeout(1000).then(data =&gt; &#123;
+        callback(null, data)
+    &#125;)
+&#125;</code></pre>
+<p>实际上，对于我们熟悉的 less-loader，翻看其源码，就能发现它的核心是利用 less 这个库来解析 less 代码，less 会返回一个<br>promise，因此 less-loader 是异步的，其实现正是运用了 this.async() 来完成。</p>
+<p>到此，我们了解了 loader 的编写套路，更多细节内容，比如 loader 缓存开关、全程传参 pitch<br>等用法不再过多讨论，读者可以根据需要进行了解，也欢迎在课程评论区大家一起讨论沟通。</p>
+<h4 id="实战案例"><a href="#实战案例" class="headerlink" title="实战案例"></a>实战案例</h4><p>工程师想要进阶，一定要“学以致用”，解决实际问题。我们现在来编写一个 path-replace-loader，这个 loader 将允许自定义替换<br>require 语句中的 base path 为动态指定 path，使用和配置方式为：</p>
+<pre><code>module.exports = &#123;
+    module: &#123;
+        rules: [&#123;
+            test: /\.js$/,
+            loader: &#39;path-replace-loader&#39;,
+            exclude: /(mode_modules)/,
+            options: &#123;
+                path: &#39;ORIGINAL_PATH&#39;,
+                replacePath: &#39;REPLACE_PATH&#39;
+            &#125;
+        &#125;]
+    &#125;
+&#125;</code></pre>
+<p>根据上面所介绍内容，我们给出 path-replace-loader 源码如下：</p>
+<pre><code>const fs = require(&#39;fs&#39;)
+const loaderUtils = require(&#39;loader-utils&#39;)
+
+module.exports = function(source) &#123;
+    this.cacheable &amp;&amp; this.cacheable()
+    const callback = this.async()
+    const options = loaderUtils.getOptions(this)
+
+    if (this.resourcePath.indexOf(options.path) &gt; -1) &#123;
+        const newPath = this.resourcePath.replace(options.path, options.replacePath)
+
+        fs.readFile(newPath, (err, data) =&gt; &#123;
+            if (err) &#123;
+                if (err.code === &#39;ENOENT&#39;) return callback(null, source)
+                return callback(err)
+            &#125;
+
+            this.addDependency(newPath)
+            callback(null, data)
+        &#125;)
+    &#125;
+    else &#123;
+        callback(null, source)
+    &#125;
+&#125;
+
+module.exports.raw = true </code></pre>
+<p>这只是一个简单的实例，但是涵盖了 loader 编写的不少内容，我们来简单分析一下：这是一个异步 loader，我们使用了下面，</p>
+<pre><code>const callback = this.async()
+// ...
+callback(null, data)</code></pre>
+<p>的返回方式。通过：</p>
+<pre><code>const options = loaderUtils.getOptions(this)
+// ...
+const newPath = this.resourcePath.replace(options.path, options.replacePath)</code></pre>
+<p>获取开发者的配置信息，并与 this.resourcePath（当前资源文件路径）比对，进行路径替换。</p>
+<p>对于错误的处理也很简单：如果新的目标路径文件不存在，则返回原路径文件：</p>
+<pre><code>if (err.code === &#39;ENOENT&#39;) return callback(null, source)</code></pre>
+<p>其它错误也一并通过 return callback(err) 抛出。</p>
+<p>主逻辑使用了 this.addDependency(newPath) 将新的文件加入到 webpack 依赖当中，并返回内容 callback(null,<br>data)。</p>
+<p>这个过程并不复杂，同时思路非常清晰，通过这个案例，读者可以根据自身团队需求，编写不同复杂度的 wepback loader，实现不同程度的拓展。</p>
+<h3 id="探秘并编写-webpack-plugin"><a href="#探秘并编写-webpack-plugin" class="headerlink" title="探秘并编写 webpack plugin"></a>探秘并编写 webpack plugin</h3><p>除了 webpack loader 这个核心概念以外，webpack plugin 是另一个重要话题。loader 和 plugin 就像 webpack<br>的双子星，有着共同之处，但是分工却很明晰。</p>
+<p>我们反复提到过 webpack <strong>事件流机制</strong> ，也就是说在 webpack<br>构建的生命周期中，会广播许多事件。这时候，开发中注册的各种插件，便可以根据需要监听与自身相关的事件。捕获事件后，在合适的时机通过 webpack 提供的<br>API 去改变编译输出结果。</p>
+<p>因此，我们可以总结出 loader 和 plugin 的 <strong>差异</strong> 。</p>
+<ul>
+<li>loader 其实就是一个转换器，执行单纯的文件转换操作。</li>
+<li>plugin 是一个扩展器，它丰富了 webpack 本身，在 loader 过程结束后，webpack 打包的整个过程中，weback plugin 并不直接操作文件，而是基于事件机制工作，监听 webpack 打包过程中的某些事件，见缝插针，修改打包结果。</li>
+</ul>
+<p><strong>究竟应该如何从零开始，编写一个 webpack 插件呢？</strong></p>
+<p>首先我们要清楚当前插件要解决什么问题，根据问题，找到相应的钩子事件，在相关事件中进行操作，改变输出结果。这就需要清楚开发中都有哪些钩子了，下面列举一些常用的，完整内容可以在官网找到：<a target="_blank" rel="noopener" href="https://webpack.js.org/api/compiler-hooks/">Compiler<br>暴露的所有事件钩子</a>。</p>
+<p>我们知道 compiler 对象暴露了和 webpack 整个生命周期相关的钩子，通过如下的方式访问：</p>
+<pre><code>//基本写法
+compiler.hooks.someHook.tap(...)</code></pre>
+<p>例如，如果希望 webpack 在读取 entry 配置完后就执行某项工作，我们可以：</p>
+<pre><code>compiler.hooks.entryOption.tap(...)</code></pre>
+<p>因为名字为 entryOption 的 SyncBailHook 类型 hook，就表明了入口配置信息执行完毕的事件，在相关 tap<br>函数中我们可以在这个时间节点插入操作。</p>
+<p>又如，如果希望在生成的资源输出之前执行某个功能，我们可以：</p>
+<pre><code>compiler.hooks.emit.tap(...)</code></pre>
+<p>因为名字为 emit 的 AsyncSeriesHook 类型 hook，就表明了资源输出前的时间节点。</p>
+<p>一个自定义 webpack plugin 的骨架结构就是一个带有 apply 方法的 class（用 prototype 实现同理<br>CustomPlugin.prototype.apply = function () {…}）：</p>
+<pre><code>class CustomPlugin &#123;
+    constructor(options) &#123;
+        this.options = options
+    &#125;
+    apply(compiler) &#123;
+        // 相关钩子注册回调
+        compiler.hooks.someHook.tap(&#39;CustomPlugin&#39;, () =&gt; &#123;
+            // magic here...
+        &#125;)
+
+        // 打印出此时 compiler 暴露的钩子
+        for(var hook of Object.keys(compiler.hooks))&#123;
+            console.log(hook)
+        &#125;
+    &#125;
+&#125;
+
+module.exports = customPlugin</code></pre>
+<p>除了 compiler 暴露了与 webpack 整体构建生命周期相关的钩子以外，compilation<br>也暴露了与模块和依赖有关的粒度更小的钩子，读者可以参考：<a target="_blank" rel="noopener" href="https://webpack.js.org/api/compilation-hooks/">compilation<br>暴露的所有事件钩子</a>，找到合适的时机插入自定义行为。</p>
+<p>其实 compilation 是 compiler 生命周期中的一个步骤，使用 compilation 相关钩子的通用写法为：</p>
+<pre><code>class CustomPlugin &#123;
+    constructor(options) &#123;
+        this.options = options
+    &#125;
+    apply(compiler) &#123;
+        compiler.hooks.compilation.tap(&#39;CustomPlugin&#39;, function(compilation, callback) &#123;
+            compilation.hooks.someOtherHook.tap(&#39;SomePlugin&#39;,function() &#123;
+                // some magic here
+            &#125;)
+        &#125;)
+    &#125;
+&#125;
+
+module.exports = customPlugin</code></pre>
+<p>最终，我们可以总结一下 webpack 插件的 <strong>套路</strong> 。</p>
+<ul>
+<li>定义一个 JavaScript class 函数，或在函数原型（prototype）中定义一个以 compiler 对象为参数的 apply 方法。</li>
+<li>apply 函数中通过 compiler 插入指定的事件钩子，在钩子回调中拿到 compilation 对象。</li>
+<li>使用 compilation 操纵修改 webapack 打包内容。</li>
+</ul>
+<p>当然，plugin 也存在异步的情况，一些事件钩子是异步的。相应地，我们可以使用 tapAsync 和 tapPromise 方法来处理：</p>
+<pre><code>class CustomAsyncPlugin &#123;
+    constructor(options) &#123;
+        this.options = options
+    &#125;
+    apply(compiler) &#123;
+        compiler.hooks.emit.tapAsync(&#39;CustomAsyncPlugin&#39;, function(compilation, callback) &#123;
+            setTimeout(() =&gt; &#123;
+                callback()
+            &#125;, 1000)
+        &#125;)
+
+        compiler.hooks.emit.tapPromise(&#39;CustomAsyncPlugin&#39;, function(compilation, callback) &#123;
+            return asyncFun().then(() =&gt; &#123;
+                //...
+            &#125;)
+        &#125;)
+    &#125;
+&#125;</code></pre>
+<h4 id="实战案例-1"><a href="#实战案例-1" class="headerlink" title="实战案例"></a>实战案例</h4><p>接下来，我们来编写一个简单的 webpack 插件。相信不少 React 开发者了解：在使用 <a target="_blank" rel="noopener" href="https://github.com/facebook/create-react-app">create-react-<br>app</a> 开发项目时，如果发生错误，会出现 error<br>overlay 提示。我们来开发一个类似的功能，使用如下代码：</p>
+<pre><code>module.exports = &#123;
+    // ...
+    plugins: [new ErrorOverlayPlugin()],
+    devtool: &#39;cheap-module-source-map&#39;,
+    devServer: &#123;&#125;
+&#125;</code></pre>
+<p>我们借助 errorOverlayMiddleware 中间件来进行错误拦截并展示：</p>
+<pre><code>import errorOverlayMiddleware fomt &#39;react-dev-utils/errorOverlayMiddleware&#39;
+
+class ErrorOverlayPlugin &#123;
+    apply(compiler) &#123;
+        const className = this.constructor.name
+        if (compiler.options.mode !== &#39;development&#39;) return
+
+        compiler.hooks.entryOption.tap(className, (context, entry) =&gt; &#123;
+            const chunkPath = require.resolve(&#39;./entry&#39;)
+            adjustEntry(entry, chunkPath)
+        &#125;) 
+
+        compiler.hooks.afterResolvers.tap(className, (&#123; options &#125;) =&gt; &#123;
+            if (options.devServer) &#123;
+                const originalBefore = options.devServer.before
+                option.devServer.before = (app, server) =&gt; &#123;
+                    if (originalBefore) &#123;
+                        originalBefore(app, server)
+                    &#125;
+                    app.use(errorOverlayMiddleware())
+                &#125;
+
+            &#125;
+        &#125;) 
+    &#125;
+&#125;
+
+function adjustEntry(entry, chunkPath) &#123;
+    if (Array.isArray(entry)) &#123;
+        if (!entry.includes(chunkPath)) &#123;
+            entry.unshift(chunkPath)
+        &#125;
+    &#125;
+    else &#123;
+        Object.keys(entry).forEach(entryName =&gt; &#123;
+            entry[name] = adjustEntry(entry[entryName], chunkPath)
+        &#125;)
+    &#125;
+&#125;
+
+module.exports = ErrorOverlayPlugin</code></pre>
+<p>参考实现源码，我们发现，编写一个 webpack plugin 确实并不困难，只需要开发者了解相关步骤，熟记相关钩子，并多加尝试即可。</p>
+<p>简单分析一下上面代码，在非生产环境下，不打开错误窗口，而是直接返回，以免影响线上体验：</p>
+<pre><code>if (compiler.options.mode !== &#39;development&#39;) return</code></pre>
+<p>在 entryOption hook 中，获取开发者配置的 entry 并通过 adjustEntry 方法获取正确的入口模块，该方法支持 entry<br>配置为 array 和 object 两种形式。在 afterResolvers hook 中，判断开发者是否开启<br>devServer，并对相关中间件进行调用 app.use(errorOverlayMiddleware())。</p>
+<p>实际生产环境当中，webpack pulgin 生态丰富多样，一般已有插件就可以满足大部分开发需求。如果团队结合自身业务需求，自主编写 webpack<br>plugin，进而反哺生态，非常值得鼓励。</p>
+<h4 id="webpack-plugin-开发重点"><a href="#webpack-plugin-开发重点" class="headerlink" title="webpack plugin 开发重点"></a>webpack plugin 开发重点</h4><p>本节目前为止所介绍的内容已经可以带领大家入门插件开发。学习过程中我们会发现，webpack 插件开发重点在于对 compilation 和 compiler<br>以及两者对应钩子事件的理解、运用。我们提到 webpack 的事件机制基于 tapable 库，因此想完全理解 webpack 事件和钩子，有必要学习<br>tapable 。</p>
+<p>事实上，tapable 更加复杂而“神通广大”，它除了提供同步和异步类型的钩子以外，又根据执行方式，串行/并行，衍生出<br>Bail、Waterfall、Loop 多种类型。站在 tapable 等的肩膀上，webpack 插件的开发更加灵活，可扩张性更强。</p>
+<p>学习的目的在于应用。相信通过本小节的学习，读者已经能够理解 webpack 开发插件的流程。根据项目需要和业务特点，手握 webpack<br>插件开发的理论钥匙，在实践中多摸索、多尝试，每个人都一定会有所收获。</p>
+<h3 id="webpack-VS-Rollup"><a href="#webpack-VS-Rollup" class="headerlink" title="webpack VS Rollup"></a>webpack VS Rollup</h3><p>Rollup 号称下一代打包方案，它的功能和特点非常突出：</p>
+<ul>
+<li>依赖解析，打包构建</li>
+<li>仅支持 ES Next 模块</li>
+<li>Tree shaking</li>
+</ul>
+<p>Rollup 凭借其清新且友好的配置，以及强大的功能横空出世，吸睛无数。</p>
+<p>可以说，Webpack 算得上目前最流行的打包方案，而 Rollup 是下一代打包方案，两者有何区别？目前业界对两者的定位，可以总结为一句话： <strong>建库使用<br>Rollup，其他场景使用 webpack。</strong></p>
+<p>为什么这么说呢？还记得我们在前面提的 webpack 打包结果吗？从结果上看，webpack<br>方案会生成比较多的冗余代码，这对于业务代码来说没什么问题，能保证较强的程序健硕性和语法还原度，兼容性保障更有利。也许开发者会关心代码量多带来的冗余问题，但衡量其优缺点和开发效率性价比，webpack<br>始终是业务开发的首选；但对于库来说就不一样了，相同的脚本，使用 Rollup 产出，复杂的模块冗余会完全消失。Rollup<br>通过将代码顺序引入同一个文件来解决模块依赖问题，因此，Rollup<br>做拆包的话就会有问题，原因是模块完全透明了，而在复杂应用中我们往往需要进行拆包，在库的编写中很少用到这样的功能。</p>
+<p>当然，“库使用 Rollup，其他场景使用 webpack”——这不是一个绝对的原则。如果你需要代码拆分（Code<br>Splitting），或者有很多静态资源需要处理，或者你构建的项目需要引入很多 CommonJS 规范的模块，再或者你需要拥有相对更大的社区支持，那么<br>webpack 是不错的选择。</p>
+<p>如果你的代码库基于 ES Next 模块，且希望自己写的代码能够被其他人直接使用，那么，你需要的打包工具可能就是 Rollup 。</p>
+<p>我们借用前面小节的代码，来看看经过 Rollup 编译之后的代码会成什么样子。</p>
+<p>main.js：</p>
+<pre><code>import sayHello from &#39;./hello.js&#39;
+console.log(sayHello(&#39;lucas&#39;))</code></pre>
+<p>hello.js：</p>
+<pre><code>const sayHello = name =&gt; `hello $&#123;name&#125;`
+export default sayHello</code></pre>
+<p>编译结果非常简单：</p>
+<pre><code>const sayHello = name =&gt; `hello $&#123;name&#125;`
+console.log(sayHello(&#39;lucas&#39;))</code></pre>
+<p>这与 webpack 的打包产出形成了鲜明差异。这种打包方式，天然支持 tree shaking，我们改写上例，加入一个没有用到的 sayHi 函数：</p>
+<p>main.js：</p>
+<pre><code>import &#123; sayHello &#125; from &#39;./hello.js&#39;
+
+console.log( sayHello( &#39;lucas&#39; ) )</code></pre>
+<p>hello.js：</p>
+<pre><code>export const sayHi = name =&gt; `hi $&#123;name&#125;`
+
+export const sayHello = name =&gt; `hello $&#123;name&#125;`</code></pre>
+<p>打包结果：</p>
+<pre><code>&#39;use strict&#39;;
+
+const sayHello = name =&gt; `hello $&#123;name&#125;`;
+console.log( sayHello( &#39;lucas&#39; ) );</code></pre>
+<p>通过顺序引入依赖，非常简单、清晰，并且自动做到了 tree shaking，其中的原理和更多话题我们将在“深入浅出模块化”相关内容继续说明。</p>
+<h3 id="综合运用"><a href="#综合运用" class="headerlink" title="综合运用"></a>综合运用</h3><p>至此，我们对于 webpack 已经有了较为深入的理解。但是，以上实战代码都是些较小型的 demo，综合运用这些知识到底能解决哪些问题呢？</p>
+<p>我这里有一个很好的例子。</p>
+<p>我们知道，2018<br>年号称小程序元年。以微信小程序为首，百度智能小程序、支付宝小程序、头条小程序纷纷入局。作为开发人员应该注意到，在带给开发无限红利的同时，由于各平台小程序的开发语法和技术方案不尽相同，因而也带来了巨大的多端开发成本。</p>
+<p>如果团队能够实现这样一个脚手架： <strong>以微信小程序为基础，将微信小程序的代码平滑转换为各端小程序，岂不大幅提高开发效率？</strong></p>
+<p>可是技术方案上，应该如何实现呢？受 <a target="_blank" rel="noopener" href="https://github.com/cantonjs">cantonjs</a><br>启发，我们团队打造了一款跨多端小程序脚手架，其 <strong>基本原理</strong> 正是以 webpack<br>开发架构为基础，对于微信小程序的规范化打包，以及不同平台的差异化编译，主要依靠自定义实现 webpack loader 和 webpack plugin<br>来填平。</p>
+<p>在这套脚手架基础上，开发者可以选择任何一套小程序源代码（基于微信小程序/支付宝小程序/百度小程序）来开发多端小程序。脚手架支持自动编译 wxml<br>文件（微信小程序）为 axml 文件（支付宝小程序）或 swan 文件（百度小程序），能够转换基础平台 API： wx（微信小程序核心对象） 为<br>my（支付宝小程序核心对象） 或 swan（百度小程序核心对象），反之亦然。对于个别接口在平台上的天生差异，开发者可以通过 <code>__WECHAT__</code> 或<br><code>__ALIPAY__</code> 或 <code>__BAIDU__</code> 来动态处理。</p>
+<p>具体细节，我们可以通过 DefinePlugin 这个 webpack 内置插件在 webpack 编译阶段注册全局变量： <code>__WECHAT__</code> 或<br><code>__ALIPAY__</code> 或 <code>__BAIDU__</code>。</p>
+<pre><code>new webpack.DefinePlugin(&#123;
+  // Definitions...
+&#125;)</code></pre>
+<p>通过 webpack loader 使 webpack 能编译或处理 *.wxml 上引用的文件，并将原 App 中的 API 进行转换，使用方式与正常的<br>webpack 配置 loader 完全相同：</p>
+<pre><code>&#123;
+  test: /\.wxml$/,
+  include: /src/,
+  use: [
+    &#123;
+      loader: &#39;file-loader&#39;,
+      options: &#123;
+        name: &#39;[name].[ext]&#39;,
+        useRelativePath: true,
+        context: resolve(&#39;src&#39;),
+      &#125;,
+    &#125;,
+    &#123;
+      loader: &#39;mini-program-loader&#39;,
+      options: &#123;
+        root: resolve(&#39;src&#39;),
+        enforceRelativePath: true,
+      &#125;,
+    &#125;,
+  ],
+&#125;</code></pre>
+<p>注意，我们声明 loader 的顺序表明先通过 mini-program-loader 处理，其结果交给 file-loader 处理。mini-<br>program-loader 的实现并不复杂，我们通过 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/sax">sax.js</a> 解析<br>wxml （XML 风格）文件，进行 API 转换。sax.js 是解析 XML 或者 HTML<br>的基础库，正好适用于我们各端小程序的主文档文件（wxml、swan、axml）。</p>
+<p>通过 webpack-plugin 插件实现自动分析 ./app.js 入口文件，并智能打包，同时抹平 API 差异。</p>
+<pre><code>import MiniProgramWebpackPlugin from &#39;mini-program-webpack-plugin&#39;
+export default &#123;
+  // ...configs,
+  plugins: [
+    // ...other,
+    new MiniProgramWebpackPlugin(options)
+  ],
+&#125;</code></pre>
+<p>在这两个 loader 和 plugin 的基础上，我们实现的这个脚手架构建，通过 script 脚本，启动不同目标的小程序平台编译：yarn<br>start、yarn start:alipay、yarn start:baidu，同时开发者可以根据自身项目特点，添加 prettier 和 lint<br>标准等。</p>
+<p>到此，一个基于 webpack、webpack loader、webpack plugin 的脚手架综合应用从场景到实现已经简要介绍完毕。</p>
+<p>通过这个案例，我们发现 webpack 的能力边界是无穷的，以高级前端工程师为目标的程序员，应该尽最大努力来开发 webpack 的潜能。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>正如本课程的标题所示： <strong>webpack 工程师 &gt; 前端工程师</strong>。 webpack 要求的不仅仅是“配置工程师”那么简单，其后蕴含的 Node.js<br>知识、AST<br>知识、架构设计、代码设计原则等非常值得玩味。我们不应该畏难，社区为我们提供了大量的开箱即用工具，借助这些工具，希望大家能够掌握这方面的知识，并在此基础上运用自如。</p>
+<p>课程代码仓库：<a target="_blank" rel="noopener" href="https://github.com/HOUCe/lucas-gitchat-courses">https://github.com/HOUCe/lucas-gitchat-courses</a></p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>请大家留言分享自己开发实践中「前端工程化」相关的趣事。阅读文章过程中有任何疑问随时可以跟其他小伙伴讨论，或者直接向作者 LucasHC<br>提问（作者看到后会抽空解答）。 <strong>你的分享不仅帮助他人，更会提升自己。</strong></p>
+<p>你也可以说说自己最想了解的主题，课程内容会根据部分读者的意见和建议迭代和完善。</p>
+<blockquote>
+<p><strong>为了方便与作者交流与学习，GitChat 编辑团队组织了一个《前端开发核心知识进阶》读者交流群，添加小姐姐-<br>泰勒微信：「GitChatty5」，回复关键字「105」给小姐姐获取入群资格。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/027--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8B%EF%BC%89/">https://jinxiaochuan.github.io/matrix/2020/12/22/advanced/027--webpack%20%E5%B7%A5%E7%A8%8B%E5%B8%88%E5%92%8C%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%88%E4%B8%8B%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/2020/12/22/advanced/050--%E4%B8%8D%E5%8F%AF%E5%BF%BD%E8%A7%86%E7%9A%84%E5%89%8D%E7%AB%AF%E5%AE%89%E5%85%A8%20-%20%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8%E9%89%B4%E6%9D%83%E8%AE%BE%E8%AE%A1/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶50 | 不可忽视的前端安全 - 单页应用鉴权设计</div></div></a></div><div class="next-post pull-right"><a href="/matrix/2020/12/22/advanced/039--%E6%8F%AD%E7%A7%98%E5%89%8D%E7%AB%AF%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%88%E4%B8%8B%EF%BC%89/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶39 | 揭秘前端设计模式（下）</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#webpack-%E5%B7%A5%E4%BD%9C%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">webpack 工作基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91-AST"><span class="toc-number">1.1.</span> <span class="toc-text">抽象语法树 AST</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#compiler-%E5%92%8C-compilation"><span class="toc-number">1.2.</span> <span class="toc-text">compiler 和 compilation</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A2%E7%A7%98%E5%B9%B6%E7%BC%96%E5%86%99-webpack-loader"><span class="toc-number">2.</span> <span class="toc-text">探秘并编写 webpack loader</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-number">2.1.</span> <span class="toc-text">实战案例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A2%E7%A7%98%E5%B9%B6%E7%BC%96%E5%86%99-webpack-plugin"><span class="toc-number">3.</span> <span class="toc-text">探秘并编写 webpack plugin</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B-1"><span class="toc-number">3.1.</span> <span class="toc-text">实战案例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#webpack-plugin-%E5%BC%80%E5%8F%91%E9%87%8D%E7%82%B9"><span class="toc-number">3.2.</span> <span class="toc-text">webpack plugin 开发重点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webpack-VS-Rollup"><span class="toc-number">4.</span> <span class="toc-text">webpack VS Rollup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%BC%E5%90%88%E8%BF%90%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">综合运用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">7.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

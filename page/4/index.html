@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matrix - Blog</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前端攻城狮">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Matrix">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/page/4/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="前端攻城狮">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jinxiaochuan.github.io/matrix/null">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jinxiaochuan.github.io/matrix/null"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/page/4/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2020-12-22 20:51:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">Matrix</h1><div id="site-subtitle"><span id="subtitle"></span></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/004--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶04 | 老司机也会在闭包相关知识点翻车（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶04 | 老司机也会在闭包相关知识点翻车（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/004--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶04 | 老司机也会在闭包相关知识点翻车（下）">核心进阶04 | 老司机也会在闭包相关知识点翻车（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">有了上一课的理论知识，这一课我们来分析例题。
+我们再次列出「闭包」主题的知识点：
+
+例题分析接下来，我们通过几道题目来加深理解闭包。
+实战例题 1：求下面代码的输出const foo = (function() &#123;
+    var v = 0
+    return () =&gt; &#123;
+        return v++
+    &#125;
+&#125;())
+
+for (let i = 0; i &lt; 10; i++) &#123;
+    foo()
+&#125;
+
+console.log(foo())
+答案：10
+例题 1 分析foo 是一个立即执行函数，我们尝试打印 foo：
+const foo = (function() &#123;
+    var v = 0
+    return () =&gt; &#123;
+        return v++
+    &#125;
+&#125;())
+
+console.log(foo)
+输出：
+() =&gt; &#123;
+    return v++
+&#125;
+在循环执行时，执行 foo()，这样 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/006--JavaScript%20%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%92%8C%E9%AB%98%E9%A2%91%E8%80%83%E7%82%B9%E6%A2%B3%E7%90%86/" title="核心进阶06 | JavaScript 知识图谱和高频考点梳理">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶06 | JavaScript 知识图谱和高频考点梳理"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/006--JavaScript%20%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E5%92%8C%E9%AB%98%E9%A2%91%E8%80%83%E7%82%B9%E6%A2%B3%E7%90%86/" title="核心进阶06 | JavaScript 知识图谱和高频考点梳理">核心进阶06 | JavaScript 知识图谱和高频考点梳理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">今天这一课，让我们来放松一下：不再去解剖概念、分析题目，而是了解一下 JavaScript知识点和高频考点，在更高的层面上对我们所学、以及将要学到的内容有一个更加清晰的认识。
+为什么不在一开始介绍这个主题呢？相信读者经过几章节的学习，已经对本课程有了一个初步印象。在这个基础上，此时进行知识图谱和高频考点梳理，我认为能让大家能好的进入接下来章节，进行更加深入的内容。
+知识图谱和重要考点
+本课程中的 JavaScrip 部分，会面向进阶，一些基础的概念点，如流程控制语句、运算操作符、基本方法等不会再过多介绍，相反在 ES语言演进、具体方案解决、编程思维、算法、工程化和框架等方面展开。
+其中，编程思维、JavaScript 框架、工程化三个主题分别属于课程中的三大部分，系统地进行介绍；this 相关话题、ES语言演进、异步、原型原型链、面向对象、数据类型、闭包、作用域、执行上下文、内存管理分别在独立的章节中展开；函数相关、重要 APIs等内容，会融入到具体文章内容中进行渗透。
+另外，图中虽然一些有强关联的知识模块已经用虚线画出，但是整个内容都是融会贯通的。在本课程中的一些章节会进行梳理，比如 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/009--%E5%BC%82%E6%AD%A5%E4%B8%8D%E5%8F%AF%E6%80%95%E2%80%9C%E6%AD%BB%E8%AE%B0%E7%A1%AC%E8%83%8C%E2%80%9D+%20%E5%AE%9E%E8%B7%B5%E6%8B%BF%E4%B8%8B%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶09 | 异步不可怕“死记硬背”+ 实践拿下（下）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶09 | 异步不可怕“死记硬背”+ 实践拿下（下）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/009--%E5%BC%82%E6%AD%A5%E4%B8%8D%E5%8F%AF%E6%80%95%E2%80%9C%E6%AD%BB%E8%AE%B0%E7%A1%AC%E8%83%8C%E2%80%9D+%20%E5%AE%9E%E8%B7%B5%E6%8B%BF%E4%B8%8B%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶09 | 异步不可怕“死记硬背”+ 实践拿下（下）">核心进阶09 | 异步不可怕“死记硬背”+ 实践拿下（下）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">上一讲了解了如何优雅地处理复杂异步任务。这一讲，我们回归理论，研究“同步异步”到底是个什么样的概念。我们从例题入手，梳理一下相关面试考点。这些题目有一个共同特点，判断输入输出的顺序：这是一类面试的“必考题”，考察点围绕着JavaScript 和浏览器引擎交织的异步行为，包括 eventloop、宏任务、微任务等。
+再次重复相关知识点，如下：
+
+setTimeout 相关考察观察以下代码：
+setTimeout(() =&gt; &#123;
+    console.log(&#39;setTimeout block&#39;)
+&#125;, 100)
+
+while (true) &#123;
+
+&#125;
+
+console.log(&#39;end here&#39;)
+将不会有任何输出。
+原因很简单，因为 while 循环会一直循环代码块，因此主线程将会被占用。
+但是：
+setTimeout(() =&gt; &#123;
+    while (true) &#123;
+
+    &#125;
+&#125;, 0)
+
+console.log(&#39;end here&#39;) ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶23 | 从框架和类库，我们该学到什么"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">核心进阶23 | 从框架和类库，我们该学到什么</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">我记得作为实习生时，第一个独立前端项目是为欧洲天然气石油系统做一个计费应用：在地图上，用户可以和地图交互，从欧亚大陆任何一个石油气点为起点，到任何一个石油气点作为终点，计算出沿途所有的路径运输方案以及计费详情，还要支持各种终端的查询以及打印，这是一个纯JavaScript 单页面应用 + Severless 的项目。
+实习期满离职前我进行复盘：繁多的原生 JavaScript APIs 让我无语，兼容性让我崩溃，“如果我一开始就选用 jQuery 做该多好！” ，tooyoung too simple。这时候再让我复盘，“jQuery 也不适用那样一个单页应用，我为什么不用 React 或者 Vue？”果然sometimes naive。
+前端框架确实一直在演进、发展，那么框架除了简化我们的操作外，我们还能从中学到什么？这一讲，我就对这个开放性话题进行展开。本节课内容比较轻松，没有大量的代码案例，让我们来舒缓一下，但请读者在阅读时始终思考——“从框架和类库，我们该学到什么”这一问题。
+Vue 和 React 加其生态方案使得 Vue 和 React 不再是单纯的视图层类库，因此下面我们 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">核心进阶24 | 深入浅出模块化（含 tree shaking）（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">模块化是工程化的基础 ：只有能将代码模块化，拆分为合理单元，才具备调度整合的能力，才有架构和工程一说。早期，JavaScript只是作为浏览器端脚本语言出现，只负责简单的页面交互，并不具备先天的模块化能力。
+随着 Node.js 的发展和 ES的演进，模块化如今在前端领域早已经不新鲜。但是，对于模块化我们不应该只停留在了解、会用的基础上，还要深入其中，认识在这个演进过程中：
+
+模块化经历了怎样的发展历程，从中我们能学习到哪些知识？
+跟其他早已发展成熟的语言相比，JavaScript 语言的模块化又有哪些特点？
+新的模块化 feature 又有哪些？dynamic import 现在停留在哪个阶段？
+
+让我们通过本节课程达成这一目标。 不同于社区上常见的文章，我们并不会把焦点放在介绍各种模块化方案的使用方法上，而是直接剖析其实现，分析标准的制定。
+这个主题的知识点如下：
+
+接下来，我们通过 2 节内容来学习这个主题。
+模块化简单概念到底什么是模块化？简单来说就是：对于一个复杂的应用程序，与其将所有代码一股脑地放在一个文件当中，不如按照一定的语法，遵循确定的规则（规范）拆分成几个互相独立的 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/002--%E4%B8%80%E7%BD%91%E6%89%93%E5%B0%BD%20this%EF%BC%8C%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E8%AF%B4%20Yes/" title="核心进阶02 | 一网打尽 this，对执行上下文说 Yes">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶02 | 一网打尽 this，对执行上下文说 Yes"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/002--%E4%B8%80%E7%BD%91%E6%89%93%E5%B0%BD%20this%EF%BC%8C%E5%AF%B9%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87%E8%AF%B4%20Yes/" title="核心进阶02 | 一网打尽 this，对执行上下文说 Yes">核心进阶02 | 一网打尽 this，对执行上下文说 Yes</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">JavaScript 中的this，因其灵活的指向、复杂的使用场景一直是面试中的热点，不论是初级还是中高级开发者，这都是一道必考题。这个概念虽然基础，但是非常重要，是否能深刻理解this，是前端 JavaScript 中进阶的重要一环。this 指向多变，很多隐蔽的 bug 都缘于它。与此同时，this强大灵活，如果能熟练驾驭，就会写出更简洁、优雅的代码。
+社区上对于 this 的讲解虽然不少，但缺乏统一梳理。本节课，让我们直面 this 的方方面面，并通过例题真正领会与掌握 this。
+this 相关知识点如下：
+
+this 到底指向谁曾经在面试阿里某重点部门时，面试官从多个角度考察过我对 this 的理解：全局环境下的this、箭头函数的 this、构造函数的this、this 的显隐性和优先级，等等。尽管我能一一作答，可是最后的问题： 请用一句话总结this 的指向，注意只用一句话。我却犯难了。
+有一种广泛流传的说法是：
+
+谁调用它，this 就指向谁。
+
+也就是说，this 的指向是在调用时确定的。这么说没有太大的问题，可是并不全面。面试官要求我用更加规范的语言进行总结，那么他 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶03 | 老司机也会在闭包相关知识点翻车（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶03 | 老司机也会在闭包相关知识点翻车（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/003--%E8%80%81%E5%8F%B8%E6%9C%BA%E4%B9%9F%E4%BC%9A%E5%9C%A8%E9%97%AD%E5%8C%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E7%82%B9%E7%BF%BB%E8%BD%A6%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶03 | 老司机也会在闭包相关知识点翻车（上）">核心进阶03 | 老司机也会在闭包相关知识点翻车（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">闭包是 JavaScript 中最基本也是最重要的概念之一，很多开发者都对它“了如指掌”。可是闭包又绝对不是一个单一的概念：它涉及作用域、作用域链、执行上下文、内存管理等多重知识点。不管是新手还是“老司机”，经常会出现“我觉得我弄懂了闭包，但是还会在一些场景翻车”的情况。这一课我们就对这个话题进行梳理，并最后以“应试题”来强化理解闭包。
+先看一下跟闭包相关的知识点：
+
+接下来将通过两课的内容来学习这个主题。
+基本知识作用域作用域其实就是一套规则：这个规则 用于确定在特定场景下如何查找变量。任何语言都有作用域的概念，同一种语言在演进过程中也会不断完善其作用域规则。比如，在 JavaScript 中，ES6出现之前只有函数作用域和全局作用域之分。
+函数作用域和全局作用域大家应该非常熟悉 函数作用域 了：
+function foo() &#123;
+    var a = &#39;bar&#39;
+    console.log(a)
+&#125;
+foo()
+执行 foo 函数时，变量 a 在函数 foo 作用域内，函数体内可以正常访问，并输出 bar。
+而当：
+var b = &#39 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/005--%E6%88%91%E4%BB%AC%E4%B8%8D%E8%83%8C%E8%AF%B5%20API%EF%BC%8C%E5%8F%AA%E5%AE%9E%E7%8E%B0%20API/" title="核心进阶05 | 我们不背诵 API，只实现 API">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶05 | 我们不背诵 API，只实现 API"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/005--%E6%88%91%E4%BB%AC%E4%B8%8D%E8%83%8C%E8%AF%B5%20API%EF%BC%8C%E5%8F%AA%E5%AE%9E%E7%8E%B0%20API/" title="核心进阶05 | 我们不背诵 API，只实现 API">核心进阶05 | 我们不背诵 API，只实现 API</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">有不少刚入行的同学跟我说：“JavaScript 很多 API 记不清楚怎么办？数组的这方法、那方法总是傻傻分不清楚，该如何是好？操作 DOM的方式今天记、明天忘，真让人奔溃！”甚至有的开发者在讨论面试时，总向我抱怨：“面试官总爱纠结 API 的使用，甚至 jQuery某些方法的参数顺序都需要让我说清楚！”
+我认为，对于反复使用的方法，所有人都要做到“机械记忆”，能够反手写出。一些貌似永远记不清的 API 只是因为用得不够多而已。
+在做面试官时，我从来不强求开发者准确无误地“背诵” API。相反，我喜欢从另外一个角度来考察面试者：“既然记不清使用方法，那么我告诉你它的使用方法，你来实现一个吧！ ”实现一个 API，除了可以考察面试者对这个 API的理解，更能体现开发者的编程思维和代码能力。对于积极上进的前端工程师，模仿并实现一些经典方法，应该是“家常便饭”，这是比较基本的要求。
+本小节，我根据了解的面试题目和作为面试官的经历，挑了几个典型的 API，通过对其不同程度，不同方式的实现，来覆盖 JavaScript中的部分知识点和编程要领 。通过学习本节内容，期待你不仅能领会代码奥义，更应 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/matrix/2020/12/22/advanced/007--%E5%85%B6%E4%BB%96%E5%9F%BA%E7%A1%80%E9%A2%98%E5%BA%93/" title="核心进阶07 | 其他基础题库">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶07 | 其他基础题库"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/007--%E5%85%B6%E4%BB%96%E5%9F%BA%E7%A1%80%E9%A2%98%E5%BA%93/" title="核心进阶07 | 其他基础题库">核心进阶07 | 其他基础题库</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">此节课程前，我们已经梳理了 JavaScript 当中 this、执行上下文、作用域、闭包、几个 APIs实现等基础内容。在下一部分中，我们也将认识到原型、原型链、异步等知识。除了以上罗列的概念外，在 JavaScript中还存在一些较为“细小”，却至关重要的概念和细节。这些内容看似零碎，但它们是 JavaScript基础拼图的重要环节，是代码的基本单元，甚至在面试中也是单独的考察点。这一节，我们将对这些“其他”内容进行梳理。
+主要关键字包括：类型（类型判断，类型转换，源码分析等），函数参数引用，相关面试题目分析等。
+如图：
+
+JavaScript 类型及其判断JavaScript 具有七种内置数据类型，它们分别是：
+
+null
+undefined
+boolean
+number
+string
+object
+symbol
+
+其中，前面五种为基本类型。第六种 object 类型又具体包含了 function、array、date 等。
+对于这些类型的判断，我们常用的方法有：
+
+typeof
+instanceof
+Object.prototype.toString
+constructor
+
+ ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/matrix/2020/12/22/advanced/008--%E5%BC%82%E6%AD%A5%E4%B8%8D%E5%8F%AF%E6%80%95%E2%80%9C%E6%AD%BB%E8%AE%B0%E7%A1%AC%E8%83%8C%E2%80%9D+%20%E5%AE%9E%E8%B7%B5%E6%8B%BF%E4%B8%8B%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶08 | 异步不可怕“死记硬背”+ 实践拿下（上）">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶08 | 异步不可怕“死记硬背”+ 实践拿下（上）"></a></div><div class="recent-post-info"><a class="article-title" href="/matrix/2020/12/22/advanced/008--%E5%BC%82%E6%AD%A5%E4%B8%8D%E5%8F%AF%E6%80%95%E2%80%9C%E6%AD%BB%E8%AE%B0%E7%A1%AC%E8%83%8C%E2%80%9D+%20%E5%AE%9E%E8%B7%B5%E6%8B%BF%E4%B8%8B%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶08 | 异步不可怕“死记硬背”+ 实践拿下（上）">核心进阶08 | 异步不可怕“死记硬背”+ 实践拿下（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-12-22T12:51:17.440Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></span></div><div class="content">异步是前端开发的一个重点内容，也是难点之一。JavaScript语言在各个历史阶段，为更优雅地实现异步，进行过多种尝试。但是由于异步天生的“复杂度”，使得开发者并不能够轻松地吃透理论并上手实践。
+理论方面， 我们知道 JavaScript 是单线程的，那它又是如何实现异步的呢？在这个环节中，浏览器或 NodeJS又起到了什么样的作用？什么是宏任务，什么是微任务？
+实践上， 从 callback 到 promise，从 generator 到 async/await，到底应该如何更优雅地实现异步操作？
+本课让我们来一探究竟。
+相关知识点如下：
+
+整个内容分为两节课：第一节课，实践上，我们从需求开始慢慢打磨，让我们都能成为运筹帷幄的“老司机”；第二节课，从多种例题入手，分析语言和浏览器行为。
+另外，由于这门课程的目标是“进阶”， 这里不会再单独介绍类似 Promise 的使用，async/await等基本概念和知识点请大家提前做好相关知识储备。
+异步流程初体验让我们先从一个需求开始，来实现一个“运动路径动画”流程：
+
+移动页面上元素 target（document.querySelecto ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/matrix/page/3/"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/matrix/">1</a><span class="space">&hellip;</span><a class="page-number" href="/matrix/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/matrix/page/5/">5</a><a class="page-number" href="/matrix/page/6/">6</a><a class="extend next" rel="next" href="/matrix/page/5/"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="01 | 项目基石：前端脚手架工具探秘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/engineering/01/" title="01 | 项目基石：前端脚手架工具探秘">01 | 项目基石：前端脚手架工具探秘</a><time datetime="2020-12-22T12:51:17.448Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶30 | 代码规范工具及背后技术设计（上）"/></a><div class="content"><a class="title" href="/matrix/2020/12/22/advanced/030--%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7%E5%8F%8A%E8%83%8C%E5%90%8E%E6%8A%80%E6%9C%AF%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶30 | 代码规范工具及背后技术设计（上）">核心进阶30 | 代码规范工具及背后技术设计（上）</a><time datetime="2020-12-22T12:51:17.444Z" title="发表于 2020-12-22 20:51:17">2020-12-22</time></div></div></div></div></div><div class="card-widget card-archives"><div class="card-content"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/matrix/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">53</span></a></li></ul></div></div><div class="card-widget card-webinfo"><div class="card-content"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">53</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2020-12-22T12:51:32.990Z"></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

@@ -1,5 +1,6 @@
 ---
 title: 核心进阶36 | 以 React 为例，说说框架和性能（上）
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 在上一节课中，我们提到了性能优化。在这个话题上，除了工程化层面的优化和语言层面的优化以外，框架性能也备受瞩目。这一节课，我们就来聊聊框架的性能话题，并以

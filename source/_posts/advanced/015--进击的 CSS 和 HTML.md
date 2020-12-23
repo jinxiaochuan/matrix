@@ -1,5 +1,6 @@
 ---
 title: 核心进阶15 | 进击的 CSS 和 HTML
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 通过前面的课程介绍，我们认识到了 JavaScript 语言的飞速发展。其实 HTML 和 CSS 也不断“要求着”进步，本节课程我们就来了解一下发展中的

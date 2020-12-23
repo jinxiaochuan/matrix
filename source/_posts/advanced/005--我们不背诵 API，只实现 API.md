@@ -1,5 +1,6 @@
 ---
 title: 核心进阶05 | 我们不背诵 API，只实现 API
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 有不少刚入行的同学跟我说：“JavaScript 很多 API 记不清楚怎么办？数组的这方法、那方法总是傻傻分不清楚，该如何是好？操作 DOM

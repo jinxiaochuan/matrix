@@ -1,0 +1,21 @@
+# Avatar (頭像)
+avatar:
+  img: https://cdn.byai.com/static/oss-script/24f46d0537131bf25d5519070dbfd06d.jpeg?x-oss-process=image/crop,x_0,y_120,w_1000,h_1000
+
+# The banner image of home page
+index_img: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpicture.ik123.com%2Fuploads%2Fallimg%2F150630%2F17-150630101A3.jpg&refer=http%3A%2F%2Fpicture.ik123.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611287059&t=922484cba7ead0ec07a92b2cd910f495
+
+# If the banner of page not setting, it will show the top_img
+default_top_img: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.pconline.com.cn%2Fimages%2Fupload%2Fupc%2Ftx%2Fwallpaper%2F1212%2F05%2Fc1%2F16366597_1354692861084.jpg&refer=http%3A%2F%2Fimg.pconline.com.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611287124&t=d35184ebb5b9459d5e218a0d714601b0
+
+# The banner image of archive page
+archive_img:
+
+# If the banner of tag page not setting, it will show the top_img
+# note: tag page, not tags page (子標籤頁面的 top_img)
+tag_img:
+
+# Replace Broken Images (替換無法顯示的圖片)
+error_img:
+  flink: https://ss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/wh%3D680%2C800/sign=23605bff60600c33f02cd6ce227c7d37/b64543a98226cffc56142759b2014a90f603ea1b.jpg
+  post_page: https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1142711901,1643279206&fm=26&gp=0.jpg

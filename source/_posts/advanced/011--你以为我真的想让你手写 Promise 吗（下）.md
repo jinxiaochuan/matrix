@@ -1,5 +1,6 @@
 ---
 title: 核心进阶11 | 你以为我真的想让你手写 Promise 吗（下）
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 在上一讲中，我们渐进式地实现了一个貌似能工作的 Promise，并配以实例进行完善。如果你觉得已经接近“大功告成”了，其实这才刚刚开始。Promise

@@ -1,5 +1,6 @@
 ---
 title: 核心进阶10 | 你以为我真的想让你手写 Promise 吗（上）
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 通过前面几节课的学习，我们认识到：想优雅地进行异步操作，必须要熟识一个极其重要的概念 ——

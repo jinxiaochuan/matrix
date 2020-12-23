@@ -1,5 +1,6 @@
 ---
 title: FE Algorithm - 阶乘
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic4.zhimg.com%2Fv2-1ef0181f71fe1bd731f172ff3b0fc2d3_1200x500.jpg&refer=http%3A%2F%2Fpic4.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611282995&t=42ae5101c61f264a349c808013a9c512
 ---
 
 ## 阶乘

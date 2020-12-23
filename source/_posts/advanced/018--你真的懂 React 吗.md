@@ -1,5 +1,6 @@
 ---
 title: 核心进阶18 | 你真的懂 React 吗
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 这一讲我们来重点解析一下 React，说 React 是前端中最受瞩目的框架其实并不夸张。React 推出之后，很快风靡业界，并且 React

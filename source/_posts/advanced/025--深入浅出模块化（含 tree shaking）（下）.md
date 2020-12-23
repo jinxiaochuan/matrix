@@ -1,5 +1,6 @@
 ---
 title: 核心进阶25 | 深入浅出模块化（含 tree shaking）（下）
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2F00.minipic.eastday.com%2F20170818%2F20170818115256_d41d8cd98f00b204e9800998ecf8427e_1.jpeg&refer=http%3A%2F%2F00.minipic.eastday.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1611283231&t=82f18a3b7b8ad76bf906bc78635e5360
 ---
 
 本节课程，让我们继续模块化的话题。在此之前，先来回顾一下这个主题的知识点：

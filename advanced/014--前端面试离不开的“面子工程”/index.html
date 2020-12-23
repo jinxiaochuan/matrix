@@ -1,0 +1,577 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶14 | 前端面试离不开的“面子工程” | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="我们都知道前端开发中的“三驾马车”：HTML + CSS + JavaScript。从难易程度、受关注程度上来讲，显然 JavaScript始终处于核心地位。但是这并不意味着 HTML 和 CSS 不重要，如果你轻视它们，那么也许会在工作开发中、甚至面试中吃亏。 作为多年的面试官，我的考察重点无疑是 JavaScript，但在面试过程中，每次也总是会“蜻蜓点水”下，这足以了解候选者对待 HTML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶14 | 前端面试离不开的“面子工程”">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/advanced/014--%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%A6%BB%E4%B8%8D%E5%BC%80%E7%9A%84%E2%80%9C%E9%9D%A2%E5%AD%90%E5%B7%A5%E7%A8%8B%E2%80%9D/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="我们都知道前端开发中的“三驾马车”：HTML + CSS + JavaScript。从难易程度、受关注程度上来讲，显然 JavaScript始终处于核心地位。但是这并不意味着 HTML 和 CSS 不重要，如果你轻视它们，那么也许会在工作开发中、甚至面试中吃亏。 作为多年的面试官，我的考察重点无疑是 JavaScript，但在面试过程中，每次也总是会“蜻蜓点水”下，这足以了解候选者对待 HTML">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-23T02:19:57.208Z">
+<meta property="article:modified_time" content="2020-12-23T02:19:57.208Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/advanced/014--%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%A6%BB%E4%B8%8D%E5%BC%80%E7%9A%84%E2%80%9C%E9%9D%A2%E5%AD%90%E5%B7%A5%E7%A8%8B%E2%80%9D/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-23 10:19:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶14 | 前端面试离不开的“面子工程”</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-23T02:19:57.208Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-23T02:19:57.208Z" title="更新于 2020-12-23 10:19:57">2020-12-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>我们都知道前端开发中的“三驾马车”：HTML + CSS + JavaScript。从难易程度、受关注程度上来讲，显然 JavaScript<br>始终处于核心地位。但是这并不意味着 HTML 和 CSS 不重要，如果你轻视它们，那么也许会在工作开发中、甚至面试中吃亏。</p>
+<p>作为多年的面试官，我的考察重点无疑是 JavaScript，但在面试过程中，每次也总是会“蜻蜓点水”下，这足以了解候选者对待 HTML 和 CSS<br>的态度以及了解程度。其实事实上，HTML 和 CSS 也有很多有趣的内容，下面就让我们在复习重点知识的同时，了解一些前沿用法。</p>
+<p>这一讲，我挑选出了 HTML 和 CSS 几个关键概念，不去力求“面面俱到”，但希望给大家带来新的启发。</p>
+<p>相关知识点如下：</p>
+<p><img src="https://images.gitbook.cn/db85d420-88e5-11e9-b068-5302ecb579f2"></p>
+<h3 id="如何理解-HTML-语义化"><a href="#如何理解-HTML-语义化" class="headerlink" title="如何理解 HTML 语义化"></a>如何理解 HTML 语义化</h3><p>HTML 语义化——这个概念其实诞生了挺长时间，我经常发现在面试 JD（Job Description） 中出现要求候选者“了解 HTML 语义化”、“对<br>HTML 语义化有深刻认知”的需求。对于这么一句 JD 范式标配，如果面试官真的问起，该如何回答呢？</p>
+<h4 id="语义化是什么、为什么、怎么做"><a href="#语义化是什么、为什么、怎么做" class="headerlink" title="语义化是什么、为什么、怎么做"></a>语义化是什么、为什么、怎么做</h4><p>简单来说，HTML 语义化就是：</p>
+<blockquote>
+<p>根据结构化的内容，选择合适的标签。</p>
+</blockquote>
+<p>那么为什么要做到语义化呢？</p>
+<p>直观上很好理解，“合适的标签”是内容表达的高度概括，这样浏览器爬虫或者任何机器在读取 HTML 时，都能更好地理解，进而解析效率更高。这样带来的收益如下：</p>
+<ul>
+<li>有利于 SEO</li>
+<li>开发维护体验更好</li>
+<li>用户体验更好（如使用 alt 标签用于解释图片信息）</li>
+<li>更好的 accessibility，方便任何设备解析（如盲人阅读器）</li>
+</ul>
+<p>那么如何做到语义化呢？</p>
+<p>其实很简单，这就要求我们实时跟进、学习并使用语义化标签。这里我帮大家总结了一些典型的 HTML 标签，并进行分类。</p>
+<p><img src="https://images.gitbook.cn/2aa65430-88e6-11e9-8115-8f03dd50b734" alt="enter image description
+here"></p>
+<p>我将 HTML 标签分为 9 大类别，每一种类别都包含有语义化的标签内容，小图如下：</p>
+<p><img src="https://images.gitbook.cn/50392a10-88e6-11e9-b157-776f1929e232" alt="enter image description
+here"></p>
+<p><img src="https://images.gitbook.cn/78d71d10-88e6-11e9-88f0-f1d5a1392b19" alt="enter image description
+here"></p>
+<p><img src="https://images.gitbook.cn/ef3dc850-88e6-11e9-8115-8f03dd50b734"></p>
+<p>了解了这些语义化的标签，我们就可以按照“适合内容与否”，进行使用。关于选取标准，我也简单总结了一下，抽象成代码表达为：</p>
+<pre><code>if (导航) &#123;
+  return &lt;nav /&gt;
+&#125;
+else if (文稿内容、博客内容、评论内容...包含标题元素的内容) &#123;
+  return &lt;article /&gt;
+&#125;
+else if (目录抽象、边栏、广告、批注) &#123;
+  return &lt;aside /&gt;
+&#125;
+else if (含有附录、图片、代码、图形) &#123;
+  return &lt;figure /&gt;
+&#125;
+else if (含有多个标题或内容的区块) &#123;
+ return &lt;section /&gt;
+&#125;
+else if (含有段落、语法意义) &#123;
+  return &lt;p /&gt; || &lt;address /&gt; || &lt;blockquote /&gt; || &lt;pre /&gt; || ...
+&#125;
+else &#123;
+  return &lt;div /&gt;
+&#125;</code></pre>
+<h4 id="语义化的发展和高级玩法"><a href="#语义化的发展和高级玩法" class="headerlink" title="语义化的发展和高级玩法"></a>语义化的发展和高级玩法</h4><p>说到语义化的发展，我这里指向重点提一个概念：Microformats，如果面试官问的语义化时，你能把这个概念搬出来，效果是非常好的。那什么是<br>Microformats 呢？</p>
+<blockquote>
+<p>Microformats，翻译为微格式，是 HTML 标记某些实体的小模式，这些实体包括人、组织、事件、地点、博客、产品、评论、简历、食谱等。它们是在<br>HTML 中嵌套语义的简单协议，且能迅速地提供一套可被搜索引擎、聚合器等其他工具使用的 API。</p>
+</blockquote>
+<p>除了 hCard 和 hCalendar，有好几个库特别开发了微格式。</p>
+<p>是不是看的一脸懵逼？其实很简单，Microformats 的原理就是扩展 HTML 元素或者属性，来增强 HTML 的语义表达能力。</p>
+<p>我们来看一个案例：</p>
+<p><img src="https://images.gitbook.cn/4bd676c0-88e7-11e9-8115-8f03dd50b734" alt="enter image description
+here"></p>
+<p>Wikipedia 的页面中，给某一部分加上了 vCard 的 class，这是用来做什么的呢？</p>
+<p><img src="https://images.gitbook.cn/d8469cc0-88e7-11e9-b068-5302ecb579f2" alt="enter image description
+here"></p>
+<p>Google 搜索引擎可以通过 Wikipedia 页面 vCard 这个 class，读取相关内容，在呈现搜索结果时，匹配展现出人物信息。从而语义化的<br>class，帮助了机器（搜索爬出）学习到更多信息，展现出了更好的结果页面。</p>
+<p>Microdata 属于 WHATWG（网页超文本应用技术工作小组：Web Hypertext Application Technology<br>Working） HTML 规范，它并不是标准，但这是一个很典型的语义化发展和应用尝试。</p>
+<h3 id="BFC-背后的布局问题"><a href="#BFC-背后的布局问题" class="headerlink" title="BFC 背后的布局问题"></a>BFC 背后的布局问题</h3><p>CSS 给人的感觉就是 simple，但是前端开发者一定深有体会：simple 并不意味着 easy。我们这里不一一列举各种 CSS<br>“疑难杂症”，而是深入一个概念 —— BFC。BFC 是前端面试中的一个超级热点，今日头条某部门曾经就问过我：</p>
+<blockquote>
+<p>请解释一下 BFC 是什么？</p>
+</blockquote>
+<p>回答这个问题并不困难，但是我们可以继续追问：</p>
+<blockquote>
+<p>BFC 会引起哪些布局现象？</p>
+</blockquote>
+<p>这一小节，我们通过对 BFC 的分析，也顺带回顾一下那些 CSS 常考的小细节。</p>
+<h4 id="BFC-是什么"><a href="#BFC-是什么" class="headerlink" title="BFC 是什么"></a>BFC 是什么</h4><p>简单来说，BFC 就是：</p>
+<p>BFC 是 Block Formatting Context 的简写，我们可以直接翻译成“块级格式化上下文”。它会创建一个特殊的区域，在这个区域中，只有<br>block box 参与布局。而 BFC<br>的一套特点和规则就规定了在这个特殊的区域中如何进行布局，如何进行定位，区域内元素的相互关系和相互作用。这个特殊的区域不受外界影响。</p>
+<p>上面提到了 block box 的概念，block box 是指 display 属性为 block、list-item、table 的元素。</p>
+<p>顺便插一个问题：那你还知道其他哪些 box 类型呢？</p>
+<p>相应地，我们有 inline box，它是指 display 属性为 inline、inline-block、inline-table 的元素。CSS3<br>规范中又加入了 run in box，这里我们不再展开。</p>
+<h4 id="如何形成-BFC"><a href="#如何形成-BFC" class="headerlink" title="如何形成 BFC"></a>如何形成 BFC</h4><p>那么什么样的情况会创建一个 BFC 呢？MDN 总结如下：</p>
+<ul>
+<li>根元素或其他包含它的元素</li>
+<li>浮动元素 (元素的 float 不是 none)</li>
+<li>绝对定位元素 (元素具有 position 为 absolute 或 fixed)</li>
+<li>内联块 (元素具有 display: inline-block)</li>
+<li>表格单元格 (元素具有 display: table-cell，HTML 表格单元格默认属性)</li>
+<li>表格标题 (元素具有 display: table-caption, HTML 表格标题默认属性)</li>
+<li>具有 overflow 且值不是 visible 的块元素</li>
+<li>display: flow-root 的元素</li>
+<li>column-span: all 的元素</li>
+</ul>
+<h4 id="BFC-决定了什么"><a href="#BFC-决定了什么" class="headerlink" title="BFC 决定了什么"></a>BFC 决定了什么</h4><p>我们上面谈到了 BFC 的一套规则，那么这些规则都有哪些呢？</p>
+<ul>
+<li>内部的 box 将会独占宽度，且在垂直方向，一个接一个排列</li>
+<li>box 垂直方向的间距由 margin 属性决定，但是同一个 BFC 的两个相邻 box 的 margin 会出现边距折叠现象</li>
+<li>每个 box 水平方向上左边缘，与 BFC 左边缘相对齐，即使存在浮动也是如此</li>
+<li>BFC 区域不会与浮动元素重叠，而是会依次排列</li>
+<li>BFC 区域内是一个独立的渲染容器，容器内元素和 BFC 区域外元素不会形成任何干扰</li>
+<li>浮动元素的高度也参与到 BFC 高度的计算当中</li>
+</ul>
+<p>从这些规则中，我们至少能总结出一些关键要点，比如：</p>
+<ul>
+<li>边距折叠</li>
+<li>清除浮动</li>
+<li>自适应多栏布局</li>
+</ul>
+<p>这也是我选取 BFC 这个概念来剖析的原因，理解了 BFC，这些常见、常考知识点我们都可以融会贯通，具体来看下下面的场景。</p>
+<h4 id="BFC-实战应用"><a href="#BFC-实战应用" class="headerlink" title="BFC 实战应用"></a>BFC 实战应用</h4><ul>
+<li>例题1</li>
+</ul>
+<p>给出如下代码：</p>
+<pre><code>&lt;style&gt;
+    body &#123;
+        width: 600px;
+        position: relative;
+    &#125;
+
+    .left &#123;
+        width: 80px;
+        height: 150px;
+        float: left;
+        background: blue;
+    &#125;
+
+    .right &#123;
+        height: 200px;
+        background: red;
+    &#125;
+&lt;/style&gt;
+
+&lt;body&gt;
+    &lt;div class=&quot;left&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;right&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;</code></pre>
+<p>我们得到布局如图：</p>
+<p><img src="https://images.gitbook.cn/04b9dab0-88e8-11e9-88f0-f1d5a1392b19" alt="enter image description
+here"></p>
+<p>请在不修改已有内容情况下，加入样式，实现自适应（.left 宽度固定，.right 占满剩下宽度）两栏布局。</p>
+<p>我们来思考：根据 BFC 布局规则：“每个 box 水平方向上左边缘，与 BFC 左边缘相对齐。即使存在浮动也是如此”，因此 .left 和 .right<br>的左边相接触。出现如此布局结果并不意外。</p>
+<p>同时，再想想 BFC 布局规则：“BFC 区域不会与浮动元素重叠，而是会依次排列”，因此我们可以使 .right 形成<br>BFC，来实现自适应两栏布局。如何形成 BFC 前面已经做过介绍了，于是添加：</p>
+<pre><code>.right &#123;
+    overflow: hidden;
+&#125;</code></pre>
+<p>就可以得到：</p>
+<p><img src="https://images.gitbook.cn/a9bd6130-8915-11e9-b157-776f1929e232" alt="enter image description
+here"></p>
+<p>当然，这种布局可以用更先进的 flex 或者 grid 手段解决，但是对于 BFC 这些 CSS 基础知识，同样要做到了然于胸。</p>
+<ul>
+<li>例题 2</li>
+</ul>
+<p>看代码：</p>
+<pre><code>&lt;style&gt;
+    .root &#123;
+        border: 5px solid blue;
+        width: 300px;
+    &#125;
+
+    .child &#123;
+        border: 5px solid red;
+        width:100px;
+        height: 100px;
+        float: left;
+    &#125;
+&lt;/style&gt;
+&lt;body&gt;
+    &lt;div class=&quot;root&quot;&gt;
+        &lt;div class=&quot;child child1&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;child child2&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+<p>首先来回答第一个问： <strong>.root 的高度是多少？</strong></p>
+<p>事实上，因为 .child 为浮动元素，因此造成了“高度塌陷”现象，.root 的高度为 0。</p>
+<p><img src="https://images.gitbook.cn/ca790c80-8915-11e9-8115-8f03dd50b734"></p>
+<p>那么如何解决“高度塌陷”问题呢？</p>
+<p>想想 BFC 规则：“浮动元素的高度也参与到 BFC 高度的计算当中”，因此使 .root 形成 BFC，就能解决问题：</p>
+<pre><code>.root &#123;
+    overflow: hidden;
+&#125;</code></pre>
+<p><img src="https://images.gitbook.cn/06df63e0-8916-11e9-8115-8f03dd50b734"></p>
+<p>我们看此时高度已经被你撑开了。</p>
+<ul>
+<li>例题 3</li>
+</ul>
+<p>代码：</p>
+<pre><code>&lt;style&gt;
+    p &#123;
+        color: blue;
+        background: red;
+        width: 400px;
+        line-height: 100px;
+        text-align:center;
+        margin: 40px;
+    &#125;
+&lt;/style&gt;
+&lt;body&gt;
+    &lt;p&gt;paragraph 1&lt;/p&gt;
+    &lt;p&gt;paragraph 2&lt;/p&gt;
+&lt;/body&gt;</code></pre>
+<p>首先回答问题： <strong>两段之间的垂直距离为多少？</strong> 想想 BFC 规则：“box 垂直方向的间距由 margin 属性决定，但是 <strong>同一个</strong> BFC<br>的两个相邻 box 的 margin 会出现边距折叠现象”。事实上，因为边距折叠现象，答案为 40px。</p>
+<p>那么如何解决这个问题呢？</p>
+<p>最简单地，我们可以在 p 标签再包裹一个元素，并触发该元素形成一个BFC。那么这两个 p 标签，不再属于同一个 BFC，从而解决问题。</p>
+<pre><code>&lt;style&gt;
+    p &#123;
+        color: blue;
+        background: red;
+        width: 400px;
+        line-height: 100px;
+        text-align:center;
+        margin: 40px;
+    &#125;
+    .wrapper &#123;
+        overflow: hidden
+    &#125;
+&lt;/style&gt;
+&lt;body&gt;
+    &lt;p&gt;paragraph 1&lt;/p&gt;
+    &lt;div class=&quot;wrapper&quot;&gt;
+        &lt;p&gt;paragraph 2&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+<p><img src="https://images.gitbook.cn/2f329240-8916-11e9-b157-776f1929e232"></p>
+<p><strong>总结</strong> ：我们通过分析 BFC 是什么、如何形成、布局规则，融会贯通了 CSS<br>当中很多关键问题。也许不少读者能够解决“边距折叠”、“多栏自适应”、“高度塌陷”等问题，但是并不能说出解决问题的原理。通过这一环节的学习，我们对 CSS<br>加深了理解，我更希望地是能够启发大家思考：我们到底应该如何对待 CSS、如何学习 CSS。</p>
+<h3 id="多种方式实现居中"><a href="#多种方式实现居中" class="headerlink" title="多种方式实现居中"></a>多种方式实现居中</h3><p>“实现居中”也是一道必考题。参考代码：</p>
+<pre><code>&lt;style&gt;
+.wp &#123;
+    border: 1px solid red;
+    width: 300px;
+    height: 300px;
+&#125;
+
+.box &#123;
+    background: green;    
+&#125;
+
+.box .fixed-size &#123;
+    width: 100px;
+    height: 100px;
+&#125;
+&lt;/style&gt;
+
+&lt;body&gt;
+    &lt;div class=&quot;wp&quot;&gt;
+       &lt;div class=&quot;box fixed-size&quot;&gt;text&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+<p>如图：</p>
+<p><img src="https://images.gitbook.cn/5c895260-8916-11e9-b157-776f1929e232"></p>
+<p>如何让绿色的块水平垂直居中呢？</p>
+<p>总结一下：</p>
+<h4 id="仅适用于居中元素定宽高"><a href="#仅适用于居中元素定宽高" class="headerlink" title="仅适用于居中元素定宽高"></a>仅适用于居中元素定宽高</h4><ul>
+<li>absolute + 负 margin</li>
+</ul>
+<pre><code>.wp &#123;
+    position: relative;
+&#125;
+.box &#123;
+    position: absolute;;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+&#125;</code></pre>
+<p>绝对定位的百分比是相对于父元素的宽高，我们设置：</p>
+<pre><code>top: 50%;
+left: 50%;</code></pre>
+<p>使得元素偏移后，在修正元素自身宽高的一半即可：</p>
+<pre><code>margin-left: -50px;
+margin-top: -50px;</code></pre>
+<p>这其实是一个简单的数学几何运算。</p>
+<ul>
+<li>absolute + margin auto</li>
+</ul>
+<pre><code>.wp &#123;
+    position: relative;
+&#125;
+.box &#123;
+    position: absolute;;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+&#125;</code></pre>
+<p>这种方式将设置各个方向的距离都是 0，此时配合 margin 为 auto，就可以在各个方向上居中了。</p>
+<ul>
+<li>absolute + calc</li>
+</ul>
+<pre><code>.root &#123;
+    position: relative;
+&#125;
+.textBox &#123;
+    position: absolute;;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+&#125;</code></pre>
+<p>此种方法和第一种类似，不再展开。</p>
+<h4 id="居中元素不定宽高"><a href="#居中元素不定宽高" class="headerlink" title="居中元素不定宽高"></a>居中元素不定宽高</h4><p>对于剧中元素不定宽高的情况：</p>
+<pre><code>&lt;style&gt;
+.wp &#123;
+    border: 1px solid red;
+    width: 300px;
+    height: 300px;
+&#125;
+
+.box &#123;
+    background: green;    
+&#125;
+&lt;/style&gt;
+
+&lt;body&gt;
+    &lt;div class=&quot;wp&quot;&gt;
+       &lt;div class=&quot;box &quot;&gt;text&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;</code></pre>
+<p>我们依然也有很多方法。</p>
+<ul>
+<li>absolute + transform</li>
+</ul>
+<p>不定宽高时，利用 CSS3 新增的 transform，transform 的 translate<br>属性也可以设置百分比，这个百分比是相对于自身的宽和高，因此可以将 translate 设置为 ﹣50%：</p>
+<pre><code>.wp &#123;
+    position: relative;
+&#125;
+.box &#123;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+&#125;</code></pre>
+<p>原理和第一种方法也类似。</p>
+<ul>
+<li>lineheight</li>
+</ul>
+<p>把 box 设置为行内元素，通过 text-align 也可以做到水平居中，同时通过 vertical-align 做到垂直方向上的居中，代码如下：</p>
+<pre><code>.wp &#123;
+    line-height: 300px;
+    text-align: center;
+    font-size: 0px;
+&#125;
+.box &#123;
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: initial;
+    text-align: left; /* 修正文字 */
+&#125;</code></pre>
+<p>这个方法充分利用了行内 / 块级元素的特点。</p>
+<ul>
+<li>table</li>
+</ul>
+<p>其实历史上 table 经常被用来做页面布局，这么做的缺点是会增加很多冗余代码，并且性能也不友好。不过处理居中问题，它可是能手：</p>
+<pre><code>&lt;table&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td class=&quot;wp&quot;&gt;
+                &lt;div class=&quot;box&quot;&gt;test&lt;/div&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+.wp &#123;
+    text-align: center;
+&#125;
+.box &#123;
+    display: inline-block;
+&#125;</code></pre>
+<ul>
+<li>css-table</li>
+</ul>
+<p>如何使用 table 布局的特性效果，但是不采用 table 元素呢？答案是 css-table：</p>
+<pre><code>.wp &#123;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+&#125;
+.box &#123;
+    display: inline-block;
+&#125;</code></pre>
+<p>我们使用了 display: table-cell，同时和 table 布局相比，减少了很多冗余代码。</p>
+<ul>
+<li>flex</li>
+</ul>
+<p>flex 是非常现代的布局方案，只需几行代码就可以优雅地做到居中：</p>
+<pre><code>.wp &#123;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+&#125;</code></pre>
+<ul>
+<li>grid</li>
+</ul>
+<p>grid 布局非常超前，虽然兼容性不好，但是能力超强：</p>
+<pre><code>.wp &#123;
+    display: grid;
+&#125;
+.box &#123;
+    align-self: center;
+    justify-self: center;
+&#125;</code></pre>
+<p>我们总结一下：</p>
+<ul>
+<li>PC 端有兼容性要求，宽高固定，推荐 absolute + 负 margin</li>
+<li>PC 端有兼容要求，宽高不固定，推荐 css-table</li>
+<li>PC 端无兼容性要求，推荐 flex</li>
+<li>移动端推荐使用 flex</li>
+</ul>
+<p>最后整理一个列表：</p>
+<p><img src="https://images.gitbook.cn/8cce31c0-8916-11e9-88f0-f1d5a1392b19"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>HTML 和 CSS<br>面试中考察较少，但是如果答的不好，将是致命性的。同时工作中，如果这方面知识存在短板，往往会造成不必要的效率消耗。我们应该正视前端领域这两个离不开的“面子工程”，为了更好的面试结果，更为了自己的技能。</p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>阅读文章过程中有任何疑问随时可以跟其他小伙伴讨论，或者直接向作者 LucasHC 提问（作者看到后抽空回复）。 <strong>你的分享不仅帮助他人，更会提升自己。</strong></p>
+<p>你也可以说说自己最想了解的主题，课程内容会根据部分读者的意见和建议迭代和完善。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/advanced/014--%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%A6%BB%E4%B8%8D%E5%BC%80%E7%9A%84%E2%80%9C%E9%9D%A2%E5%AD%90%E5%B7%A5%E7%A8%8B%E2%80%9D/">https://jinxiaochuan.github.io/matrix/advanced/014--%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%A6%BB%E4%B8%8D%E5%BC%80%E7%9A%84%E2%80%9C%E9%9D%A2%E5%AD%90%E5%B7%A5%E7%A8%8B%E2%80%9D/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/advanced/013--%E7%A9%B6%E7%AB%9F%E8%AF%A5%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%97%B6%E4%BF%B1%E8%BF%9B%E7%9A%84%20ES/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶13 | 究竟该如何学习与时俱进的 ES</div></div></a></div><div class="next-post pull-right"><a href="/matrix/advanced/015--%E8%BF%9B%E5%87%BB%E7%9A%84%20CSS%20%E5%92%8C%20HTML/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶15 | 进击的 CSS 和 HTML</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3-HTML-%E8%AF%AD%E4%B9%89%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">如何理解 HTML 语义化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E5%8C%96%E6%98%AF%E4%BB%80%E4%B9%88%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E3%80%81%E6%80%8E%E4%B9%88%E5%81%9A"><span class="toc-number">1.1.</span> <span class="toc-text">语义化是什么、为什么、怎么做</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E5%8C%96%E7%9A%84%E5%8F%91%E5%B1%95%E5%92%8C%E9%AB%98%E7%BA%A7%E7%8E%A9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">语义化的发展和高级玩法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BFC-%E8%83%8C%E5%90%8E%E7%9A%84%E5%B8%83%E5%B1%80%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">BFC 背后的布局问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BFC-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">2.1.</span> <span class="toc-text">BFC 是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%BD%A2%E6%88%90-BFC"><span class="toc-number">2.2.</span> <span class="toc-text">如何形成 BFC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BFC-%E5%86%B3%E5%AE%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">2.3.</span> <span class="toc-text">BFC 决定了什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BFC-%E5%AE%9E%E6%88%98%E5%BA%94%E7%94%A8"><span class="toc-number">2.4.</span> <span class="toc-text">BFC 实战应用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%A7%8D%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%B1%85%E4%B8%AD"><span class="toc-number">3.</span> <span class="toc-text">多种方式实现居中</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%85%E9%80%82%E7%94%A8%E4%BA%8E%E5%B1%85%E4%B8%AD%E5%85%83%E7%B4%A0%E5%AE%9A%E5%AE%BD%E9%AB%98"><span class="toc-number">3.1.</span> <span class="toc-text">仅适用于居中元素定宽高</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%85%E4%B8%AD%E5%85%83%E7%B4%A0%E4%B8%8D%E5%AE%9A%E5%AE%BD%E9%AB%98"><span class="toc-number">3.2.</span> <span class="toc-text">居中元素不定宽高</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">5.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶23 | 从框架和类库，我们该学到什么"/></a><div class="content"><a class="title" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">核心进阶23 | 从框架和类库，我们该学到什么</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"/></a><div class="content"><a class="title" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">核心进阶24 | 深入浅出模块化（含 tree shaking）（上）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

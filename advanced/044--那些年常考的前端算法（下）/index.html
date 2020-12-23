@@ -1,0 +1,707 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶44 | 那些年常考的前端算法（下） | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前面课程，我们总结了前端和算法的关系，在上一讲中，也已经通过两道题目开启了“刷算法”的热身。算法是面试中必不可少的部分，尤其对于高阶职位来说，算法题目是面试环节的“最难”和“最关键”的环节。 算法说难也不难，我们大可不必“谈虎色变”，有策略地“刷算法题”将会使你更有信心。我认为在课程中一味地“秀算法”，找最高深最偏的算法分析没有任何意义。这里我总结出一些经典的算法题目，我常用来考察候选者以及我作为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶44 | 那些年常考的前端算法（下）">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/advanced/044--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="前面课程，我们总结了前端和算法的关系，在上一讲中，也已经通过两道题目开启了“刷算法”的热身。算法是面试中必不可少的部分，尤其对于高阶职位来说，算法题目是面试环节的“最难”和“最关键”的环节。 算法说难也不难，我们大可不必“谈虎色变”，有策略地“刷算法题”将会使你更有信心。我认为在课程中一味地“秀算法”，找最高深最偏的算法分析没有任何意义。这里我总结出一些经典的算法题目，我常用来考察候选者以及我作为">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-23T02:19:57.212Z">
+<meta property="article:modified_time" content="2020-12-23T02:19:57.212Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/advanced/044--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-23 10:19:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶44 | 那些年常考的前端算法（下）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-23T02:19:57.212Z" title="更新于 2020-12-23 10:19:57">2020-12-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>前面课程，我们总结了前端和算法的关系，在上一讲中，也已经通过两道题目开启了“刷算法”的热身。算法是面试中必不可少的部分，尤其对于高阶职位来说，算法题目是面试环节的“最难”和“最关键”的环节。</p>
+<p>算法说难也不难，我们大可不必“谈虎色变”，有策略地“刷算法题”将会使你更有信心。我认为在课程中一味地“秀算法”，找最高深最偏的算法分析没有任何意义。这里我总结出一些经典的算法题目，我常用来考察候选者以及我作为面试者遇到的一些题目来讲解。</p>
+<p>主要内容如下：</p>
+<p><img src="https://images.gitbook.cn/a80ed7e0-d827-11e9-a98d-91914e1a8fb9" alt="enter image description
+here"></p>
+<h3 id="爬楼梯"><a href="#爬楼梯" class="headerlink" title="爬楼梯"></a>爬楼梯</h3><p>题目：假设我们需要爬一个楼梯，这个楼梯一共有 N 阶，可以一步跨越 1 个或者 2 个台阶，那么爬完楼梯一共有多少种方式？</p>
+<p>示例：输入 2（标注 N = 2，一共是 2 级台阶）；</p>
+<p>输出：2 （爬完一共两种方法：一次跨两阶 + 分两次走完，一次走一阶）</p>
+<p>示例：输入 3；输出 3（1 阶 + 1 阶 + 1 阶；1 阶 + 2 阶；2 阶 + 1 阶）</p>
+<p>思路：最直接的想法其实类似 Fibonacci 数列，使用递归比较简单。比如我们爬 N 个台阶，其实就是爬 N － 1 个台阶的方法数 + 爬 N － 2<br>个台阶的方法数。</p>
+<p>解法：</p>
+<pre><code>const climbing = n =&gt; &#123;
+    if (n == 1) return 1
+    if (n == 2) return 2
+    return climbing(n - 1) + climbing(n - 2)
+&#125;</code></pre>
+<p>我们来分析一下时间复杂度：递归方法的时间复杂度是高度为 n−1 的不完全二叉树节点数，因此近似为 O(2^n)，具体数学公式不再展开。</p>
+<p>我们来尝试进行优化。实际上，上述的计算过程肯定都包含了不少重复计算，比如 climbing(N) + climbing(N － 1) 后会计算<br>climbing(N － 1) + climbing(N － 2)，而实际上 climbing(N － 1) 只需要计算一次就可以了。</p>
+<p>优化方案：</p>
+<pre><code>const climbing = n =&gt; &#123;
+    let array = []
+    const step = n =&gt; &#123;
+        if (n == 1) return 1
+        if (n == 2) return 2
+        if (array[n] &gt; 0) return array[n]
+
+        array[n] = step(n - 1) + step(n - 2)
+        return array[n]
+    &#125;
+    return step(n)
+&#125;</code></pre>
+<p>我们使用了一个数组 array 来储存计算结果，时间复杂度为 O(n)。</p>
+<p>另外一个优化方向是：所有递归都可以用循环来代替。</p>
+<pre><code>const climbing = n =&gt; &#123;
+    if (n == 1) return 1
+    if (n == 2) return 2
+
+    let array = []
+    array[1] = 1
+    array[2] = 2
+
+    for (let i = 3; i&lt;= n; i++) &#123;
+        array[i] = array[i - 1] + array[i - 2]
+    &#125;
+    return array[n]
+&#125;</code></pre>
+<p>时间复杂度仍然为 O(n)，但是我们优化了内存的开销。</p>
+<p>因此这道题看似“困难”，其实就是一个 Fibonacci<br>数列。很多算法题目都是类似的，也许第一次读题会觉得没有思路，但是隐藏在题目后边的解决方案，其实就是我们常见的知识。</p>
+<h3 id="Combination-Sum"><a href="#Combination-Sum" class="headerlink" title="Combination Sum"></a>Combination Sum</h3><p>这个算法，让我们来聚焦“回溯”这两个字，题目出处 <a target="_blank" rel="noopener" href="https://juejin.im/post/5d1ca2c5e51d4550bf1ae8cd">Combination<br>Sum</a>。</p>
+<p>题目：给定一组不含重复数字的非负数组和一个非负目标数字，在数组中找出所有数加起来等于给定的目标数字的组合。</p>
+<p>示例：输入</p>
+<pre><code>const array = [2, 3, 6, 7]
+const target = 7</code></pre>
+<p>输出：</p>
+<pre><code>[
+  [7],
+  [2,2,3]
+]</code></pre>
+<p>我们直接来看优化后的思想：回溯解决问题的套路就是先用“笨办法”，遍历所有的情况来找出问题的解，在这个遍历过程当中，以深度优先的方式搜索解空间，并且在搜索过程中用剪枝函数避免无效搜索。</p>
+<p>回到这个问题，我们先通过图来遍历所有情况：</p>
+<p><img src="https://images.gitbook.cn/4a7e0ec0-db51-11e9-a268-91dece478f6a" alt="5"></p>
+<p>对于这个题目，事实上我们思考，数组 [2, 2, 3] 和 [2, 3, 2] 实际是重复的，因此可以删除掉重复的项，优化递归树为：</p>
+<p><img src="https://images.gitbook.cn/63ca0a50-db51-11e9-9f9d-c526a5f387ab" alt="6"></p>
+<p>我们该如何用代码描述上述过程呢？这时候需要一个临时数组 tmpArray，进入递归前 push 一个结果，</p>
+<p>最终答案：</p>
+<pre><code>const find = (array, target) =&gt; &#123;
+    let result = []
+
+    const dfs = (index, sum, tmpArray)  =&gt; &#123;
+        if (sum === target) &#123;
+            result.push(tmpArray.slice())
+        &#125;
+
+        if (sum &gt; target) &#123;
+            return
+        &#125;
+
+        for (let i = index; i &lt; array.length; i++) &#123;
+            tmpArray.push(array[i])
+
+            dfs(i, sum + array[i], tmpArray)
+
+            tmpArray.pop()
+        &#125;
+    &#125;
+
+    dfs(0, 0, [])
+
+    return result    
+&#125;</code></pre>
+<p>如果读者存在理解问题，建议打断点调试一下。回溯是一个非常常见的思想，这也是一个典型的回溯常考题目。</p>
+<p>另外，该题有另一个变种：</p>
+<blockquote>
+<p>从一个数组中找出 N 个数，其和为 M 的所有可能。</p>
+</blockquote>
+<p>这里我们指定数组元素个数的和，需要这个和为指定值。</p>
+<p>举例：从数组 [1, 2, 3, 4] 中选取 2 个元素，求和为 5 的所有可能。答案是两组组合: [1, 4] 和 [2, 3]。</p>
+<p>这里我们介绍一种借助“二进制”实现的解法，可以用 0 和 1 来表示数组中相应的元素是否被选中。因此，对于一个长度为 4 的数组来说：</p>
+<ul>
+<li>0000 表示没有选择数组中的任何元素</li>
+<li>0100 表示选择了数组中第 1 位元素</li>
+</ul>
+<p>以此类推，数组长度为 4，那么上述情况一共有 16 种可能（Math.pow(length, 2)）。</p>
+<p>而这道题目中，只需要选择指定数组元素个数的和，还是对于数组长度为 4 的情况：只需要考虑 0011 等 1 的个数累加为 0 case，而不需要考虑类似<br>0111 这样的 case。</p>
+<p>针对符合个数的所有情况，我们进行数组项目的求和，判断是否等于指定值的情况即可：</p>
+<pre><code>const find = (array, target, sum) =&gt; &#123;
+  const len = array.length
+  let result = []
+
+  for (let i = 0; i &lt; Math.pow(2, len); i++) &#123;
+    if (getCount(i) == target) &#123;
+      let s = 0 
+      let temp = []
+      for (let j = 0; j &lt; len; j++) &#123;
+        if (i &amp; 1 &lt;&lt; (len - 1 -j)) &#123;
+          s += array[j]
+          temp.push(array[j])
+        &#125;
+      &#125;
+      if (s == sum) &#123;
+        result.push(temp)
+      &#125;
+    &#125;
+  &#125;
+  return result
+&#125;
+
+function getCount(i) &#123;
+  let count = 0;
+  while (i) &#123;
+   if (i &amp; 1)&#123;
+    ++count
+   &#125;
+   i &gt;&gt;= 1
+  &#125;
+  return count
+&#125;</code></pre>
+<h3 id="remove-duplicates-from-sorted-array"><a href="#remove-duplicates-from-sorted-array" class="headerlink" title="remove duplicates from sorted array"></a>remove duplicates from sorted array</h3><p>题目：对一个给定一个排序数组去重，同时返回去重后数组的新长度。</p>
+<p>难点：这道题并不困难，但是需要临时加一些条件，即需要原地操作，在使用 O(1) 额外空间的条件下完成。</p>
+<p>示例：</p>
+<p>输入：</p>
+<pre><code>let array = [0,0,1,1,1,2,2,3,3,4]</code></pre>
+<p>输出：</p>
+<pre><code>console.log(removeDuplicates(array))
+// 5
+
+console.log(array)
+// 0, 1, 2, 3, 4</code></pre>
+<p>这道题既然规定 in-place 的操作，那么可以考虑算法中的另一个重要思想：双指针。</p>
+<p><img src="https://images.gitbook.cn/33808a30-df3a-11e9-87f9-6dac5837a5da" alt="7"></p>
+<p>使用快慢指针：</p>
+<ul>
+<li>开始时，快指针和慢指针都指向数组中的第一项</li>
+<li>如果快指针和慢指针指的数字相同，则快指针向前走一步</li>
+<li>如果快指针和慢指针指的数字不同，则两个指针都向前走一步，同时快指针指向的数字赋值给慢指针指向的数字</li>
+<li>当快指针走完整个数组后，慢指针当前的坐标加 1 就是数组中不同数字的个数</li>
+</ul>
+<p>代码很简单：</p>
+<pre><code>const removeDuplicates = array =&gt; &#123;
+    const length = array.length
+
+    let slowPointer = 0
+
+    for (let fastPointer = 0; fastPointer &lt; length; fastPointer ++) &#123;
+        if (array[slowPointer] !== array[fastPointer]) &#123;
+            slowPointer++
+            array[slowPointer] = array[fastPointer]
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>这道题目如果不要求 O(n) 的时间复杂度， O(1) 的空间复杂度，那么会非常简单。如果进行空间复杂度要求，尤其是 in-place<br>操作，开发者往往可以考虑双指针的思路。</p>
+<h3 id="求众数"><a href="#求众数" class="headerlink" title="求众数"></a>求众数</h3><p>这也是一道简单的题目，关键点在于如何优化。</p>
+<p>题目：给定一个大小为 N 的数组，找到其中的众数。众数是指在数组中出现次数大于 N/2 的元素。</p>
+<p>可能大家都会想到使用一个额外的空间，记录元素出现的次数，我们往往用一个 map 就可以轻易地实现。那优化点在哪里呢？答案就是投票算法。</p>
+<pre><code>const find = array =&gt; &#123;
+    let count = 1
+    let result = array[0]
+
+    for (let i = 0; i &lt; array.lenght; i++) &#123;
+        if (count === 0) result = array[i]
+
+        if (array[i] === result) &#123;
+            count++
+        &#125;
+        else &#123;
+            count--
+        &#125;
+    &#125;
+
+    return result
+&#125;</code></pre>
+<h3 id="有效括号"><a href="#有效括号" class="headerlink" title="有效括号"></a>有效括号</h3><p>有效括号这个题目和前端息息相关，在之前课程模版解析时，其实都需要类似的算法进行模版的分析，进而实现数据的绑定。我们来看题目：</p>
+<p>举例：输入 “()”</p>
+<p>输出：true</p>
+<p>举例：输入 “()[]{}”</p>
+<p>输出：true</p>
+<p>举例：输入 “{[]}”</p>
+<p>输出：false</p>
+<p>举例：输入 “([)]”</p>
+<p>输出：false</p>
+<p>这道题目的解法非常典型，就是借助栈实现，将这些括号自右向左看做栈结构。我们把成对的括号分为左括号和右括号，需要左括号和右括号一一匹配，通过一个 Object<br>来维护关系：</p>
+<pre><code>let obj = &#123;
+    &quot;]&quot;: &quot;[&quot;,
+    &quot;&#125;&quot;: &quot;&#123;&quot;,
+    &quot;)&quot;: &quot;(&quot;,
+&#125;</code></pre>
+<p>如果编译器中在解析时，遇见左括号，我们就入栈；如果是右括号，就取出栈顶元素检查是否匹配。如果匹配，就出栈；否则，就返回 false。</p>
+<pre><code>const isValid = str =&gt; &#123;
+    let stack = []
+    var obj = &#123;
+        &quot;]&quot;: &quot;[&quot;,
+        &quot;&#125;&quot;: &quot;&#123;&quot;,
+        &quot;)&quot;: &quot;(&quot;,
+    &#125;
+
+    for (let i = 0; i &lt; str.length; i++) &#123;
+        if(str[i] === &quot;[&quot; || str[i] === &quot;&#123;&quot; || str[i] === &quot;(&quot;) &#123;
+            stack.push(str[i])
+        &#125; 
+        else &#123;
+            let key = stack.pop()
+            if(obj[key] !== str[i]) &#123;
+                return false
+            &#125;
+        &#125;
+    &#125;
+
+    if (!stack.length) &#123;
+        return true
+    &#125;
+
+    return false
+&#125;;</code></pre>
+<h3 id="LRU-缓存算法"><a href="#LRU-缓存算法" class="headerlink" title="LRU 缓存算法"></a>LRU 缓存算法</h3><p>看了这么多小算法题目，我们来换一个口味，现在看一个算法的实际应用。</p>
+<blockquote>
+<p>LRU（Least Recently<br>Used）算法是缓存淘汰算法的一种。简单地说，由于内存空间有限，需要根据某种策略淘汰不那么重要的数据，用以释放内存。LRU<br>的策略是最早操作过的数据放最后，最晚操作过的放开始，按操作时间逆序，如果达到上限，则淘汰末尾的项。</p>
+</blockquote>
+<p>整个 LRU 算法有一定的复杂度，并且需要很多功能扩展。因此在生产环境中建议直接使用成熟的库，比如 npm 搜索 lru-cache。</p>
+<p>这里我们尝试实现一个微型体统级别的 LRU 算法：</p>
+<blockquote>
+<p>运用你所掌握的数据结构，设计和实现一个 LRU（最近最少使用）缓存机制。它应该支持以下操作：获取数据 get 和 写入数据 put 。</p>
+</blockquote>
+<p>获取数据 get(key) － 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 －1。</p>
+<p>写入数据 put(key, value) －<br>如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。</p>
+<p>我们先来整体思考：尽量满足 O(1) 的时间复杂度中完成获取和写入的操作，那么可以使用一个 Object 来进行存储，如果 key 不是简单类型，可以使用<br>Map 实现：</p>
+<pre><code>const LRUCache = function(capacity) &#123;
+  // ...
+  this.map = &#123;&#125;;
+  // ...
+&#125;;</code></pre>
+<p>在这个算法中，最复杂的应该是淘汰策略，淘汰数据的时间复杂度必须是 O(1) 的话，我们一定需要额外的数据结构来完成 O(1)<br>的淘汰策略。那应该用什么样的数据结构呢？答案是双向链表。</p>
+<p>链表在插入与删除操作上，都是 O(1) 时间的复杂度，唯一有问题的查找元素过程比较麻烦，是 O(n)。但是这里我们不需要使用双向链表实现查找逻辑，因为<br>map 已经很好的弥补了缺陷。</p>
+<p>赘述一下： <strong>我们在写入值的时候，判断缓存容量是否已经达到上限，如果缓存容量达到上限时，应该删除最近最少使用的数据值，从而为以后的新的数据值留出空间。</strong></p>
+<p>结合链表的话，我们将刚刚写入的目标值设置为链表的首项，超过限制，就删除链表的尾项。</p>
+<p>最终实现：</p>
+<pre><code>const LRUCache = function(capacity) &#123;
+  this.map = &#123;&#125;
+  this.size = 0
+  this.maxSize = capacity
+
+  // 链表初始化，初始化只有一个头和尾
+  this.head = &#123;
+    prev: null,
+    next: null
+  &#125;
+  this.tail = &#123;
+    prev: this.head,
+    next: null
+  &#125;
+
+  this.head.next = this.tail
+&#125;;
+
+LRUCache.prototype.get = function(key) &#123;
+  if (this.map[key]) &#123;
+    const node = this.extractNode(this.map[key])
+
+    // 最新访问，将该节点放到链表的头部
+    this.insertNodeToHead(node)
+
+    return this.map[key].val
+  &#125; 
+  else &#123;
+    return -1
+  &#125;
+&#125;
+
+LRUCache.prototype.put = function(key, value) &#123;
+  let node
+
+  if (this.map[key]) &#123;
+    // 该项已经存在，更新值
+    node = this.extractNode(this.map[key])
+    node.val = value
+  &#125; 
+  else &#123;
+    // 如该项不存在，新创造节点
+    node = &#123;
+      prev: null,
+      next: null,
+      val: value,
+      key,
+    &#125;
+
+    this.map[key] = node
+    this.size++
+  &#125;
+
+  // 最新写入，将该节点放到链表的头部
+  this.insertNodeToHead(node)
+
+  // 判断长度是否已经到达上限
+  if (this.size &gt; this.maxSize) &#123;
+    const nodeToDelete = this.tail.prev
+    const keyToDelete = nodeToDelete.key
+    this.extractNode(nodeToDelete)
+    this.size--
+    delete this.map[keyToDelete]
+  &#125;
+&#125;;
+
+// 插入节点到链表首项
+LRUCache.prototype.insertNodeToHead = function(node) &#123;
+  const head = this.head
+  const lastFirstNode = this.head.next
+
+  node.prev = head
+  head.next = node
+  node.next = lastFirstNode
+  lastFirstNode.prev = node
+
+  return node
+&#125;
+
+// 从链表中抽取节点
+LRUCache.prototype.extractNode = function(node) &#123;
+  const beforeNode = node.prev
+  const afterNode = node.next
+
+  beforeNode.next = afterNode
+  afterNode.prev = beforeNode
+
+  node.prev = null
+  node.next = null
+
+  return node
+&#125;</code></pre>
+<h3 id="链表相关题目"><a href="#链表相关题目" class="headerlink" title="链表相关题目"></a>链表相关题目</h3><p>在之前的课程中，我们介绍了链表这种数据结构。链表应用非常广泛，这里来熟悉两个常见的对链表的操作算法。</p>
+<h4 id="反转链表"><a href="#反转链表" class="headerlink" title="反转链表"></a>反转链表</h4><p>题目：对一个单链表进行反转</p>
+<p>输入：1→2→3→4→5→NULL</p>
+<p>输出：5→4→3→2→1→NULL</p>
+<p>最直观的解法是使用三个指针，把头节点变成尾节点点，进行遍历：下一个节点<br>拼接到当前节点的头部，以此类推。这种方法的实现我们不再手写，而是重点关注一下递归解法。</p>
+<p>递归解法就要先判断递归终止条件，当下一个节点为 null，找到尾节点时，将其返回。我们从后往前进行：</p>
+<pre><code>const reverseList = head =&gt; &#123;
+   // 到了尾节点，则返回尾节点
+   if (head == null || head.next == null) &#123;
+       return head
+   &#125;
+   else &#123;
+       let newhead = reverseList(head.next)
+       // 将当前节点的一下节点的 next 指向，指向为当前节点
+       head.next.next = head
+       // 暂时情况当前节点的 next 指向
+       head.next = null
+
+       return newhead
+   &#125;
+&#125;</code></pre>
+<h4 id="删除链表的倒数第-N-个节点"><a href="#删除链表的倒数第-N-个节点" class="headerlink" title="删除链表的倒数第 N 个节点"></a>删除链表的倒数第 N 个节点</h4><p>题目：给定一个链表，删除链表的倒数第 n 个节点，并且返回链表的头结点。</p>
+<p>输入：1→2→3→4→5，和 n = 2</p>
+<p>输出：1→2→3→5</p>
+<p>这道题目的关键是如何优雅地找到倒数第 N 个节点。</p>
+<p>我们当然可以使用两次循环，第一次循环得到整个链表的长度 L，那么需要删除的节点就位于 L - N + 1 位置处，第二次遍历到相关位置进行操作即可。</p>
+<p>这道题其实是可以用一次遍历来解决的。我们需要使用双指针，快指针 fast 先前进 N，找到需要删除的节点；然后慢指针 slow 从 head 开始，和快指针<br>fast 一起前进，直到 fast 走到末尾。 此时 slow 的下一个节点就是要删除的节点，也就是倒数第 N 个节点。需要注意的是，如果快指针移动 N<br>步之后，已经到了尾部，那说明需要删除的就是头节点。</p>
+<pre><code>const removeNthFromEnd = (head, n) =&gt; &#123;
+    if (head === null) &#123;
+        return head
+    &#125;
+
+    if (n === 0) &#123;
+        return head
+    &#125;
+
+    let fast = head
+    let slow = head
+
+    // 快指针前进 N 步
+    while (n &gt; 0) &#123;
+        fast = fast.next
+        n--
+    &#125;
+
+    // 快指针移动 N 步之后，已经到了尾部，那说明需要删除的就是头节点
+    if (fast === null) &#123;
+        return head.next
+    &#125;
+
+    while (fast.next != null )&#123;
+        fast = fast.next
+        slow = slow.next
+    &#125;
+
+    slow.next=slow.next.next
+    return head
+&#125;</code></pre>
+<p>这两道关于链表的题目都重点考察了对你链表结构的理解，其中是用到了多个指针，这也是解决链表题目的关键。</p>
+<h3 id="算法学习"><a href="#算法学习" class="headerlink" title="算法学习"></a>算法学习</h3><p>本节课内容到这里，我们只是列举了一些算法题目，也算不上“题海战术”，但问题都比较典型。可是面对这些相对零散的内容，我们应该如何入手学习呢？只是一味的刷题，似乎效率低下而无趣。</p>
+<p>我认为对于算法的学习，需要做到“分门别类”，按照不同类别的算法思想，遵循循序渐进的进步路线，才会“越来越有感觉”。我把算法的一些基础思想进行了归并：</p>
+<ul>
+<li>枚举</li>
+<li>模拟</li>
+<li>递归/分治</li>
+<li>贪心</li>
+<li>排序</li>
+<li>二分</li>
+<li>倍增</li>
+<li>构造</li>
+<li>前缀和/差分</li>
+</ul>
+<p>我们来简单总结一下这些算法基础思想。</p>
+<h4 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h4><p>枚举是基于已有知识来猜测，印证答案的一种问题求解策略。当拿到一道题目时，枚举这种“暴力解法”最容易想到。这其中重点是：</p>
+<ul>
+<li>建立简洁的数学模型</li>
+<li>想清楚枚举哪些要素</li>
+<li>尝试减少枚举空间</li>
+</ul>
+<p>举个例子：</p>
+<blockquote>
+<p>一个数组中的数互不相同，求其中和为 0 的数对的个数</p>
+</blockquote>
+<p>最笨的方法：</p>
+<pre><code>for (int i = 0; i &lt; n; ++i)
+  for (int j = 0; j &lt; n; ++j)
+    if (a[i] + a[j] == 0) ++ans;</code></pre>
+<p>我们来看看如何操作进行优化。如果 (a, b) 是答案，那么 (b, a) 也是答案，因此对于这种情况只需统计一种顺序之后的答案，最后再乘 2 就好了。</p>
+<pre><code>for (int i = 0; i &lt; n; ++i)
+  for (int j = 0; j &lt; i; ++j)
+    if (a[i] + a[j] == 0) ++ans;</code></pre>
+<p>如此一来，就减少了 j 的枚举范围，减少了这段代码的时间开销。然而这还不是最优解。</p>
+<p>我们思考：两个数是否都一定要枚举出来呢？其实枚举第一个数之后，题目的条件已经帮我们确定了其他的要素（另一个数），如果能找到一种方法直接判断题目要求的那个数是否存在，就可以省掉枚举后一个数的时间了。代码实现很简单，我们就不动手实现了。</p>
+<h4 id="模拟"><a href="#模拟" class="headerlink" title="模拟"></a>模拟</h4><p>模拟。顾名思义，就是用计算机来模拟题目中要求的操作，我们只需要按照题面的意思来写就可以了。模拟题目通常具有码量大、操作多、思路繁复的特点。</p>
+<p>这种题目往往考察开发者的“逻辑转化为代码”的能力。一道典型题目是：<a target="_blank" rel="noopener" href="http://bailian.openjudge.cn/practice/3750/">魔兽世界</a>。</p>
+<h4 id="递归-amp-分治"><a href="#递归-amp-分治" class="headerlink" title="递归 &amp; 分治"></a>递归 &amp; 分治</h4><p>递归的基本思想是某个函数直接或者间接地调用自身，这样就把原问题的求解转换为许多性质相同但是规模更小的子问题。</p>
+<p>递归和枚举的区别在于：枚举是横向地把问题划分，然后依次求解子问题，而递归是把问题逐级分解，是纵向的拆分。比如请尝试回答这几个问题：</p>
+<blockquote>
+<p>孙悟空身上有多少根毛？答：一根毛加剩下的毛。 你今年几岁？答：去年的岁数加一岁，1999 年我出生。</p>
+</blockquote>
+<p>递归代码最重要的两个特征：结束条件和自我调用。</p>
+<pre><code>int func(传入数值) &#123;
+  if (终止条件) return 最小子问题解;
+  return func(缩小规模);
+&#125;</code></pre>
+<p>写递归的技巧，“明白一个函数的作用并相信它能完成这个任务，千万不要试图跳进细节”。<br>千万不要跳进这个函数里面企图探究更多细节，否则就会陷入无穷的细节无法自拔，人脑能压几个栈啊。</p>
+<p>先举个最简单的例子：遍历二叉树。</p>
+<pre><code>void traverse(TreeNode* root) &#123;
+  if (root == nullptr) return;
+  traverse(root-&gt;left);
+  traverse(root-&gt;right);
+&#125;</code></pre>
+<p>这几行代码就足以遍历任何一棵二叉树了。对于递归函数 traverse(root) ，我们只要相信：给它一个根节点<br>root，它就能遍历这棵树，因为写这个函数不就是为了这个目的吗？</p>
+<p>那么遍历一棵 N 叉数呢？</p>
+<pre><code>void traverse(TreeNode* root) &#123;
+  if (root == nullptr) return;
+  for (child : root-&gt;children) traverse(child);
+&#125;</code></pre>
+<p>总之，还是那句话：给它一个根节点 root，它就能遍历这棵树，不管你是几个叉。</p>
+<p>典型题目：</p>
+<blockquote>
+<p>给一棵二叉树，和一个目标值，节点上的值有正有负，返回树中和等于目标值的路径条数</p>
+</blockquote>
+<p>这道题目解法很多，也比较典型。这里我们只谈思想，具体实现就不展开。</p>
+<p>分治算法可以分三步走：分解 -&gt; 解决 -&gt; 合并。</p>
+<ul>
+<li>分解原问题为结构相同的子问题</li>
+<li>分解到某个容易求解的边界之后，进行递归求解</li>
+<li>将子问题的解合并成原问题的解</li>
+</ul>
+<p>归并排序是最典型的分治算法。</p>
+<pre><code>void mergeSort(一个数组) &#123;
+  if (可以很容易处理) return
+  mergeSort(左半个数组)
+  mergeSort(右半个数组)
+  merge(左半个数组, 右半个数组)
+&#125;</code></pre>
+<p>分治算法的套路就是前面说的三步走：分解 -&gt; 解决 -&gt; 合并：先左右分解，再处理合并，回溯就是在退栈，就相当于后序遍历了。至于 merge<br>函数，相当于两个有序链表的合并。</p>
+<p>LeetCode 有<a target="_blank" rel="noopener" href="https://leetcode.com/explore/learn/card/recursion-i/">递归专题练习</a><br>LeetCode 上有[分治算法的专项练习](<a target="_blank" rel="noopener" href="https://leetcode-cn.com/tag/divide-and-">https://leetcode-cn.com/tag/divide-and-</a><br>conquer/?utm_source=LCUS&amp;utm_medium=ip_redirect_o_uns&amp;utm_campaign=transfer2china)</p>
+<h4 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h4><p>贪心算法顾名思义就是只看眼前，并不考虑以后可能造成的影响。可想而知，并不是所有的时候贪心法都能获得最优解。</p>
+<p>最常见的贪心有两种。一种是：「将 XXX 按照某某顺序排序，然后按某种顺序（例如从小到大）处理」。另一种是：「我们每次都取 XXX 中最大/小的东西，并更新<br>XXX」，有时「XXX 中最大/小的东西」可以优化，比如用优先队列维护。这两种方式分别对应了离线的情况以及在线的情况。</p>
+<p>相关题目：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P2949">工作调度Work Scheduling</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P1209">修理牛棚 Barn Repair</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P2123">皇后游戏</a></li>
+</ul>
+<h4 id="二分"><a href="#二分" class="headerlink" title="二分"></a>二分</h4><p>以二分搜索为例，它是用来在一个有序数组中查找某一元素的算法。它每次考察数组当前部分的中间元素，如果中间元素刚好是要找的，就结束搜索过程；如果中间元素小于所查找的值，那么左侧的只会更小，不会有所查找的元素，只需要到右侧去找就好了；如果中间元素大于所查找的值，同理，右侧的只会更大而不会有所查找的元素，所以只需要到左侧去找。</p>
+<p>在二分搜索过程中，每次都把查询的区间减半，因此对于一个长度为 n 的数组，至多会进行 log(n) 次查找。</p>
+<p>一定需要注意的是，这里的有序是广义的有序，如果一个数组中的左侧或者右侧都满足某一种条件，而另一侧都不满足这种条件，也可以看作是一种有序。</p>
+<p>二分法把一个寻找极值的问题转化成一个判定的问题（用二分搜索来找这个极值）。类比枚举法，我们当时是枚举答案的可能情况，现在由于单调性，我们不再需要一个个枚举，利用二分的思路，就可以用更优的方法解决「最大值最小」、「最小值最大」。这种解法也成为是「二分答案」，常见于解题报告中。</p>
+<p>比如：<a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P1873">砍树问题</a>，我们可以在 1 到 1000000000（10<br>亿）中枚举答案，但是这种朴素写法肯定拿不到满分，因为从 1 跑到 10 亿太耗时间。我们可以对答案进行 1 到 10<br>亿的二分，其中，每次都对其进行检查可行性（一般都是使用贪心法）。</p>
+<p>依照此思想，我们还有三分法等展开算法。</p>
+<h4 id="倍增"><a href="#倍增" class="headerlink" title="倍增"></a>倍增</h4><p>倍增法，通过字面意思来看就是翻倍。这个方法在很多算法中均有应用，其中最常用的就是 RMQ 问题和求 LCA。</p>
+<p>RMQ 是英文 Range Maximum/Minimum Query 的缩写，表示区间最大（最小）值。解决 RMQ 问题的主要方法有两种，分别是 ST<br>表和线段树，具体请参见 ST 表和 线段树内容。</p>
+<h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>构造针对的问题的答案往往具有某种规律性，使得在问题规模迅速增大的时候，仍然有机会比较容易地得到答案。</p>
+<p>这种思想我们接触的比较少，主要体现了数学解题方法啊。比较典型的有：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problemnew/show/P3599">Luogu P3599 Koishi Loves Construction</a></li>
+<li><a target="_blank" rel="noopener" href="http://codeforces.com/problemset/problem/743/C">Vladik and fractions</a></li>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/agc032/tasks/agc032_b">AtCoder Grand Contest 032 B</a></li>
+</ul>
+<p>这里我们不再介绍，感兴趣的同学可以进行研究。</p>
+<h4 id="前缀和-amp-差分"><a href="#前缀和-amp-差分" class="headerlink" title="前缀和 &amp; 差分"></a>前缀和 &amp; 差分</h4><p>前缀和是一种重要的预处理，能大大降低查询的时间复杂度。我们可以简单理解为“数列的前 n 项的和”。其实前缀和几乎都是基于容斥原理。</p>
+<p>比如这道题目：</p>
+<blockquote>
+<p>有 N 个的正整数放到数组 A 里，现在要求一个新的数组 B，新数组的第 i 个数 B[i]是原数组 A 第 0 到第 i 个数的和。</p>
+</blockquote>
+<p>对于这道题，我们有两种做法：</p>
+<ul>
+<li>把对数组 A 的累加依次放入数组 B 中。</li>
+<li>递推： B[i] = B[i-1] + A[i]</li>
+</ul>
+<p>我们看第二种方法采用前缀和的思想，无疑更加优秀。</p>
+<p>其他相关题目：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/U53525">前缀和</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/U69096">前缀和的逆</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/AT2412">最大の和</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P3131">Subsequences Summing to Sevens</a></li>
+</ul>
+<p>更复杂些，可以延伸出：基于 DP 计算高维前缀和，树上前缀和。</p>
+<p>最后，差分是一种和前缀和相对的策略。这种策略是求相邻两数的差。相关题目：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://loj.ac/problem/132">树状数组 3 ：区间修改，区间查询</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P3397">地毯</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.org/problem/P3128">最大流</a></li>
+</ul>
+<h4 id="思想归并"><a href="#思想归并" class="headerlink" title="思想归并"></a>思想归并</h4><p>我列举了 9<br>中算法基本思想，并配上多到典型题目。实际上，读者可以根据自身情况酌情进行了解，在解题外更重要的是体会这些算法思想。比如我留一个小作业：在这三节课中所有讲到的算法中，你能按照这<br>9 种思想进行归类么？</p>
+<p>请动手尝试，我认为我们可以有解不出来的题目，但是对于算法思想的理解至关重要。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>到此我们关于算法的三节课就结束了。整体来说，算法需要应试。算法就像弹簧一样，只要你有信心，态度正确，不畏难，一定就可以攻克它。</p>
+<p>从今天起，下一个决心，制定一个计划，通过不断练习，提升自己解算法题的能力。当然学习数据结构和算法不仅仅对面试有帮助，对于程序的强健性、稳定性、性能来说，算法虽然只是细节，但却是最重要的一部分之一。比如<br>AVL 或者 B+ 树，可能除了在学校的大作业，一辈子也不会有机会实现一个出来，但你学会了分析和比较类似算法的能力, 有了搜索树的知识，你才能真正理解为什么<br>InnoDB 索引要用 B+ 树，你才能明白 like “abc%” 会不会使用索引，而不是人云亦云、知其然不知其所以然。</p>
+<p>这一节课我挑选的典型算法都不算困难，但都能体现算法的思想闪光点，适合类推。但实话说，这节课的内容相对零散，算法的思想却是可以归类的，也留给大家一个作业，将上述算法进行思想归类，并在每个归类下再找一道题目进行扩充。这样的学习方法一定会让你有所收获，在全部课程结束后，我也会和大家针对这个“作业”，进行交流，也分享出我的更多算法心得。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/advanced/044--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/">https://jinxiaochuan.github.io/matrix/advanced/044--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/advanced/042--%E9%82%A3%E4%BA%9B%E5%B9%B4%E5%B8%B8%E8%80%83%E7%9A%84%E5%89%8D%E7%AB%AF%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8A%EF%BC%89/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶42 | 那些年常考的前端算法（上）</div></div></a></div><div class="next-post pull-right"><a href="/matrix/advanced/045--%E5%88%86%E6%9E%90%E4%B8%80%E9%81%93%E2%80%9C%E5%BE%AE%E4%BF%A1%E2%80%9D%E9%9D%A2%E8%AF%95%E9%A2%98/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶45 | 分析一道“微信”面试题</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%88%AC%E6%A5%BC%E6%A2%AF"><span class="toc-number">1.</span> <span class="toc-text">爬楼梯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Combination-Sum"><span class="toc-number">2.</span> <span class="toc-text">Combination Sum</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#remove-duplicates-from-sorted-array"><span class="toc-number">3.</span> <span class="toc-text">remove duplicates from sorted array</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E4%BC%97%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">求众数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7"><span class="toc-number">5.</span> <span class="toc-text">有效括号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LRU-%E7%BC%93%E5%AD%98%E7%AE%97%E6%B3%95"><span class="toc-number">6.</span> <span class="toc-text">LRU 缓存算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE"><span class="toc-number">7.</span> <span class="toc-text">链表相关题目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8"><span class="toc-number">7.1.</span> <span class="toc-text">反转链表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%AC-N-%E4%B8%AA%E8%8A%82%E7%82%B9"><span class="toc-number">7.2.</span> <span class="toc-text">删除链表的倒数第 N 个节点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0"><span class="toc-number">8.</span> <span class="toc-text">算法学习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%9A%E4%B8%BE"><span class="toc-number">8.1.</span> <span class="toc-text">枚举</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F"><span class="toc-number">8.2.</span> <span class="toc-text">模拟</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%92%E5%BD%92-amp-%E5%88%86%E6%B2%BB"><span class="toc-number">8.3.</span> <span class="toc-text">递归 &amp; 分治</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B4%AA%E5%BF%83"><span class="toc-number">8.4.</span> <span class="toc-text">贪心</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E5%88%86"><span class="toc-number">8.5.</span> <span class="toc-text">二分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%80%8D%E5%A2%9E"><span class="toc-number">8.6.</span> <span class="toc-text">倍增</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0"><span class="toc-number">8.7.</span> <span class="toc-text">构造</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E5%92%8C-amp-%E5%B7%AE%E5%88%86"><span class="toc-number">8.8.</span> <span class="toc-text">前缀和 &amp; 差分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%9D%E6%83%B3%E5%BD%92%E5%B9%B6"><span class="toc-number">8.9.</span> <span class="toc-text">思想归并</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">9.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶23 | 从框架和类库，我们该学到什么"/></a><div class="content"><a class="title" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">核心进阶23 | 从框架和类库，我们该学到什么</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"/></a><div class="content"><a class="title" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">核心进阶24 | 深入浅出模块化（含 tree shaking）（上）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

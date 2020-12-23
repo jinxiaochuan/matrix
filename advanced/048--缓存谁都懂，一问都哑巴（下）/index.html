@@ -1,0 +1,637 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶48 | 缓存谁都懂，一问都哑巴（下） | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="上一讲，我们了解了缓存的几种方式和基本概念；这一讲，让我们从应用和面试的角度出发，巩固理论基础，加深操作印象。  缓存和浏览器操作缓存的重要一环是浏览器，常见浏览器行为对应的缓存行为有哪些呢？我们来做一个总结（注意，不同浏览器引擎、不同版本可能会有差别，读者可以根据不同情况酌情参考）：  当用户 Ctrl + F5 强制刷新网页时，浏览器直接从服务器加载，跳过强缓存和协商缓存 当用户仅仅敲击 F5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶48 | 缓存谁都懂，一问都哑巴（下）">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/advanced/048--%E7%BC%93%E5%AD%98%E8%B0%81%E9%83%BD%E6%87%82%EF%BC%8C%E4%B8%80%E9%97%AE%E9%83%BD%E5%93%91%E5%B7%B4%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="上一讲，我们了解了缓存的几种方式和基本概念；这一讲，让我们从应用和面试的角度出发，巩固理论基础，加深操作印象。  缓存和浏览器操作缓存的重要一环是浏览器，常见浏览器行为对应的缓存行为有哪些呢？我们来做一个总结（注意，不同浏览器引擎、不同版本可能会有差别，读者可以根据不同情况酌情参考）：  当用户 Ctrl + F5 强制刷新网页时，浏览器直接从服务器加载，跳过强缓存和协商缓存 当用户仅仅敲击 F5">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-23T02:19:57.212Z">
+<meta property="article:modified_time" content="2020-12-23T02:19:57.212Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/advanced/048--%E7%BC%93%E5%AD%98%E8%B0%81%E9%83%BD%E6%87%82%EF%BC%8C%E4%B8%80%E9%97%AE%E9%83%BD%E5%93%91%E5%B7%B4%EF%BC%88%E4%B8%8B%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-23 10:19:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶48 | 缓存谁都懂，一问都哑巴（下）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-23T02:19:57.212Z" title="更新于 2020-12-23 10:19:57">2020-12-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>上一讲，我们了解了缓存的几种方式和基本概念；这一讲，让我们从应用和面试的角度出发，巩固理论基础，加深操作印象。</p>
+<p><img src="https://images.gitbook.cn/14a4f400-e270-11e9-bb4c-7169754434c1" alt="0"></p>
+<h3 id="缓存和浏览器操作"><a href="#缓存和浏览器操作" class="headerlink" title="缓存和浏览器操作"></a>缓存和浏览器操作</h3><p>缓存的重要一环是浏览器，常见浏览器行为对应的缓存行为有哪些呢？我们来做一个总结（注意，不同浏览器引擎、不同版本可能会有差别，读者可以根据不同情况酌情参考）：</p>
+<ul>
+<li>当用户 Ctrl + F5 强制刷新网页时，浏览器直接从服务器加载，跳过强缓存和协商缓存</li>
+<li>当用户仅仅敲击 F5 刷新网页时，跳过强缓存，但是仍然会进行协商缓存过程</li>
+</ul>
+<p>这里我借用 [Alloy<br>Team](<a href="https://link.juejin.im/?target=http://www.alloyteam.com/2012/03/web-">https://link.juejin.im/?target=http%3A%2F%2Fwww.alloyteam.com%2F2012%2F03%2Fweb-</a><br>cache-2-browser-cache%2F) 的图进行一个总结：</p>
+<p><img src="https://images.gitbook.cn/cc134b80-e26d-11e9-bb4c-7169754434c1" alt="1"></p>
+<h3 id="缓存相关面试题目"><a href="#缓存相关面试题目" class="headerlink" title="缓存相关面试题目"></a>缓存相关面试题目</h3><p>知识点我们已经梳理完毕，是时候刷一下经典题目来巩固了。以下题目都可以在上述知识中找到答案，我们也当做一个总结和考察。</p>
+<ul>
+<li>题目一：如何禁止浏览器不缓存静态资源</li>
+</ul>
+<p>在实际工作中，很多场景都需要禁用浏览器缓存。比如可以使用 Chrome 隐私模式，在代码层面可以设置相关请求头：</p>
+<pre><code>Cache-Control: no-cache, no-store, must-revalidate</code></pre>
+<p>此外，也可以给请求的资源增加一个版本号：</p>
+<pre><code>&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./asset.css?version=1.8.9&quot;/&gt;</code></pre>
+<p>我们也可以使用 Meta 标签来声明缓存规则：</p>
+<pre><code>&lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;no-cache, no-store, must-revalidate&quot;/&gt;</code></pre>
+<ul>
+<li>题目二：设置以下 request/response header 会有什么效果？</li>
+</ul>
+<pre><code>cache-control: max-age=0</code></pre>
+<p>上述响应头属于强缓存，因为 max-age 设置为 0，所以浏览器必须发请求重新验证资源。这时候会走协商缓存机制，可能返回 200 或者 304。</p>
+<ul>
+<li>题目三：设置以下 request/response header 会有什么效果？</li>
+</ul>
+<pre><code>cache-control: no-cache</code></pre>
+<p>上述响应头属于强缓存，因为设置 no-cache，所以浏览器必须发请求重新验证资源。这时候会走协商缓存机制。</p>
+<ul>
+<li>题目四：除了上述方式，还有哪种方式可以设置浏览器必须发请求重新验证资源，走协商缓存机制？</li>
+</ul>
+<p>设置 request/response header：</p>
+<pre><code>cache-control: must-revalidate</code></pre>
+<ul>
+<li>题目五：设置以下 request/response header 会有什么效果？</li>
+</ul>
+<pre><code>Cache-Control: max-age=60, must-revalidate</code></pre>
+<p>如果资源在 60s 内再次访问，走强缓存，可以直接返回缓存资源内容；如果超过 60s，则必须发送网络请求到服务端，去验证资源的有效性。</p>
+<ul>
+<li>题目五：据你的经验，为什么大厂都不怎么用 Etag？</li>
+</ul>
+<p>大厂多使用负载分担的方式来调度 HTTP 请求。因此，同一个客户端对同一个页面的多次请求，很可能被分配到不同的服务器来相应，而根据 ETag<br>的计算原理，不同的服务器，有可能在资源内容没有变化的情况下，计算出不一样的 Etag，而使得缓存失效。</p>
+<ul>
+<li>题目六：Yahoo 的 YSlow 页面分析工具为什么推荐关闭 ETag?</li>
+</ul>
+<p>因为 Etag 计算较为复杂，所以可能会使得服务端响应变慢。</p>
+<h3 id="缓存实战"><a href="#缓存实战" class="headerlink" title="缓存实战"></a>缓存实战</h3><p>我们来通过几个简单的真实项目案例实操一下缓存。</p>
+<h4 id="启动项目"><a href="#启动项目" class="headerlink" title="启动项目"></a>启动项目</h4><p>首先创建项目：</p>
+<pre><code>mkdir cache
+npm init</code></pre>
+<p>之后，得到 package.json，同时声明我们的相关依赖：</p>
+<pre><code>&#123;
+  &quot;name&quot;: &quot;cache&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;Cache demo&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;start&quot;: &quot;nodemon ./index.js&quot;
+  &#125;,
+  &quot;keywords&quot;: [
+    &quot;cache&quot;,
+    &quot;node&quot;
+  ],
+  &quot;devDependencies&quot;: &#123;
+    &quot;@babel/core&quot;: &quot;latest&quot;,
+    &quot;@babel/preset-env&quot;: &quot;latest&quot;,
+    &quot;@babel/register&quot;: &quot;latest&quot;,
+    &quot;koa&quot;: &quot;latest&quot;,
+    &quot;koa-conditional-get&quot;: &quot;^2.0.0&quot;,
+    &quot;koa-etag&quot;: &quot;^3.0.0&quot;,
+    &quot;koa-static&quot;: &quot;latest&quot;
+  &#125;,
+  &quot;dependencies&quot;: &#123;
+    &quot;nodemon&quot;: &quot;latest&quot;
+  &#125;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;</code></pre>
+<p>使用 nodemon 来启动并 watch Node 脚本，同时配置 .babelrc 如下：</p>
+<pre><code>&#123;
+ &quot;presets&quot;: [
+   [
+     &quot;@babel/preset-env&quot;,
+     &#123;
+       &quot;targets&quot;: &#123;
+         &quot;node&quot;: &quot;current&quot;
+       &#125;
+     &#125;
+   ]
+ ]
+&#125;</code></pre>
+<p>在 cache/static 目录下，创建 index.html 和一张测试图片 web.png：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;ie=edge&quot; /&gt;
+    &lt;title&gt;前端开发核心知识进阶&lt;/title&gt;
+    &lt;style&gt;
+      .cache img &#123;
+        display: block;
+        width: 100%;
+      &#125;
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div class=&quot;cache&quot;&gt;
+      &lt;img src=&quot;./web.png&quot; /&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>看一下我们的核心脚本 index.js，其实就是一个简单的 NodeJS 服务：</p>
+<p>index.js：</p>
+<pre><code>require(&#39;@babel/register&#39;);
+require(&#39;./cache.js&#39;);</code></pre>
+<p>cache.js：</p>
+<pre><code>import Koa from &#39;koa&#39;
+import path from &#39;path&#39;
+import resource from &#39;koa-static&#39;
+
+const app = new Koa()
+const host = &#39;localhost&#39;
+const port = 6666
+
+app.use(resource(path.join(__dirname, &#39;./static&#39;)))
+
+app.listen(port, () =&gt; &#123;
+  console.log(`server is listen in $&#123;host&#125;:$&#123;port&#125;`)
+&#125;)</code></pre>
+<p>我们启动：</p>
+<pre><code>npm run start</code></pre>
+<p>得到页面：</p>
+<p><img src="https://images.gitbook.cn/e5aca3c0-e26d-11e9-bb4c-7169754434c1" alt="2"></p>
+<h4 id="应用缓存"><a href="#应用缓存" class="headerlink" title="应用缓存"></a>应用缓存</h4><p>我们来尝试加入一些缓存，首先应用强缓存，只需要在响应头上加入相关字段即可：</p>
+<pre><code>import Koa from &#39;koa&#39;
+import path from &#39;path&#39;
+import resource from &#39;koa-static&#39;
+
+const app = new Koa()
+const host = &#39;localhost&#39;
+const port = 5999
+
+app.use(async (ctx, next) =&gt; &#123;
+  ctx.set(&#123;
+    &#39;Cache-Control&#39;: &#39;max-age=5000&#39;  
+  &#125;)
+  await next()
+&#125;)
+
+app.use(resource(path.join(__dirname, &#39;./static&#39;)))
+
+app.listen(port, () =&gt; &#123;
+  console.log(`server is listen in $&#123;host&#125;:$&#123;port&#125;`);
+&#125;)</code></pre>
+<p>我们加入了 Cache-Control 头，设置 max-age 值为 5000。页面得到了响应：</p>
+<p><img src="https://images.gitbook.cn/f94f7ec0-e26d-11e9-b138-7fd562c24e16" alt="3"></p>
+<p>再次刷新，得到了 200 OK（from memory cache）的标记：</p>
+<p><img src="https://images.gitbook.cn/1765ac90-e26e-11e9-9514-611dbba450a7" alt="4"></p>
+<p>当我们关掉浏览器，再次打开页面，得到了 200 OK（from disk cache）的标记。请体会与 from memory cache<br>的不同，memory cache 已经随着我们关闭浏览器而清除，这里是从 disk cache 取到的缓存。</p>
+<p><img src="https://images.gitbook.cn/3d0bbc50-e26e-11e9-bb4c-7169754434c1" alt="5"></p>
+<p>我们尝试将 max-age 改为 5 秒，5 秒后再次刷新页面，发现缓存已经失效。这里读者可以自行试验，不再截图了。</p>
+<p>下面来试验一下协商缓存，在初始 package.json 中，已经引入了 koa-etag 和 koa-conditional-get 这两个包依赖。</p>
+<p>修改 cache.js 为：</p>
+<pre><code>import Koa from &#39;koa&#39;
+import path from &#39;path&#39;
+import resource from &#39;koa-static&#39;
+import conditional from &#39;koa-conditional-get&#39;
+import etag from &#39;koa-etag&#39;
+
+const app = new Koa()
+const host = &#39;localhost&#39;
+const port = 5999
+
+app.use(conditional())
+app.use(etag())
+app.use(resource(path.join(__dirname, &#39;./static&#39;)))
+
+app.listen(port, () =&gt; &#123;
+ console.log(`server is listen in $&#123;host&#125;:$&#123;port&#125;`)
+&#125;)</code></pre>
+<p>一切都很简单：</p>
+<p><img src="https://images.gitbook.cn/552d68b0-e26e-11e9-bb4c-7169754434c1" alt="6"></p>
+<p>我们再次刷新浏览器，这次找到请求头，得到了 If-None-Match 字段，且内容与上一次的响应头相同。</p>
+<p><img src="https://images.gitbook.cn/6b1e0440-e26e-11e9-b138-7fd562c24e16" alt="7"></p>
+<p>因为我们的图片并没有发生变化，所以得到了 304 响应头。</p>
+<p><img src="https://images.gitbook.cn/84e85790-e26e-11e9-8cc6-d3303f1d15c4" alt="8"></p>
+<p>读者可以自行尝试替换图片来验证内容。</p>
+<p>这里我们主要使用了 Koa 库，如果对于原生 NodeJS，这里截取一个代码片段，供大家参考，该代码主要实现了 【if-modified-<br>since/last-modified】头：</p>
+<pre><code>http.createServer((req, res) =&gt; &#123;
+    let &#123; pathname &#125; = url.parse(req.url, true)
+
+    let absolutePath = path.join(__dirname, pathname)
+
+    fs.stat(path.join(__dirname, pathname), (err, stat) =&gt; &#123;
+        // 路径不存在
+        if(err) &#123;
+            res.statusCode = 404
+            res.end(&#39;Not Fount&#39;)
+            return
+        &#125;
+
+        if(stat.isFile()) &#123;
+            res.setHeader(&#39;Last-Modified&#39;, stat.ctime.toGMTString())
+
+            if(req.headers[&#39;if-modified-since&#39;] === stat.ctime.toGMTString()) &#123;
+                res.statusCode = 304
+                res.end()
+                return
+            &#125;
+
+            fs.createReadStream(absolutePath).pipe(res)
+        &#125;
+    &#125;)
+&#125;)</code></pre>
+<p>该项目源码，读者可以在[这里找到](<a target="_blank" rel="noopener" href="https://github.com/HOUCe/lucas-gitchat-">https://github.com/HOUCe/lucas-gitchat-</a><br>courses/tree/master/%E7%BC%93%E5%AD%98%E8%B0%81%E9%83%BD%E6%87%82%EF%BC%8C%E4%B8%80%E9%97%AE%E9%83%BD%E5%93%91%E5%8F%A3/cache)。</p>
+<h4 id="源码探究"><a href="#源码探究" class="headerlink" title="源码探究"></a>源码探究</h4><p>在上面应用 Etag 试验当中，使用了 koa-etag 这个包，这里我们就来了解一下这个包的实现。</p>
+<p>源码如下：</p>
+<pre><code>var calculate = require(&#39;etag&#39;);
+var Stream = require(&#39;stream&#39;);
+var fs = require(&#39;mz/fs&#39;);
+
+module.exports = etag;
+
+function etag(options) &#123;
+  return function etag(ctx, next) &#123;
+    return next()
+      .then(() =&gt; getResponseEntity(ctx))
+      .then(entity =&gt; setEtag(ctx, entity, options));
+  &#125;;
+&#125;
+
+function getResponseEntity(ctx, options) &#123;
+  // no body
+  var body = ctx.body;
+  if (!body || ctx.response.get(&#39;ETag&#39;)) return;
+
+  // type
+  var status = ctx.status / 100 | 0;
+
+  // 2xx
+  if (2 != status) return;
+
+  if (body instanceof Stream) &#123;
+    if (!body.path) return;
+    return fs.stat(body.path).catch(noop);
+  &#125; else if ((&#39;string&#39; == typeof body) || Buffer.isBuffer(body)) &#123;
+    return body;
+  &#125; else &#123;
+    return JSON.stringify(body);
+  &#125;
+&#125;
+
+function setEtag(ctx, entity, options) &#123;
+  if (!entity) return;
+
+  ctx.response.etag = calculate(entity, options);
+&#125;
+
+function noop() &#123;&#125;</code></pre>
+<p>我们看整个 etag 库就是一个中间件，它首先调用 getResponseEntity 方法获取响应体，根据 body 最终调用了 setEtag<br>方法，根据响应内容生产 etag。最终生成 etag 的计算过程又利用了 etag 这个包，再来看一下 etag 库：</p>
+<pre><code>&#39;use strict&#39;
+
+module.exports = etag
+
+var crypto = require(&#39;crypto&#39;)
+var Stats = require(&#39;fs&#39;).Stats
+
+var toString = Object.prototype.toString
+
+function entitytag (entity) &#123;
+  if (entity.length === 0) &#123;
+    // fast-path empty
+    return &#39;&quot;0-2jmj7l5rSw0yVb/vlWAYkK/YBwk&quot;&#39;
+  &#125;
+
+  // compute hash of entity
+  var hash = crypto
+    .createHash(&#39;sha1&#39;)
+    .update(entity, &#39;utf8&#39;)
+    .digest(&#39;base64&#39;)
+    .substring(0, 27)
+
+  // compute length of entity
+  var len = typeof entity === &#39;string&#39;
+    ? Buffer.byteLength(entity, &#39;utf8&#39;)
+    : entity.length
+
+  return &#39;&quot;&#39; + len.toString(16) + &#39;-&#39; + hash + &#39;&quot;&#39;
+&#125;
+
+function etag (entity, options) &#123;
+  if (entity == null) &#123;
+    throw new TypeError(&#39;argument entity is required&#39;)
+  &#125;
+
+  // support fs.Stats object
+  var isStats = isstats(entity)
+  var weak = options &amp;&amp; typeof options.weak === &#39;boolean&#39;
+    ? options.weak
+    : isStats
+
+  // validate argument
+  if (!isStats &amp;&amp; typeof entity !== &#39;string&#39; &amp;&amp; !Buffer.isBuffer(entity)) &#123;
+    throw new TypeError(&#39;argument entity must be string, Buffer, or fs.Stats&#39;)
+  &#125;
+
+  // generate entity tag
+  var tag = isStats
+    ? stattag(entity)
+    : entitytag(entity)
+
+  return weak
+    ? &#39;W/&#39; + tag
+    : tag
+&#125;
+
+function isstats (obj) &#123;
+  // genuine fs.Stats
+  if (typeof Stats === &#39;function&#39; &amp;&amp; obj instanceof Stats) &#123;
+    return true
+  &#125;
+
+  // quack quack
+  return obj &amp;&amp; typeof obj === &#39;object&#39; &amp;&amp;
+    &#39;ctime&#39; in obj &amp;&amp; toString.call(obj.ctime) === &#39;[object Date]&#39; &amp;&amp;
+    &#39;mtime&#39; in obj &amp;&amp; toString.call(obj.mtime) === &#39;[object Date]&#39; &amp;&amp;
+    &#39;ino&#39; in obj &amp;&amp; typeof obj.ino === &#39;number&#39; &amp;&amp;
+    &#39;size&#39; in obj &amp;&amp; typeof obj.size === &#39;number&#39;
+&#125;
+
+function stattag (stat) &#123;
+  var mtime = stat.mtime.getTime().toString(16)
+  var size = stat.size.toString(16)
+
+  return &#39;&quot;&#39; + size + &#39;-&#39; + mtime + &#39;&quot;&#39;
+&#125;</code></pre>
+<p>etag 方法接受一个 entity 最为入参一，entity 可以是 string、Buffer 或者 Stats 类型。如果是 Stats 类型，那么<br>etag 的生成方法会有不同：</p>
+<pre><code>var mtime = stat.mtime.getTime().toString(16)
+var size = stat.size.toString(16)
+
+return &#39;&quot;&#39; + size + &#39;-&#39; + mtime + &#39;&quot;&#39;</code></pre>
+<p>主要是根据 Stats 类型的 entity 的 mtime 和 size 特征，拼成一个 etag 即可。</p>
+<p>如果是正常 String 或者 Buffer 类型，etag 的生成方法依赖了内置 crypto 包，主要是根据 entity 生成 hash，hash<br>生成主要依赖了 sha1 加密方法：</p>
+<pre><code>var hash = crypto
+    .createHash(&#39;sha1&#39;)
+    .update(entity, &#39;utf8&#39;)
+    .digest(&#39;base64&#39;)</code></pre>
+<p>了解了这些，如果面试官再问“Etag 的生成方法”，我想读者已经能够有一定底气了。</p>
+<h3 id="实现一个验证缓存的轮子"><a href="#实现一个验证缓存的轮子" class="headerlink" title="实现一个验证缓存的轮子"></a>实现一个验证缓存的轮子</h3><p>分析完关于 etag<br>的这个库，我们来尝试自救造一个轮子，也当作留给大家的一个作业。这个轮子的需要完成验证缓存是否可用的功能，它接受请求头和响应头，并根据这两个头部，返回一个布尔值，表示缓存是否可用。</p>
+<p>应用举例：</p>
+<pre><code>var reqHeaders = &#123; &#39;if-none-match&#39;: &#39;&quot;foo&quot;&#39; &#125;
+var resHeaders = &#123; &#39;etag&#39;: &#39;&quot;bar&quot;&#39; &#125;
+isFresh(reqHeaders, resHeaders)
+// =&gt; false
+
+var reqHeaders = &#123; &#39;if-none-match&#39;: &#39;&quot;foo&quot;&#39; &#125;
+var resHeaders = &#123; &#39;etag&#39;: &#39;&quot;foo&quot;&#39; &#125;
+isFresh(reqHeaders, resHeaders)
+// =&gt; true</code></pre>
+<p>在业务端使用时，可以直接：</p>
+<pre><code>var isFresh = require(&#39;is-fresh&#39;)
+var http = require(&#39;http&#39;)
+
+var server = http.createServer(function (req, res) &#123;
+
+  if (isFresh(req.headers, &#123;
+    &#39;etag&#39;: res.getHeader(&#39;ETag&#39;),
+    &#39;last-modified&#39;: res.getHeader(&#39;Last-Modified&#39;)
+  &#125;)) &#123;
+    res.statusCode = 304
+    res.end()
+    return
+  &#125;
+
+  res.statusCode = 200
+  res.end(&#39;hello, world!&#39;)
+&#125;)
+
+server.listen(3000)</code></pre>
+<p>实现这道题目的前提就是先要了解缓存的基本知识，知晓缓存优先级。我们应该先验证 cache-control，之后验证 If-None-Match，之后是<br>If-Modified-Since。了解了这些，我们按部就班不难实现：</p>
+<pre><code>var CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/
+
+function fresh (reqHeaders, resHeaders) &#123;
+  // fields
+  var modifiedSince = reqHeaders[&#39;if-modified-since&#39;]
+  var noneMatch = reqHeaders[&#39;if-none-match&#39;]
+
+  if (!modifiedSince &amp;&amp; !noneMatch) &#123;
+    return false
+  &#125;
+
+  var cacheControl = reqHeaders[&#39;cache-control&#39;]
+  if (cacheControl &amp;&amp; CACHE_CONTROL_NO_CACHE_REGEXP.test(cacheControl)) &#123;
+    return false
+  &#125;
+
+  // if-none-match
+  if (noneMatch &amp;&amp; noneMatch !== &#39;*&#39;) &#123;
+    var etag = resHeaders[&#39;etag&#39;]
+
+    if (!etag) &#123;
+      return false
+    &#125;
+
+    var etagStale = true
+    var matches = parseTokenList(noneMatch)
+    for (var i = 0; i &lt; matches.length; i++) &#123;
+      var match = matches[i]
+      if (match === etag || match === &#39;W/&#39; + etag || &#39;W/&#39; + match === etag) &#123;
+        etagStale = false
+        break
+      &#125;
+    &#125;
+
+    if (etagStale) &#123;
+      return false
+    &#125;
+  &#125;
+
+  // if-modified-since
+  if (modifiedSince) &#123;
+    var lastModified = resHeaders[&#39;last-modified&#39;]
+    var modifiedStale = !lastModified || !(parseHttpDate(lastModified) &lt;= parseHttpDate(modifiedSince))
+
+    if (modifiedStale) &#123;
+      return false
+    &#125;
+  &#125;
+
+  return true
+&#125;
+
+function parseHttpDate (date) &#123;
+  var timestamp = date &amp;&amp; Date.parse(date)
+
+  return typeof timestamp === &#39;number&#39;
+    ? timestamp
+    : NaN
+&#125;
+
+function parseTokenList (str) &#123;
+  var end = 0
+  var list = []
+  var start = 0
+
+  for (var i = 0, len = str.length; i &lt; len; i++) &#123;
+    switch (str.charCodeAt(i)) &#123;
+      case 0x20: /*   */
+        if (start === end) &#123;
+          start = end = i + 1
+        &#125;
+        break
+      case 0x2c: /* , */
+        list.push(str.substring(start, end))
+        start = end = i + 1
+        break
+      default:
+        end = i + 1
+        break
+    &#125;
+  &#125;
+
+  list.push(str.substring(start, end))
+
+  return list
+&#125;</code></pre>
+<p>这个实现比较简单，读者可以尝试解读该源码，如果这两讲的内容你已经融会贯通，上述实现并不困难。</p>
+<p>当然，缓存的轮子却也没有“想象的那么简单”，“上述的代码强健性是否足够”？“API<br>设计是否优雅”？等这些话题值得思考。也希望在整个内容完结后，针对实战代码的优化和调试，应用的踩坑和解决能够大家继续交流。我们也会针对上述代码，展开更多内容。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>我们通过两讲的学习，介绍了缓存这一热门话题。缓存体现了理论规范和实战结合的美妙，是网络应用经验的结晶。建议读者可以多观察大型门户网站、页面应用，并结合工程化知识来看待并学习缓存。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/advanced/048--%E7%BC%93%E5%AD%98%E8%B0%81%E9%83%BD%E6%87%82%EF%BC%8C%E4%B8%80%E9%97%AE%E9%83%BD%E5%93%91%E5%B7%B4%EF%BC%88%E4%B8%8B%EF%BC%89/">https://jinxiaochuan.github.io/matrix/advanced/048--%E7%BC%93%E5%AD%98%E8%B0%81%E9%83%BD%E6%87%82%EF%BC%8C%E4%B8%80%E9%97%AE%E9%83%BD%E5%93%91%E5%B7%B4%EF%BC%88%E4%B8%8B%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/advanced/045--%E5%88%86%E6%9E%90%E4%B8%80%E9%81%93%E2%80%9C%E5%BE%AE%E4%BF%A1%E2%80%9D%E9%9D%A2%E8%AF%95%E9%A2%98/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶45 | 分析一道“微信”面试题</div></div></a></div><div class="next-post pull-right"><a href="/matrix/advanced/050--%E4%B8%8D%E5%8F%AF%E5%BF%BD%E8%A7%86%E7%9A%84%E5%89%8D%E7%AB%AF%E5%AE%89%E5%85%A8%20-%20%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8%E9%89%B4%E6%9D%83%E8%AE%BE%E8%AE%A1/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶50 | 不可忽视的前端安全 - 单页应用鉴权设计</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%92%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">缓存和浏览器操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%9B%B8%E5%85%B3%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE"><span class="toc-number">2.</span> <span class="toc-text">缓存相关面试题目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%AE%9E%E6%88%98"><span class="toc-number">3.</span> <span class="toc-text">缓存实战</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%A1%B9%E7%9B%AE"><span class="toc-number">3.1.</span> <span class="toc-text">启动项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E7%BC%93%E5%AD%98"><span class="toc-number">3.2.</span> <span class="toc-text">应用缓存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6"><span class="toc-number">3.3.</span> <span class="toc-text">源码探究</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E9%AA%8C%E8%AF%81%E7%BC%93%E5%AD%98%E7%9A%84%E8%BD%AE%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">实现一个验证缓存的轮子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶23 | 从框架和类库，我们该学到什么"/></a><div class="content"><a class="title" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">核心进阶23 | 从框架和类库，我们该学到什么</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"/></a><div class="content"><a class="title" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">核心进阶24 | 深入浅出模块化（含 tree shaking）（上）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>

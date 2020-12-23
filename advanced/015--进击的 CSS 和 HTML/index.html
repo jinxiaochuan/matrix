@@ -1,0 +1,634 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>核心进阶15 | 进击的 CSS 和 HTML | Matrix</title><meta name="author" content="小川"><meta name="copyright" content="小川"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="通过前面的课程介绍，我们认识到了 JavaScript 语言的飞速发展。其实 HTML 和 CSS 也不断“要求着”进步，本节课程我们就来了解一下发展中的HTML 和 CSS。之所以叫做“进击的”，是因为确实有很多新的特性非常实用且具有变革精神。 相关知识点如下：  其中，除了罗列一些热点面试题目以外，我们将重点分析 CSS 变量和 CSSModules，我认为这两个概念代表了未来的发展方向。当下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="核心进阶15 | 进击的 CSS 和 HTML">
+<meta property="og:url" content="https://jinxiaochuan.github.io/matrix/advanced/015--%E8%BF%9B%E5%87%BB%E7%9A%84%20CSS%20%E5%92%8C%20HTML/index.html">
+<meta property="og:site_name" content="Matrix">
+<meta property="og:description" content="通过前面的课程介绍，我们认识到了 JavaScript 语言的飞速发展。其实 HTML 和 CSS 也不断“要求着”进步，本节课程我们就来了解一下发展中的HTML 和 CSS。之所以叫做“进击的”，是因为确实有很多新的特性非常实用且具有变革精神。 相关知识点如下：  其中，除了罗列一些热点面试题目以外，我们将重点分析 CSS 变量和 CSSModules，我认为这两个概念代表了未来的发展方向。当下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-12-23T02:19:57.208Z">
+<meta property="article:modified_time" content="2020-12-23T02:19:57.208Z">
+<meta property="article:author" content="小川">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/matrix/img/favicon.png"><link rel="canonical" href="https://jinxiaochuan.github.io/matrix/advanced/015--%E8%BF%9B%E5%87%BB%E7%9A%84%20CSS%20%E5%92%8C%20HTML/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/matrix/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var GLOBAL_CONFIG = { 
+  root: '/matrix/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}
+
+// https://stackoverflow.com/questions/16839698/jquery-getscript-alternative-in-native-javascript
+const getScript = url => new Promise((resolve, reject) => {
+  const script = document.createElement('script')
+  script.src = url
+  script.async = true
+  script.onerror = reject
+  script.onload = script.onreadystatechange = function() {
+    const loadState = this.readyState
+    if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+    script.onload = script.onreadystatechange = null
+    resolve()
+  }
+  document.head.appendChild(script)
+})</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-12-23 10:19:57'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/matrix/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div></div><hr/></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/matrix/">Matrix</a></span><div id="menus"><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">核心进阶15 | 进击的 CSS 和 HTML</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-23T02:19:57.208Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-23T02:19:57.208Z" title="更新于 2020-12-23 10:19:57">2020-12-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>通过前面的课程介绍，我们认识到了 JavaScript 语言的飞速发展。其实 HTML 和 CSS 也不断“要求着”进步，本节课程我们就来了解一下发展中的<br>HTML 和 CSS。之所以叫做“进击的”，是因为确实有很多新的特性非常实用且具有变革精神。</p>
+<p>相关知识点如下：</p>
+<p><img src="https://images.gitbook.cn/1c028dd0-8fdb-11e9-9c86-a1bad3faf0f2"></p>
+<p>其中，除了罗列一些热点面试题目以外，我们将重点分析 CSS 变量和 CSS<br>Modules，我认为这两个概念代表了未来的发展方向。当下来看，也有必要根据情况，融合到成熟的项目中，加以应用。因此这方面的内容除了基本理论，我都会给出实战案例和构建流程。</p>
+<h3 id="进击的-HTML"><a href="#进击的-HTML" class="headerlink" title="进击的 HTML"></a>进击的 HTML</h3><p>我们再来看看 HTML 的历史和规范常识。HTML 规范是 W3C 与 WHATWG 合作共同产出的，HTML5 因此也不例外。其中：</p>
+<ul>
+<li>W3C 指 World Wide Web Consortium</li>
+<li>WHATWG 指 Web Hypertext Application Technology Working Group</li>
+</ul>
+<p>说好听了是“合作产出”，但其实更像是“HTML5<br>有两套规范”。但话说天下大势合久必分，分久必合，如今（就在前几天，2018.5.29）它们又表示将会开发单一版本的 HTML 规范。</p>
+<p>那么 HTML5 给开发者提供了哪些便利呢？简单列举有：</p>
+<ul>
+<li>用于绘画的 canvas 元素</li>
+<li>用于媒介播放的 video 和 audio 元素</li>
+<li>对本地离线存储更好的支持（localStorage、sessionStorage）</li>
+<li>新的语义化标签（article、footer、header、nav、section…)</li>
+<li>新的表单控件（calendar、date、time、email、url、search…)</li>
+</ul>
+<p>除了这些常规的之外，还有：</p>
+<ul>
+<li>给汉字加拼音</li>
+</ul>
+<pre><code>&lt;ruby&gt; 
+    前端开发核心知识进阶
+    &lt;rt&gt;
+        qianduankaifahexinzhishijinjie
+    &lt;/rt&gt; 
+&lt;/ruby&gt;</code></pre>
+<p><img src="https://images.gitbook.cn/2853de80-8fd2-11e9-afed-87af38460e36"></p>
+<ul>
+<li>展开收起组件</li>
+</ul>
+<p>简单几行代码：</p>
+<pre><code>&lt;details&gt;
+  &lt;summary&gt;前端开发核心知识进阶&lt;/summary&gt;
+前端领域，入门相对简单，可是想要“更上一层楼”却难上加难，也就是我们常说的“职业天花板较低”，君不见——市场上高级/资深前端工程师凤毛麟角。这当然未必完全是坏事，一旦突破瓶颈，在技能上脱颖而出，便是更广阔的空间。那么，如何从夯实基础到突破瓶颈？
+&lt;/details&gt;</code></pre>
+<p>就可以实现：</p>
+<p><img src="https://images.gitbook.cn/649e4970-8fd2-11e9-afed-87af38460e36"></p>
+<p>上图为“收起”效果。</p>
+<p><img src="https://images.gitbook.cn/dc7b6810-8fd2-11e9-8b34-c732c3ec276d"></p>
+<p>上图为“展开”效果。</p>
+<p>以往要实现这样的内容，我们都必须依靠 JavaScript 实现。现在来看，HTML 也变得更加具有“可交互性”。</p>
+<ul>
+<li>原生进度条和度量</li>
+</ul>
+<p>progress 标签显示进度：</p>
+<p><img src="https://images.gitbook.cn/08358f30-8fd3-11e9-9c86-a1bad3faf0f2" alt="enter image description
+here"></p>
+<p>值得一提的是：progress 不适合用来表示度量衡，如果想表示度量衡，我们应该使用 meter 标签代替。这又是什么标签？</p>
+<p>其实 HTML5 新带来的标签多种多样，感兴趣的读者可以自行了解，我们这里不再用更多篇幅介绍。</p>
+<h3 id="不可忽视的-Web-components"><a href="#不可忽视的-Web-components" class="headerlink" title="不可忽视的 Web components"></a>不可忽视的 Web components</h3><p>事实上，Web components 的概念在几年前也已经提出，貌似一直没有发展的“如火如荼”，这里我为什么又单独拿出来讲呢？</p>
+<p>我并不想赘述 Web components<br>的基础概念，但是我认为，作为“更高阶”的前端工程师，要时刻保持技术视野和信息广度。在框架带来的“组件化”、“生命周期化”这些统治级别的概念下，对比并结合<br>Web components，我认为是可以深入研究的一个课题方向。我总结一下 Web components 的特殊点或者优点：</p>
+<ul>
+<li>原生规范，无需框架</li>
+</ul>
+<p>这条优点的后半句话是：“但是继承且具备了框架的优点”，在新的 Web components 规范中，我们会发现组件生命周期的概念、slot<br>概念、模版概念（类比 JSX 或者 Vue template），再结合本来就已经存在的组件化，shadow dom，扩展原生元素的能力，我认为 Web<br>components 还是具备了较好的发展前景。</p>
+<ul>
+<li>原生使用，无需编译</li>
+</ul>
+<p>想想现有的一系列框架，不论是 Vue 还是 React，都需要进行编译。而 Web components<br>因为原生，会得到浏览器的天然支持，自然就可以免去编译构建过程。</p>
+<ul>
+<li>真正的 CSS scope</li>
+</ul>
+<p>Web components 实现了真正的 CSS scope，做到了样式隔离。这一点读者可以对比我们下面即将介绍的 CSS Modules。真正的 CSS<br>scope 对于项目的可维护性至关重要。</p>
+<p>进击的 HTML 和 CSS 带来了进击的 Web components 概念。通过这个案例，我更想建议读者：真正的高级工程师，不仅仅要理解<br>this、熟练掌握各种基础（当然这是前提），更要有技术嗅觉，对新的解决方案能够理解，并进行对比，面向“未来”编程。</p>
+<h3 id="移动端-H5-注意事项总结"><a href="#移动端-H5-注意事项总结" class="headerlink" title="移动端 H5 注意事项总结"></a>移动端 H5 注意事项总结</h3><p>HTML5 因为其强大先进的能力，毫无疑问打来了一场开发的变革。在国内，体现最明显的就是各种 H5 移动页面。</p>
+<p>因为移动端的碎片化现象，以及技术落地的成熟度尚浅，造成了不少问题，那么移动端开发 H5 有哪些坑以及小技巧呢？</p>
+<p>这里列举一些典型情况，目的在于梳理和整理，不再一一详解。具体信息社区上都可以找到，感兴趣的读者可以另行学习。</p>
+<ul>
+<li>打电话发短信写邮件的小技巧</li>
+</ul>
+<p>这些技巧都和 a 标签相关，其中打电话：</p>
+<pre><code>&lt;a href=&quot;tel: 110&quot;&gt;打电话给警察局&lt;/a&gt;</code></pre>
+<p>发短信：</p>
+<pre><code>&lt;a href=&quot;sms: 110&quot;&gt;发短信给警察局&lt;/a&gt;</code></pre>
+<p>写邮件依赖“mailto”：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com&quot;&gt;发邮件给警察局&lt;/a&gt;</code></pre>
+<p>我们设置可以添加抄送：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com?cc=baba@family.com&quot;&gt;发邮件给警察局，并抄送给我爸爸&lt;/a&gt;</code></pre>
+<p>除了抄送，也可以私密发送：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com?cc=baba@family.com&amp;bcc=mama@family.com&quot;&gt;发邮件给警察局，并抄送给我爸爸，密送给我妈妈&lt;/a &gt;</code></pre>
+<p>群发也可以：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com; 120@govn.com&quot;&gt;发邮件给警察局，以及 120 急救&lt;/a&gt;</code></pre>
+<p>既然都支持群发了，那么定义主题和内容也不在话下：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com?subject=SOS&quot;&gt;发邮件给警察局，并添加救命主题&lt;/a&gt;</code></pre>
+<p>包含内容用 body 体现：</p>
+<pre><code>&lt;a href=&quot;mailto: 110@govn.com?subject=SOS&amp;body=快来救我&quot;&gt;发邮件给警察局，并添加救命主题和内容&lt;/a&gt;</code></pre>
+<p>内容也是支持插入图片和链接的，这里不再一一列举。</p>
+<ul>
+<li>移动端 300 毫秒点击延迟以及点击穿透现象</li>
+</ul>
+<p>这是由于历史原因造成的，一般解决手段为禁止混用 touch 和 click，或者增加一层“透明”蒙层，也可以通过延迟上层元素消失来实现。</p>
+<ul>
+<li>点击元素禁止产生背景或边框</li>
+</ul>
+<p>一般可以使用：</p>
+<pre><code>-webkit-tap-highlight-color: rgba(0,0,0,0); </code></pre>
+<p>属性进行禁用。</p>
+<ul>
+<li>禁止长按链接与图片弹出菜单</li>
+</ul>
+<p>一般可以使用：</p>
+<pre><code>-webkit-touch-callout: none;</code></pre>
+<ul>
+<li>禁止用户选中文字</li>
+</ul>
+<pre><code>-webkit-user-select:none; 
+user-select: none;</code></pre>
+<ul>
+<li>取消 input 输入时，英文首字母的默认大写</li>
+</ul>
+<pre><code>&lt;input autocapitalize=&quot;off&quot; autocorrect=&quot;off&quot; /&gt;</code></pre>
+<p>iOS 有效。</p>
+<ul>
+<li>语音和视频自动播放</li>
+</ul>
+<p>自动播放是一个很麻烦的话题。不同浏览器内核支持自动播放的情况不一样，甚至 webkit<br>内核对于自动播放的策略也一直在调整当中。自动播放有时候也带着条件：比如设置静音等。</p>
+<p>具体信息更新可以参考：[New video Policies for iOS](<a target="_blank" rel="noopener" href="https://webkit.org/blog/6784/new-">https://webkit.org/blog/6784/new-</a><br>video-policies-for-ios/)。</p>
+<p>一般我们设置自动播放的回退策略是用户触摸屏幕时进行的播放：</p>
+<pre><code>// JS 绑定自动播放（操作 window 时，播放音乐）
+$(window).on(&#39;touchstart&#39;, () =&gt; &#123;
+    video.play()
+&#125;)
+
+// 微信环境
+document.addEventListener(&quot;WeixinJSBridgeReady&quot;, () =&gt; &#123;
+    video.play()
+&#125;, false)</code></pre>
+<ul>
+<li>视频全屏播放</li>
+</ul>
+<p>为了使视频全屏播放，我们一般设置：</p>
+<pre><code>&lt;video x-webkit-airplay=&quot;true&quot; webkit-playsinline=&quot;true&quot; preload=&quot;auto&quot; autoplay src=&quot;&quot;&gt;&lt;/video&gt;</code></pre>
+<p>但是最终情况还是要受到浏览器引擎实现的影响。</p>
+<ul>
+<li>开启硬件加速</li>
+</ul>
+<p>在做动画时，为了达到更好的性能效果，我们往往会选用硬件加速。一般手段为：</p>
+<pre><code>transform: translate3d(0,0,0);</code></pre>
+<ul>
+<li>fixed 定位问题</li>
+</ul>
+<p>这个问题主要体现在 iOS 端，比如软键盘弹出时，某些情况下，会影响 fixed 元素定位；配合使用 transform、translate<br>时，某些情况下，也会影响 fixed 元素定位。一般解决方案是模拟 fixed 定位，或者使用 iScroll 库。</p>
+<ul>
+<li>怎么让 Chrome 支持小于 12px 的文字？</li>
+</ul>
+<p>一般通过：</p>
+<pre><code>-webkit-text-size-adjust:none;</code></pre>
+<p>实现。</p>
+<h3 id="HTML5-和-CSS3-其他面试问题整理"><a href="#HTML5-和-CSS3-其他面试问题整理" class="headerlink" title="HTML5 和 CSS3 其他面试问题整理"></a>HTML5 和 CSS3 其他面试问题整理</h3><p>关于 HTML5 和 CSS3 的面试问题都并不困难，往往都是属于“是否听说过”、“用过哪些”，这种知道即可的问题，不会太有“深度”。这里我们总结一下关于<br>HTML5 和 CSS3 新特性的问题，答案也比较容易找到，这里仅做梳理，不再进行展开。如果有疑问的读者，欢迎在读者群中讨论。</p>
+<ul>
+<li>link 和 @import 的区别</li>
+<li>CSS3 新增选择符有哪些</li>
+<li>CSS 如何定义权重规则</li>
+<li>如何使用纯 CSS 创建一个三角形</li>
+<li>CSS3 如何写出一个旋转的立方体</li>
+<li>localStorage 和 cookies 的区别是什么</li>
+<li>如何实现浏览器内多个标签页之间的通信</li>
+<li>渐进增强和优雅降级概念区别是什么</li>
+<li>如何实现 CSS3 动画</li>
+</ul>
+<p>这些内容比较基本，和进阶关系不大，我们不过多纠结。</p>
+<h3 id="CSS-变量和主题切换优雅实现"><a href="#CSS-变量和主题切换优雅实现" class="headerlink" title="CSS 变量和主题切换优雅实现"></a>CSS 变量和主题切换优雅实现</h3><p>CSS 变量或者 CSS 自定义属性一直以来是一个值得关注的方向。我们前端没必要去“叫嚣” CSS + HTML 是否图灵完备，但是 CSS<br>变量时代确实已经到来。注意这里所说的不是 CSS 预处理器（类似 Less，Sass）中的变量，而是实实在在的原生支持特性。</p>
+<h4 id="什么是-CSS-变量"><a href="#什么是-CSS-变量" class="headerlink" title="什么是 CSS 变量"></a>什么是 CSS 变量</h4><p>什么是 CSS 变量呢？我们直接来看实例，有代码：</p>
+<pre><code>body &#123;
+  background: white;
+  color: #555;
+&#125;
+
+a, a:link &#123;
+  color: #639A67;
+&#125;
+a:hover &#123;
+  color: #205D67;
+&#125;</code></pre>
+<p>如果我们借助 CSS 变量，定义：</p>
+<pre><code>:root &#123;
+  --bg: white;
+  --text-color: #555;
+  --link-color: #639A67;
+  --link-hover: #205D67;
+&#125;</code></pre>
+<p>之后，上述代码可以直接简化为：</p>
+<pre><code>body &#123;
+  background: var(--bg);
+  color: var(--text-color);
+&#125;
+
+a, a:link &#123;
+  color: var(--link-color);
+&#125;
+a:hover &#123;
+  color: var(--link-hover);
+&#125;</code></pre>
+<p>这个很好理解，在任何语言中，变量是个好东西：它可以降低维护成本，甚至实现更好的性能。</p>
+<p>CSS 变量语法也很简单：我们使用<code>--变量名</code>的方式定义变量，使用<code>var(--变量名)</code>的方式消费变量。</p>
+<p>更多 CSS 变量的基础内容可以访问：[使用 CSS 变量](<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-">https://developer.mozilla.org/zh-</a><br>CN/docs/Web/CSS/Using_CSS_custom_properties)。</p>
+<p>值得一提的是，CSS 变量的兼容性“出乎意料”的好：</p>
+<p><img src="https://images.gitbook.cn/e8d70d70-8fd3-11e9-8b34-c732c3ec276d" alt="enter image description
+here"></p>
+<p>我就在自己的项目中大范围使用了 CSS 变量，在 html 根节点下，定义 :root ：</p>
+<p><img src="https://images.gitbook.cn/15260510-8fd5-11e9-b9c8-7fcc2264bbb1" alt="enter image description
+here"></p>
+<p>除了简单应用变量，我们能玩出哪些更高级的用法呢？</p>
+<h4 id="使用-CSS-变量实现主题切换"><a href="#使用-CSS-变量实现主题切换" class="headerlink" title="使用 CSS 变量实现主题切换"></a>使用 CSS 变量实现主题切换</h4><p>一键切换主题，以往实现方式较为复杂。借助 CSS 变量，一切变得容易起来。</p>
+<p>仍然以开头：</p>
+<pre><code>:root &#123;
+  --bg: white;
+  --text-color: #555;
+  --link-color: #639A67;
+  --link-hover: #205D67;
+&#125;</code></pre>
+<p>为例，我们再定义一个 .pink-theme 对应粉色主题：</p>
+<pre><code>.pink-theme &#123;
+  --bg: hotpink;
+  --text-color: white;
+  --link-color: #B793E6;
+  --link-hover: #3532A7;
+&#125;</code></pre>
+<p>这样一来，在切换主题时，就变得和 toggle class 一样简单。</p>
+<pre><code>const toggleBtn = document.querySelector(&#39;.toggle-theme&#39;)
+
+toggleBtn.addEventListener(&#39;click&#39;, e =&gt; &#123;
+  e.preventDefault()
+
+  if (document.body.classList.contains(&#39;pink-theme&#39;)) &#123;
+     // 当前主题为粉色主题，需要移除 pink-theme class
+    document.body.classList.remove(&#39;pink-theme&#39;)
+
+    toggle.innerText = &#39;切换正常主题色&#39;
+  &#125; else &#123;
+    document.body.classList.add(&#39;pink-theme&#39;)
+    toggle.innerText = &#39;切换为粉色少女主题&#39;
+  &#125;
+&#125;)</code></pre>
+<p>同时，我们可以将“进击的 CSS”和“进击的 HTML”相结合，利用 localStorage 实现主题的保存：</p>
+<pre><code>const toggleBtn = document.querySelector(&#39;.toggle-theme&#39;)
+
+if (localStorage.getItem(&#39;pinkTheme&#39;)) &#123;
+  document.body.classList.add(&#39;pink-theme&#39;)
+  toggle.innerText = &#39;切换为粉色少女主题&#39;
+&#125;
+
+toggleBtn.addEventListener(&#39;click&#39;, e =&gt; &#123;
+  e.preventDefault()
+
+  if (document.body.classList.contains(&#39;pink-theme&#39;)) &#123;
+     // 当前主题为粉色主题，需要移除 pink-theme class
+    document.body.classList.remove(&#39;pink-theme&#39;)
+
+    toggle.innerText = &#39;切换正常主题色&#39;
+    localStorage.removeItem(&#39;pinkTheme&#39;)
+  &#125; else &#123;
+    document.body.classList.add(&#39;pink-theme&#39;)
+    toggle.innerText = &#39;切换为粉色少女主题&#39;
+    localStorage.setItem(&#39;pinkTheme&#39;, true)
+  &#125;
+&#125;)</code></pre>
+<p>非常的简单直观，我认为这将会成为 CSS 发展的一个不可避免的趋势。</p>
+<h3 id="CSS-Modules-理论和实战"><a href="#CSS-Modules-理论和实战" class="headerlink" title="CSS Modules 理论和实战"></a>CSS Modules 理论和实战</h3><p>我做面试官时，对 CSS 的考察除了基础布局和经验以外，非常喜欢问 CSS 工程相关的题目，比如：</p>
+<blockquote>
+<p>如何维护大型项目的 z-index</p>
+</blockquote>
+<p>比如，</p>
+<blockquote>
+<p>如何维护 CSS 选择器和样式之间的冲突</p>
+</blockquote>
+<p>这个环节我们就来谈谈 CSS Modules，看看这个方案是否能让“CSS 冲突成为历史”。</p>
+<h4 id="什么是-CSS-Modules"><a href="#什么是-CSS-Modules" class="headerlink" title="什么是 CSS Modules"></a>什么是 CSS Modules</h4><p>CSS Modules 是指：</p>
+<blockquote>
+<p>项目中所有 class 名称默认都是局部起作用的。</p>
+</blockquote>
+<p>其实，CSS Modules 并不是一个官方规范，更不是浏览器的机制。它依赖我们的项目构建过程，因此实现往往需要借助 Webpack。借助 Webpack<br>或者其他构建工具的帮助，可以将 class 的名字唯一化，从而实现局部作用。</p>
+<p>这么说可能比较抽象，我们来看一个例子：</p>
+<pre><code>&lt;div class=&quot;test&quot;&gt;This is a test&lt;/div&gt;</code></pre>
+<p>对应的样式表为：</p>
+<pre><code>.test &#123;
+  color: red;
+&#125;</code></pre>
+<p>再经过编译构建之后，对应的 HTML 和 CSS 分别为：</p>
+<pre><code>&lt;div class=&quot;_style_test_309571057&quot;&gt;
+  This is a test
+&lt;/div&gt;
+
+
+
+._style_test_309571057 &#123;
+    color: red;
+&#125;</code></pre>
+<p>其中 class 名是动态生成的，全项目唯一的。因此通过命名规范的唯一性，达到了避免样式冲突的目的。</p>
+<p>仔细想来，这样的解决方案似乎有一个问题：如何实现样式复用？因为生成了全局唯一的 class 名，那么我们如何像传统方式那样实现样式复用呢？</p>
+<p>从原理上想，全局唯一的 class 是在构建过程中，如果能给在构建过程进行标识，表示该 class 将被复用，就可以解决问题了。这样的方式，就依靠<br>composes 关键字实现。我们来看案例：</p>
+<p>样式表 style.css 文件中：</p>
+<pre><code>.common &#123;
+  color: red;
+&#125;
+
+.test &#123;
+  composes: common;
+  font-size: 18px;
+&#125;</code></pre>
+<p>注意我们使用了 composes 关键字，在 .test 中关联了 .common 样式。</p>
+<p>对于 HTML 文件：</p>
+<p>import style from “./style.css”;</p>
+<pre><code>&lt;div class=&quot;$&#123;style.test&#125;&quot;&gt;
+    This is a test
+&lt;/div&gt;</code></pre>
+<p>进行编译构建后：</p>
+<pre><code>&lt;div class=&quot;_style__test_0980340 _style__common_404840&quot;&gt;
+    This is a test
+&lt;/div&gt;</code></pre>
+<p>我们看 div 的 class 被加进了 _style__common_404840，这样就实现了复用样式。</p>
+<p>明白了道理，我们该如何应用 CSS Modules 呢？</p>
+<h4 id="CSS-Modules-实战"><a href="#CSS-Modules-实战" class="headerlink" title="CSS Modules 实战"></a>CSS Modules 实战</h4><p>实战应用 CSS Modules，我将会选取 Webpack 构建一个项目，一步一步进行分析讲解。因为主题并不是“如何配置 Webpack”，因此一些<br>Webpack 基础不再赘述，同时为了简化问题，我们不进行其他 Webpack（比如 dev server）配置。</p>
+<ul>
+<li>Step 1：创建项目</li>
+</ul>
+<pre><code>npm init --y</code></pre>
+<p>此时生成 package.json 如下：</p>
+<pre><code>&#123;
+  &quot;name&quot;: &quot;css-modules&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;README.md&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+&#125;</code></pre>
+<ul>
+<li>Step 2：创建必要文件</li>
+</ul>
+<pre><code>mkdir src
+touch index.html</code></pre>
+<p>在 ./src 文件夹中，创建：index.js：</p>
+<pre><code>import bluestyle from &#39;./style.css&#39;;
+import greenstyle from &#39;./app.css&#39;;
+
+let html = `
+&lt;h2 class=&quot;$&#123;bluestyle.my_css_selector&#125;&quot;&gt;I should be displayed in blue.&lt;/h2&gt;
+&lt;br/&gt;
+&lt;h2 class=&quot;$&#123;greenstyle.my_css_selector&#125;&quot;&gt;I should be displayed in green.&lt;/h2&gt; 
+`;
+document.write(html);</code></pre>
+<p>以及 style.css：</p>
+<pre><code>.my_css_selector &#123;
+    color: blue;
+&#125;</code></pre>
+<p>和 app.css：</p>
+<pre><code>.my_css_selector &#123;
+    color: green;
+&#125;</code></pre>
+<p>在这两个样式文件中，我们使用了相同的 class 名。</p>
+<ul>
+<li>Step 3：安装依赖</li>
+</ul>
+<p>接下来我们按照 webpack、webpack-cli、babel 全家桶（babel-core、babel-loader、abel-preset-<br>env）和相应的 loaders：css-loader、style-loader 以及 extract-text-webpack-plugin 插件。</p>
+<p>这些依赖项具体是做什么的这里不再赘述，有不了解的读者可以自行 Google 学习。另外，强烈建议安装版本遵循：</p>
+<pre><code>&quot;babel-core&quot;: &quot;^6.26.3&quot;,
+&quot;babel-loader&quot;: &quot;^7.1.4&quot;,
+&quot;babel-preset-env&quot;: &quot;^1.6.1&quot;,
+&quot;css-loader&quot;: &quot;^0.28.11&quot;,
+&quot;extract-text-webpack-plugin&quot;: &quot;^4.0.0-beta.0&quot;,
+&quot;style-loader&quot;: &quot;^0.21.0&quot;,
+&quot;webpack&quot;: &quot;^4.1.0&quot;,
+&quot;webpack-cli&quot;: &quot;^3.1.1&quot;</code></pre>
+<p>否则会出现类似 webpack 版本和 extract-text-webpack-plugin 不兼容等依赖版本问题。</p>
+<p>正常流程下来，我们 package.json 如下：</p>
+<pre><code>&#123;
+  &quot;name&quot;: &quot;css-modules&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;README.md&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;devDependencies&quot;: &#123;
+    &quot;babel-core&quot;: &quot;^6.26.3&quot;,
+    &quot;babel-loader&quot;: &quot;^7.1.4&quot;,
+    &quot;babel-preset-env&quot;: &quot;^1.6.1&quot;,
+    &quot;css-loader&quot;: &quot;^0.28.11&quot;,
+    &quot;extract-text-webpack-plugin&quot;: &quot;^4.0.0-beta.0&quot;,
+    &quot;style-loader&quot;: &quot;^0.21.0&quot;,
+    &quot;webpack&quot;: &quot;^4.1.0&quot;,
+    &quot;webpack-cli&quot;: &quot;^3.1.1&quot;
+  &#125;
+&#125;</code></pre>
+<ul>
+<li>Step 4：编写 webpack 配置</li>
+</ul>
+<p>创建 webpack 配置文件：</p>
+<pre><code>touch webpack.config.js</code></pre>
+<p>并编写：</p>
+<pre><code>var ExtractTextPlugin = require(&#39;extract-text-webpack-plugin&#39;);
+
+module.exports = &#123;
+    entry: &#39;./src&#39;,
+    output: &#123;
+        path: __dirname + &#39;/build&#39;,
+        filename: &#39;bundle.js&#39;
+    &#125;,
+    module: &#123;
+        rules: [
+            &#123;
+                test: /\.js/,
+                loader: &#39;babel-loader&#39;,
+                include: __dirname + &#39;/src&#39;
+            &#125;,
+            &#123;
+                test: /\.css/,
+                loader: ExtractTextPlugin.extract(&quot;css-loader?modules&amp;importLoaders=1&amp;localIdentName=[name]__[local]__[hash:base64:5]&quot;)
+            &#125;
+        ]
+    &#125;,
+    plugins: [
+        new ExtractTextPlugin(&quot;styles.css&quot;)
+    ]
+&#125;</code></pre>
+<p>我们使用了 extract-text-webpack-plugin 插件，并定义入口为 ./src 目录，产出为 <code>__dirname + &#39;/build&#39;</code> 目录。对后缀名为 css 的文件使用 css-loader 解析，产出为 styles.css 文件并在 index.html 中使用。</p>
+<p>注意我们看对于 css-loader，设置了 modules 参数，进行了 css modules 处理。</p>
+<ul>
+<li>Step 4：编写 npm script 并运行</li>
+</ul>
+<p>还差一步，我们将 package.json 中的 script 命令改为：</p>
+<pre><code>&quot;scripts&quot;: &#123;
+    &quot;start&quot;: &quot;webpack --mode development&quot;
+&#125;,</code></pre>
+<p>便是运行 webpack，此时 package.json 内容为：</p>
+<pre><code>&#123;
+  &quot;name&quot;: &quot;css-modules&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;README.md&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: &#123;
+    &quot;start&quot;: &quot;webpack --mode development&quot;
+  &#125;,
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;devDependencies&quot;: &#123;
+    &quot;babel-core&quot;: &quot;^6.26.3&quot;,
+    &quot;babel-loader&quot;: &quot;^7.1.4&quot;,
+    &quot;babel-preset-env&quot;: &quot;^1.6.1&quot;,
+    &quot;css-loader&quot;: &quot;^0.28.11&quot;,
+    &quot;extract-text-webpack-plugin&quot;: &quot;^4.0.0-beta.0&quot;,
+    &quot;style-loader&quot;: &quot;^0.21.0&quot;,
+    &quot;webpack&quot;: &quot;^4.1.0&quot;,
+    &quot;webpack-cli&quot;: &quot;^3.1.1&quot;
+  &#125;
+&#125;</code></pre>
+<p>运行 npm start，得到产出，打开页面会发现：</p>
+<p>如图，已经在编译过程中完成了 css module 处理。</p>
+<p><img src="https://images.gitbook.cn/bf6eefd0-8fd7-11e9-b9c8-7fcc2264bbb1" alt="enter image description
+here"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本节课程我们既有“大面儿”上的梳理，也有关键点的“实战”深入。有趣实用的标签和属性、移动端 H5 注意事项总结、HTML5 和 CSS3<br>面试题梳理，这三块内容旨在将碎片化的知识点以“记事本”式的排列；Web components 更多给大家带来对新技术的思考和总结；CSS 变量、CSS<br>Module 是我认为最有发展潜力、最有实用价值、最能马上落地实现的解决方案。</p>
+<p>HTML 和 CSS 向来被忽视，但是涉及到项目组织和构建，涉及到新技术的调研和决断，我们切不可含糊。</p>
+<h3 id="分享交流"><a href="#分享交流" class="headerlink" title="分享交流"></a>分享交流</h3><p>阅读文章过程中有任何疑问随时可以跟其他小伙伴讨论，或者直接向作者 LucasHC 提问（作者看到后抽空回复）。 <strong>你的分享不仅帮助他人，更会提升自己。</strong></p>
+<p>你也可以说说自己最想了解的主题，课程内容会根据部分读者的意见和建议迭代和完善。</p>
+<blockquote>
+<p><strong>为了方便与作者交流与学习，GitChat 编辑团队组织了一个《前端开发核心知识进阶》读者交流群，添加小姐姐-<br>泰勒微信：「GitChatty5」，回复关键字「105」给小姐姐获取入群资格。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">小川</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://jinxiaochuan.github.io/matrix/advanced/015--%E8%BF%9B%E5%87%BB%E7%9A%84%20CSS%20%E5%92%8C%20HTML/">https://jinxiaochuan.github.io/matrix/advanced/015--%E8%BF%9B%E5%87%BB%E7%9A%84%20CSS%20%E5%92%8C%20HTML/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://jinxiaochuan.github.io/matrix" target="_blank">Matrix</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/matrix/advanced/014--%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E7%A6%BB%E4%B8%8D%E5%BC%80%E7%9A%84%E2%80%9C%E9%9D%A2%E5%AD%90%E5%B7%A5%E7%A8%8B%E2%80%9D/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">核心进阶14 | 前端面试离不开的“面子工程”</div></div></a></div><div class="next-post pull-right"><a href="/matrix/advanced/016--%E5%93%8D%E5%BA%94%E5%BC%8F%E5%B8%83%E5%B1%80%E5%92%8C%20Bootstrap%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%88%86%E6%9E%90/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/matrix/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">核心进阶16 | 响应式布局和 Bootstrap 的实现分析</div></div></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/matrix/null" onerror="this.onerror=null;this.src='/matrix/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">小川</div><div class="author-info__description">前端攻城狮</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/matrix/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%87%BB%E7%9A%84-HTML"><span class="toc-number">1.</span> <span class="toc-text">进击的 HTML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E5%8F%AF%E5%BF%BD%E8%A7%86%E7%9A%84-Web-components"><span class="toc-number">2.</span> <span class="toc-text">不可忽视的 Web components</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E7%AB%AF-H5-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">移动端 H5 注意事项总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTML5-%E5%92%8C-CSS3-%E5%85%B6%E4%BB%96%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">HTML5 和 CSS3 其他面试问题整理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSS-%E5%8F%98%E9%87%8F%E5%92%8C%E4%B8%BB%E9%A2%98%E5%88%87%E6%8D%A2%E4%BC%98%E9%9B%85%E5%AE%9E%E7%8E%B0"><span class="toc-number">5.</span> <span class="toc-text">CSS 变量和主题切换优雅实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-CSS-%E5%8F%98%E9%87%8F"><span class="toc-number">5.1.</span> <span class="toc-text">什么是 CSS 变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-CSS-%E5%8F%98%E9%87%8F%E5%AE%9E%E7%8E%B0%E4%B8%BB%E9%A2%98%E5%88%87%E6%8D%A2"><span class="toc-number">5.2.</span> <span class="toc-text">使用 CSS 变量实现主题切换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CSS-Modules-%E7%90%86%E8%AE%BA%E5%92%8C%E5%AE%9E%E6%88%98"><span class="toc-number">6.</span> <span class="toc-text">CSS Modules 理论和实战</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-CSS-Modules"><span class="toc-number">6.1.</span> <span class="toc-text">什么是 CSS Modules</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CSS-Modules-%E5%AE%9E%E6%88%98"><span class="toc-number">6.2.</span> <span class="toc-text">CSS Modules 实战</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E4%BA%A4%E6%B5%81"><span class="toc-number">8.</span> <span class="toc-text">分享交流</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/matrix/algorithm/" title="FE Algorithm - 阶乘"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="FE Algorithm - 阶乘"/></a><div class="content"><a class="title" href="/matrix/algorithm/" title="FE Algorithm - 阶乘">FE Algorithm - 阶乘</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶23 | 从框架和类库，我们该学到什么"/></a><div class="content"><a class="title" href="/matrix/advanced/023--%E4%BB%8E%E6%A1%86%E6%9E%B6%E5%92%8C%E7%B1%BB%E5%BA%93%EF%BC%8C%E6%88%91%E4%BB%AC%E8%AF%A5%E5%AD%A6%E5%88%B0%E4%BB%80%E4%B9%88/" title="核心进阶23 | 从框架和类库，我们该学到什么">核心进阶23 | 从框架和类库，我们该学到什么</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）"/></a><div class="content"><a class="title" href="/matrix/advanced/024--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8A%EF%BC%89/" title="核心进阶24 | 深入浅出模块化（含 tree shaking）（上）">核心进阶24 | 深入浅出模块化（含 tree shaking）（上）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/025--%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%A8%A1%E5%9D%97%E5%8C%96%EF%BC%88%E5%90%AB%20tree%20shaking%EF%BC%89%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶25 | 深入浅出模块化（含 tree shaking）（下）">核心进阶25 | 深入浅出模块化（含 tree shaking）（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/matrix/img/404.jpg'" alt="核心进阶29 | 前端工程化背后的项目组织设计（下）"/></a><div class="content"><a class="title" href="/matrix/advanced/029--%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%83%8C%E5%90%8E%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%BB%84%E7%BB%87%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%B8%8B%EF%BC%89/" title="核心进阶29 | 前端工程化背后的项目组织设计（下）">核心进阶29 | 前端工程化背后的项目组织设计（下）</a><time datetime="2020-12-23T02:19:57.212Z" title="发表于 2020-12-23 10:19:57">2020-12-23</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 小川</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/matrix/js/utils.js"></script><script src="/matrix/js/main.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></div></body></html>
